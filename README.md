@@ -14,10 +14,6 @@ If you want to use your own ISO, run the following instead:
 packer build -var iso_url=<ISO_URL> -var iso_checksum=<ISO_SHA256_CHECKSUM> windows-2016.json
 ```
 
-**NB** due to a [bug in packer 0.12.1](https://github.com/mitchellh/packer/issues/4348), packer will always
-try to connect to the WinRM port at `5985` (instead of a random free port). This means that you need
-to have that local port free.
-
 **NB** if you are having trouble building the base box due to floppy drive removal errors try adding, as a
 workaround, `"post_shutdown_delay": "30s",` to the `windows-2016.json` file.
 

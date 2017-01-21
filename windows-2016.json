@@ -19,8 +19,7 @@
         ["modifyvm", "{{.Name}}", "--nictype1", "82540EM"],
         ["modifyvm", "{{.Name}}", "--nictype2", "82540EM"],
         ["modifyvm", "{{.Name}}", "--nictype3", "82540EM"],
-        ["modifyvm", "{{.Name}}", "--nictype4", "82540EM"],
-        ["modifyvm", "{{.Name}}", "--natpf1", "winrm,tcp,127.0.0.1,5985,,5985"]
+        ["modifyvm", "{{.Name}}", "--nictype4", "82540EM"]
       ],
       "disk_size": "{{user `disk_size`}}",
       "hard_drive_interface": "sata",
