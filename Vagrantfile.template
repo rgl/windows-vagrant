@@ -1,7 +1,14 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "windows-2016-amd64"
   config.vm.guest = :windows
   config.vm.communicator = "winrm"
   config.winrm.username = "vagrant"
   config.winrm.password = "vagrant"
+  config.vm.provider "libvirt" do |lv|
+    lv.cpu_mode = 'host-passthrough'
+    lv.input :type => "tablet", :bus => "usb"
+    lv.graphics_type = "spice"
+    lv.video_type = "qxl"
+    lv.channel :type => "unix", :target_name => "org.qemu.guest_agent.0", :target_type => "virtio"
+    lv.channel :type => "spicevmc", :target_name => "com.redhat.spice.0", :target_type => "virtio"
+  end
 end
