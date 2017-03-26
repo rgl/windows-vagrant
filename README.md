@@ -39,7 +39,7 @@ Then test with a more complete example:
 ```bash
 git clone https://github.com/rgl/customize-windows-vagrant
 cd customize-windows-vagrant
-vagrant up # NB --provider=libvirt is not yet supported in this example.
+vagrant up --provider=virtualbox # or --provider=libvirt
 ```
 
 

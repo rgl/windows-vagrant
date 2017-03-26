@@ -7,8 +7,13 @@ Vagrant.configure(2) do |config|
     lv.memory = 2048
     lv.cpus = 2
     lv.keymap = 'pt'
-    # disable the default rsync shared folder (it will not work; there's no ssh server).
+    # replace the default synced_folder with something that works in cygwin.
+    # NB for some reason, this does not work when placed in the base box Vagrantfile.
     config.vm.synced_folder '.', '/vagrant', disabled: true
+    config.vm.synced_folder '.', '/cygdrive/c/vagrant', rsync__exclude: [
+      '.vagrant/',
+      '.git/',
+      '*.box']
   end
 
   config.vm.provider 'virtualbox' do |vb|
