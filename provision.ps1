@@ -52,34 +52,6 @@ if ((Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor -eq 'QEMU') {
     Remove-Item -Force "$spiceAgentDestination\vdagent-win-*"
     Start-Process "$spiceAgentDestination\vdservice.exe" install -Wait # NB the logs are inside C:\Windows\Temp
     Start-Service vdservice
-
-    # install OpenSSH (for rsync vagrant shared folders).
-    $openSshSetupFilename = 'setupssh-7.5p1-1.exe'
-    $openSshSetupUrl = "https://www.mls-software.com/files/$openSshSetupFilename"
-    $openSshSetupHash = '199ad10d578075dfe9651daa53e6f93cf6254486'
-    $openSshSetup = "$env:TEMP\$openSshSetupFilename"
-    $openSshHome = 'C:\Program Files\OpenSSH'
-    Write-Host "Downloading OpenSSH from $openSshSetupUrl..."
-    Invoke-WebRequest $openSshSetupUrl -OutFile $openSshSetup
-    $openSshSetupActualHash = (Get-FileHash $openSshSetup -Algorithm SHA1).Hash
-    if ($openSshSetupActualHash -ne $openSshSetupHash) {
-        throw "the $openSshSetupUrl file hash $openSshSetupActualHash does not match the expected $openSshSetupHash"
-    }
-    Write-Host 'Installing OpenSSH...'
-    Start-Process $openSshSetup /S -Wait
-    # remove the annoying ssh banner.
-    Remove-Item "$openSshHome\etc\banner.txt"
-    Write-Host 'Installing the default vagrant insecure public key...'
-    mkdir "$env:USERPROFILE\.ssh" | Out-Null
-    Invoke-WebRequest `
-        'https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub' `
-        -OutFile "$env:USERPROFILE\.ssh\authorized_keys"
-    # disable StrictModes.
-    [IO.File]::WriteAllText(
-        "$openSshHome\etc\sshd_config",
-        ([IO.File]::ReadAllText("$openSshHome\etc\sshd_config") `
-            -replace '#?StrictModes yes','StrictModes no'))
-    Restart-Service opensshd
 } else {
     Write-Host 'Importing the Oracle (for VirtualBox) certificate as a Trusted Publisher...'
     E:\cert\VBoxCertUtil.exe add-trusted-publisher E:\cert\vbox-sha1.cer
@@ -106,6 +78,34 @@ if ((Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor -eq 'QEMU') {
     }
     &$ejectVolumeMediaExe E
 }
+
+# install OpenSSH (for rsync vagrant shared folders in linux and for general use on clients of this base box).
+$openSshSetupFilename = 'setupssh-7.5p1-1.exe'
+$openSshSetupUrl = "https://www.mls-software.com/files/$openSshSetupFilename"
+$openSshSetupHash = '199ad10d578075dfe9651daa53e6f93cf6254486'
+$openSshSetup = "$env:TEMP\$openSshSetupFilename"
+$openSshHome = 'C:\Program Files\OpenSSH'
+Write-Host "Downloading OpenSSH from $openSshSetupUrl..."
+Invoke-WebRequest $openSshSetupUrl -OutFile $openSshSetup
+$openSshSetupActualHash = (Get-FileHash $openSshSetup -Algorithm SHA1).Hash
+if ($openSshSetupActualHash -ne $openSshSetupHash) {
+    throw "the $openSshSetupUrl file hash $openSshSetupActualHash does not match the expected $openSshSetupHash"
+}
+Write-Host 'Installing OpenSSH...'
+Start-Process $openSshSetup /S -Wait
+# remove the annoying ssh banner.
+Remove-Item "$openSshHome\etc\banner.txt"
+Write-Host 'Installing the default vagrant insecure public key...'
+mkdir "$env:USERPROFILE\.ssh" | Out-Null
+Invoke-WebRequest `
+    'https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub' `
+    -OutFile "$env:USERPROFILE\.ssh\authorized_keys"
+# disable StrictModes.
+[IO.File]::WriteAllText(
+    "$openSshHome\etc\sshd_config",
+    ([IO.File]::ReadAllText("$openSshHome\etc\sshd_config") `
+        -replace '#?StrictModes yes','StrictModes no'))
+Restart-Service opensshd
 
 Write-Host 'Setting the vagrant account properties...'
 # see the ADS_USER_FLAG_ENUM enumeration at https://msdn.microsoft.com/en-us/library/aa772300(v=vs.85).aspx
