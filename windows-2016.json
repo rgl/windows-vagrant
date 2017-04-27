@@ -90,6 +90,11 @@
   "provisioners": [
     {
       "type": "powershell",
+      "inline": "Uninstall-WindowsFeature Windows-Defender-Features"
+    },
+    {
+      "type": "windows-restart"
+    },
       "script": "provision.ps1"
     }
   ],
