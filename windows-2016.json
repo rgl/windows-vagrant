@@ -95,6 +95,11 @@
     {
       "type": "windows-restart"
     },
+    {
+      "type": "windows-update"
+    },
+    {
+      "type": "powershell",
       "script": "provision.ps1"
     }
   ],
