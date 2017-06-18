@@ -93,6 +93,10 @@
       "inline": "Uninstall-WindowsFeature Windows-Defender-Features"
     },
     {
+      "type": "powershell",
+      "script": "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
+    },
+    {
       "type": "windows-restart"
     },
     {
