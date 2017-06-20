@@ -58,7 +58,7 @@
     {
       "name": "windows-2016-amd64-virtualbox",
       "type": "virtualbox-iso",
-      "guest_os_type": "Windows10_64",
+      "guest_os_type": "Windows2016_64",
       "guest_additions_mode": "attach",
       "headless": true,
       "vboxmanage": [
