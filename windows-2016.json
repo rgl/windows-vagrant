@@ -50,9 +50,9 @@
         "drivers/NetKVM/2k16/amd64/*.cat",
         "drivers/NetKVM/2k16/amd64/*.inf",
         "drivers/NetKVM/2k16/amd64/*.sys",
-        "drivers/qxldod/w10/amd64/*.cat",
-        "drivers/qxldod/w10/amd64/*.inf",
-        "drivers/qxldod/w10/amd64/*.sys"
+        "drivers/qxldod/2k16/amd64/*.cat",
+        "drivers/qxldod/2k16/amd64/*.inf",
+        "drivers/qxldod/2k16/amd64/*.sys"
       ]
     },
     {
