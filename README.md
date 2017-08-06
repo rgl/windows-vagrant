@@ -3,6 +3,13 @@ This builds a Windows Server 2016 base Vagrant box using [Packer](https://www.pa
 
 # Usage
 
+Install [VirtualBox](https://www.virtualbox.org/) (or [libvirt](https://libvirt.org/) on Linux based systems), [packer](https://www.packer.io/), [packer-provisioner-windows-update plugin](https://github.com/rgl/packer-provisioner-windows-update) and [vagrant](https://www.vagrantup.com/).
+If you are using Windows and [Chocolatey](https://chocolatey.org/), you can install everything with:
+
+```batch
+choco install -y virtualbox packer packer-provisioner-windows-update vagrant
+```
+
 To build the base box based on the [Windows Server 2016 Evaluation](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2016) ISO run:
 
 ```bash
