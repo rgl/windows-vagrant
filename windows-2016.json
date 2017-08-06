@@ -94,6 +94,10 @@
     },
     {
       "type": "powershell",
+      "inline": "Uninstall-WindowsFeature FS-SMB1"
+    },
+    {
+      "type": "powershell",
       "script": "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
     },
     {
