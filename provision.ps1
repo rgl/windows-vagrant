@@ -129,9 +129,7 @@ Write-Host 'Disabling hibernation...'
 powercfg /hibernate off
 
 Write-Host 'Setting the power plan to high performance...'
-Get-CimInstance -Name root\cimv2\power -Class Win32_PowerPlan -Filter "ElementName = 'High Performance'" `
-    | Invoke-CimMethod -MethodName Activate `
-    | Out-Null
+powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 
 # remove temporary files.
 'C:\tmp','C:\Windows\Temp',$env:TEMP | ForEach-Object {
