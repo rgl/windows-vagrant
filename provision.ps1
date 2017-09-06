@@ -105,6 +105,8 @@ Invoke-WebRequest `
     "$openSshHome\etc\sshd_config",
     ([IO.File]::ReadAllText("$openSshHome\etc\sshd_config") `
         -replace '#?StrictModes yes','StrictModes no'))
+# prevent bash from complaining about the missing /tmp directory.
+New-Item -ItemType SymbolicLink -Path "$openSshHome\tmp" -Value C:\Windows\Temp | Out-Null
 Restart-Service opensshd
 
 Write-Host 'Setting the vagrant account properties...'
