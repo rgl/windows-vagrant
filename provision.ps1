@@ -39,15 +39,15 @@ if ((Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor -eq 'QEMU') {
     Start-Process $qemuAgentSetup /qn -Wait
 
     # install spice-vdagent.
-    $spiceAgentZipUrl = 'https://www.spice-space.org/download/windows/vdagent/vdagent-win-0.8.0/vdagent-win-0.8.0.zip'
-    $spiceAgentZip = "$env:TEMP\vdagent-win-0.8.0.zip"
+    $spiceAgentZipUrl = 'https://www.spice-space.org/download/windows/vdagent/vdagent-win-0.9.0/vdagent-win-0.9.0-x64.zip'
+    $spiceAgentZip = "$env:TEMP\vdagent-win-0.9.0-x64.zip"
     $spiceAgentDestination = "C:\Program Files\spice-vdagent"
     Write-Host "Downloading the spice-vdagent from $spiceAgentZipUrl..."
     Invoke-WebRequest $spiceAgentZipUrl -OutFile $spiceAgentZip
     Write-Host 'Installing the spice-vdagent...'
     Add-Type -A System.IO.Compression.FileSystem
     [IO.Compression.ZipFile]::ExtractToDirectory($spiceAgentZip, $spiceAgentDestination)
-    Move-Item "$spiceAgentDestination\vdagent-win-*\x86_64\*" $spiceAgentDestination
+    Move-Item "$spiceAgentDestination\vdagent-win-*\*" $spiceAgentDestination
     Get-ChildItem "$spiceAgentDestination\vdagent-win-*" -Recurse | Remove-Item -Force -Recurse
     Remove-Item -Force "$spiceAgentDestination\vdagent-win-*"
     Start-Process "$spiceAgentDestination\vdservice.exe" install -Wait # NB the logs are inside C:\Windows\Temp
