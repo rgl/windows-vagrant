@@ -1,8 +1,8 @@
 {
   "variables": {
     "disk_size": "61440",
-    "iso_url": "/home/rgl/Downloads/Windows_InsiderPreview_Server_2_16237.iso",
-    "iso_checksum": "3d7f496892424926ad6b50f6acda74cf4f9f5d509ffd378767a3950932dbfce0",
+    "iso_url": "/home/rgl/Downloads/Windows_InsiderPreview_Server_16278.iso",
+    "iso_checksum": "f87ebde2f4dc7094d2e01819d370cb8d06d2bcde520d3bdf9e8ce7e70a8ea5da",
     "iso_checksum_type": "sha256"
   },
   "builders": [
