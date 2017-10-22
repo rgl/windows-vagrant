@@ -92,7 +92,7 @@ if ($openSshSetupActualHash -ne $openSshSetupHash) {
     throw "the $openSshSetupUrl file hash $openSshSetupActualHash does not match the expected $openSshSetupHash"
 }
 Write-Host 'Installing OpenSSH...'
-Start-Process $openSshSetup /S -Wait
+&$openSshSetup /S | Out-String -Stream
 # remove the annoying ssh banner.
 Remove-Item "$openSshHome\etc\banner.txt"
 Write-Host 'Installing the default vagrant insecure public key...'

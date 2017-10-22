@@ -5,6 +5,10 @@ build-libvirt: windows-2016-amd64-libvirt.box
 
 build-virtualbox: windows-2016-amd64-virtualbox.box
 
+build-windows-server-core-1709-libvirt: windows-server-core-1709-amd64-libvirt.box
+
+build-windows-server-core-1709-virtualbox: windows-server-core-1709-amd64-virtualbox.box
+
 build-core-insider-libvirt: windows-core-insider-2016-amd64-libvirt.box
 
 build-core-insider-virtualbox: windows-core-insider-2016-amd64-virtualbox.box
@@ -22,6 +26,20 @@ windows-2016-amd64-virtualbox.box: windows-2016.json autounattend.xml Vagrantfil
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f windows-2016-amd64 $@
+
+windows-server-core-1709-amd64-libvirt.box: windows-server-core-1709.json windows-server-core-1709/autounattend.xml Vagrantfile.template *.ps1 drivers
+	rm -f $@
+	packer build -only=windows-server-core-1709-amd64-libvirt -on-error=abort windows-server-core-1709.json
+	@echo BOX successfully built!
+	@echo to add to local vagrant install do:
+	@echo vagrant box add -f windows-server-core-1709-amd64 $@
+
+windows-server-core-1709-amd64-virtualbox.box: windows-server-core-1709.json windows-server-core-1709/autounattend.xml Vagrantfile.template *.ps1
+	rm -f $@
+	packer build -only=windows-server-core-1709-amd64-virtualbox -on-error=abort windows-server-core-1709.json
+	@echo BOX successfully built!
+	@echo to add to local vagrant install do:
+	@echo vagrant box add -f windows-server-core-1709-amd64 $@
 
 windows-core-insider-2016-amd64-libvirt.box: windows-core-insider-2016.json windows-core-insider-2016/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
