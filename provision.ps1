@@ -79,12 +79,14 @@ if ((Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor -eq 'QEMU') {
     &$ejectVolumeMediaExe E
 }
 
-# install OpenSSH (for rsync vagrant shared folders in linux and for general use on clients of this base box).
-$openSshSetupFilename = 'setupssh-7.5p1-1.exe'
+# install OpenSSH (for rsync vagrant shared folders from a linux host and for general use on clients of this base box).
+$openSshSetupFilename = 'setupssh-7.6p1-1.exe'
 $openSshSetupUrl = "https://www.mls-software.com/files/$openSshSetupFilename"
-$openSshSetupHash = '199ad10d578075dfe9651daa53e6f93cf6254486'
+$openSshSetupHash = '31cdffb879ab73c8ecbcbccab6f3c0f882ab6548'
 $openSshSetup = "$env:TEMP\$openSshSetupFilename"
 $openSshHome = 'C:\Program Files\OpenSSH'
+[Reflection.Assembly]::LoadWithPartialName('System.Web') | Out-Null
+$openSshPassword = [Web.Security.Membership]::GeneratePassword(32, 8)
 Write-Host "Downloading OpenSSH from $openSshSetupUrl..."
 Invoke-WebRequest $openSshSetupUrl -OutFile $openSshSetup
 $openSshSetupActualHash = (Get-FileHash $openSshSetup -Algorithm SHA1).Hash
@@ -92,7 +94,7 @@ if ($openSshSetupActualHash -ne $openSshSetupHash) {
     throw "the $openSshSetupUrl file hash $openSshSetupActualHash does not match the expected $openSshSetupHash"
 }
 Write-Host 'Installing OpenSSH...'
-&$openSshSetup /S | Out-String -Stream
+&$openSshSetup "/password=$openSshPassword" /S | Out-String -Stream
 # remove the annoying ssh banner.
 Remove-Item "$openSshHome\etc\banner.txt"
 Write-Host 'Installing the default vagrant insecure public key...'
