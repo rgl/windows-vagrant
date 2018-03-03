@@ -85,34 +85,60 @@ if ((Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor -eq 'QEMU') {
 }
 
 # install OpenSSH (for rsync vagrant shared folders from a linux host and for general use on clients of this base box).
-$openSshSetupFilename = 'setupssh-7.6p1-1.exe'
-$openSshSetupUrl = "https://www.mls-software.com/files/$openSshSetupFilename"
-$openSshSetupHash = '31cdffb879ab73c8ecbcbccab6f3c0f882ab6548'
-$openSshSetup = "$env:TEMP\$openSshSetupFilename"
+# see https://github.com/PowerShell/Win32-OpenSSH/wiki/Install-Win32-OpenSSH
+# NB Binaries are in $openSshHome (C:\Program Files\OpenSSH).
+# NB Configuration, keys, and logs are in $openSshConfigHome (C:\ProgramData\ssh).
+Write-Host 'Installing the PowerShell/Win32-OpenSSH service...'
 $openSshHome = 'C:\Program Files\OpenSSH'
-[Reflection.Assembly]::LoadWithPartialName('System.Web') | Out-Null
-$openSshPassword = [Web.Security.Membership]::GeneratePassword(32, 8)
-Write-Host "Downloading OpenSSH from $openSshSetupUrl..."
-Invoke-WebRequest $openSshSetupUrl -OutFile $openSshSetup
-$openSshSetupActualHash = (Get-FileHash $openSshSetup -Algorithm SHA1).Hash
-if ($openSshSetupActualHash -ne $openSshSetupHash) {
-    throw "the $openSshSetupUrl file hash $openSshSetupActualHash does not match the expected $openSshSetupHash"
+$openSshConfigHome = 'C:\ProgramData\ssh'
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+function Install-ZippedApplication($destinationPath, $name, $url, $expectedHash, $expectedHashAlgorithm='SHA256') {
+    $localZipPath = "$env:TEMP\$name.zip"
+    Invoke-WebRequest $url -OutFile $localZipPath
+    $actualHash = (Get-FileHash $localZipPath -Algorithm $expectedHashAlgorithm).Hash
+    if ($actualHash -ne $expectedHash) {
+        throw "$name downloaded from $url to $localZipPath has $actualHash hash that does not match the expected $expectedHash"
+    }
+    [IO.Compression.ZipFile]::ExtractToDirectory($localZipPath, $destinationPath)
+    Remove-Item $localZipPath
 }
-Write-Host 'Installing OpenSSH...'
-&$openSshSetup "/password=$openSshPassword" /S | Out-String -Stream
-# remove the annoying ssh banner.
-Remove-Item "$openSshHome\etc\banner.txt"
+function Install-OpenSshBinaries {
+    Install-ZippedApplication `
+        $openSshHome `
+        OpenSSH `
+        https://github.com/PowerShell/Win32-OpenSSH/releases/download/v7.6.0.0p1-Beta/OpenSSH-Win64.zip `
+        585d28ce1aa2935c8cd5570413b9214e6c80c41bda6ba6b1b206dbe63d7d2e76
+    Push-Location $openSshHome
+    Move-Item OpenSSH-Win64\* .
+    Remove-Item OpenSSH-Win64
+    Pop-Location
+}
+Install-OpenSshBinaries
+&"$openSshHome\install-sshd.ps1"
+&"$openSshHome\ssh-keygen.exe" -A
+if ($LASTEXITCODE) {
+    throw "Failed to run ssh-keygen with exit code $LASTEXITCODE"
+}
+Set-Content `
+    -Encoding Ascii `
+    "$openSshConfigHome\sshd_config" `
+    ( `
+        (Get-Content "$openSshConfigHome\sshd_config") `
+            -replace '#?\s*UseDNS .+','UseDNS no' `
+    )
+&"$openSshHome\FixHostFilePermissions.ps1" -Confirm:$false
+'sshd','ssh-agent' | ForEach-Object {
+    Set-Service $_ -StartupType Automatic
+    sc.exe failure $_ reset= 0 actions= restart/1000
+}
+sc.exe config sshd depend= ssh-agent
+New-NetFirewallRule -Protocol TCP -LocalPort 22 -Direction Inbound -Action Allow -DisplayName SSH | Out-Null
 Write-Host 'Installing the default vagrant insecure public key...'
-mkdir "$env:USERPROFILE\.ssh" | Out-Null
+$authorizedKeysPath = "$env:USERPROFILE\.ssh\authorized_keys"
+mkdir -Force "$env:USERPROFILE\.ssh" | Out-Null
 Invoke-WebRequest `
     'https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub' `
-    -OutFile "$env:USERPROFILE\.ssh\authorized_keys"
-# disable StrictModes.
-[IO.File]::WriteAllText(
-    "$openSshHome\etc\sshd_config",
-    ([IO.File]::ReadAllText("$openSshHome\etc\sshd_config") `
-        -replace '#?StrictModes yes','StrictModes no'))
-Restart-Service opensshd
+    -OutFile $authorizedKeysPath
 
 Write-Host 'Setting the vagrant account properties...'
 # see the ADS_USER_FLAG_ENUM enumeration at https://msdn.microsoft.com/en-us/library/aa772300(v=vs.85).aspx
