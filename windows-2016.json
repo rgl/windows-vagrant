@@ -113,6 +113,13 @@
     {
       "type": "powershell",
       "script": "provision.ps1"
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
+      "script": "optimize.ps1"
     }
   ],
   "post-processors": [
