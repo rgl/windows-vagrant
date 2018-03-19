@@ -1,8 +1,8 @@
 {
   "variables": {
     "disk_size": "61440",
-    "iso_url": "/home/rgl/Downloads/Windows_InsiderPreview_Server_16278.iso",
-    "iso_checksum": "f87ebde2f4dc7094d2e01819d370cb8d06d2bcde520d3bdf9e8ce7e70a8ea5da",
+    "iso_url": "/home/rgl/Downloads/Windows_InsiderPreview_Server_17093.iso",
+    "iso_checksum": "7d9782673b5429dbc2bc05ce82f3ce2dabde2505d10a5e2b006d064928266041",
     "iso_checksum_type": "sha256"
   },
   "builders": [
@@ -102,6 +102,13 @@
     {
       "type": "powershell",
       "script": "provision.ps1"
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
+      "script": "optimize.ps1"
     }
   ],
   "post-processors": [
