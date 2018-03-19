@@ -34,7 +34,8 @@ if (!(New-Object System.Security.Principal.WindowsPrincipal(
 }
 
 # install Guest Additions.
-if ((Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor -eq 'QEMU') {
+$systemVendor = (Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor
+if ($systemVendor -eq 'QEMU') {
     # install qemu-qa.
     $qemuAgentSetupUrl = "http://$env:PACKER_HTTP_ADDR/drivers/guest-agent/qemu-ga-x64.msi"
     $qemuAgentSetup = "$env:TEMP\qemu-ga-x64.msi"
@@ -57,7 +58,7 @@ if ((Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor -eq 'QEMU') {
     Remove-Item -Force "$spiceAgentDestination\vdagent-win-*"
     Start-Process "$spiceAgentDestination\vdservice.exe" install -Wait # NB the logs are inside C:\Windows\Temp
     Start-Service vdservice
-} else {
+} elseif ($systemVendor -eq 'innotek GmbH') {
     Write-Host 'Importing the Oracle (for VirtualBox) certificate as a Trusted Publisher...'
     E:\cert\VBoxCertUtil.exe add-trusted-publisher E:\cert\vbox-sha1.cer
     if ($LASTEXITCODE) {
@@ -82,6 +83,8 @@ if ((Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor -eq 'QEMU') {
         throw "the $ejectVolumeMediaExeUrl file hash $ejectVolumeMediaExeActualHash does not match the expected $ejectVolumeMediaExeHash"
     }
     &$ejectVolumeMediaExe E
+} else {
+    throw "Cannot install Guest Additions: Unsupported system ($systemVendor)."
 }
 
 # install OpenSSH (for rsync vagrant shared folders from a linux host and for general use on clients of this base box).
