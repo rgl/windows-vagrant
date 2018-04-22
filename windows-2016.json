@@ -108,7 +108,12 @@
       "type": "windows-restart"
     },
     {
-      "type": "windows-update"
+      "type": "windows-update",
+      "filters": [
+        "exclude:$_.Title -like '*Preview*'",
+        "include:$_.Title -like '*Cumulative Update for Windows*'",
+        "include:$_.AutoSelectOnWebSites"
+      ]
     },
     {
       "type": "powershell",
