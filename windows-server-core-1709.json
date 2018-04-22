@@ -109,6 +109,10 @@
     {
       "type": "powershell",
       "script": "provision.ps1"
+    },
+    {
+      "type": "powershell",
+      "script": "provision-openssh.ps1"
     }
   ],
   "post-processors": [
