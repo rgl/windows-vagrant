@@ -1,0 +1,137 @@
+{
+  "variables": {
+    "disk_size": "61440",
+    "iso_url": "http://download.microsoft.com/download/1/B/F/1BFE5194-5951-452C-B62C-B2F667F9B86D/14393.0.160715-1616.RS1_RELEASE_CLIENTENTERPRISE_S_EVAL_X64FRE_EN-US.ISO",
+    "iso_checksum": "af9a46ddd2a88ea01e9d3a52f56cf48e6e9d989e5a35f6e88d68be48dccfcb8d",
+    "iso_checksum_type": "sha256"
+  },
+  "builders": [
+    {
+      "name": "windows-10-amd64-libvirt",
+      "type": "qemu",
+      "accelerator": "kvm",
+      "qemuargs": [
+        ["-m", "2048"],
+        ["-cpu", "host"],
+        ["-smp", "2"],
+        ["-soundhw", "hda"],
+        ["-usbdevice", "tablet"],
+        ["-device", "virtio-net,netdev=user.0"],
+        ["-vga", "qxl"],
+        ["-device", "virtio-serial-pci"],
+        ["-chardev", "socket,path=/tmp/{{.Name}}-qga.sock,server,nowait,id=qga0"],
+        ["-device", "virtserialport,chardev=qga0,name=org.qemu.guest_agent.0"],
+        ["-chardev", "spicevmc,id=spicechannel0,name=vdagent"],
+        ["-device", "virtserialport,chardev=spicechannel0,name=com.redhat.spice.0"],
+        ["-spice", "unix,addr=/tmp/{{.Name}}-spice.socket,disable-ticketing"]
+      ],
+      "headless": true,
+      "format": "qcow2",
+      "disk_size": "{{user `disk_size`}}",
+      "disk_interface": "virtio",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "2h",
+      "shutdown_command": "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "http_directory": ".",
+      "floppy_files": [
+        "windows-10/autounattend.xml",
+        "winrm.ps1",
+        "drivers/vioserial/10/amd64/*.cat",
+        "drivers/vioserial/10/amd64/*.inf",
+        "drivers/vioserial/10/amd64/*.sys",
+        "drivers/viostor/10/amd64/*.cat",
+        "drivers/viostor/10/amd64/*.inf",
+        "drivers/viostor/10/amd64/*.sys",
+        "drivers/NetKVM/10/amd64/*.cat",
+        "drivers/NetKVM/10/amd64/*.inf",
+        "drivers/NetKVM/10/amd64/*.sys",
+        "drivers/qxldod/10/amd64/*.cat",
+        "drivers/qxldod/10/amd64/*.inf",
+        "drivers/qxldod/10/amd64/*.sys"
+      ]
+    },
+    {
+      "name": "windows-10-amd64-virtualbox",
+      "type": "virtualbox-iso",
+      "guest_os_type": "Windows10_64",
+      "guest_additions_mode": "attach",
+      "headless": true,
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "2048"],
+        ["modifyvm", "{{.Name}}", "--cpus", "2"],
+        ["modifyvm", "{{.Name}}", "--vram", "64"],
+        ["modifyvm", "{{.Name}}", "--audio", "none"],
+        ["modifyvm", "{{.Name}}", "--nictype1", "82540EM"],
+        ["modifyvm", "{{.Name}}", "--nictype2", "82540EM"],
+        ["modifyvm", "{{.Name}}", "--nictype3", "82540EM"],
+        ["modifyvm", "{{.Name}}", "--nictype4", "82540EM"]
+      ],
+      "disk_size": "{{user `disk_size`}}",
+      "hard_drive_interface": "sata",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "2h",
+      "shutdown_command": "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "floppy_files": [
+        "windows-10/autounattend.xml",
+        "winrm.ps1"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "script": "disable-windows-updates.ps1"
+    },
+    {
+      "type": "powershell",
+      "inline": "Set-MpPreference -DisableRealtimeMonitoring $true"
+    },
+    {
+      "type": "powershell",
+      "inline": "Disable-WindowsOptionalFeature -FeatureName SMB1Protocol -Online -Remove -NoRestart | Out-Null"
+    },
+    {
+      "type": "powershell",
+      "script": "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "windows-update",
+      "filters": [
+        "exclude:$_.Title -like '*Preview*'",
+        "include:$_.Title -like '*Cumulative Update for Windows*'",
+        "include:$_.AutoSelectOnWebSites"
+      ]
+    },
+    {
+      "type": "powershell",
+      "script": "provision.ps1"
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
+      "script": "optimize.ps1"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "{{.BuildName}}.box",
+      "vagrantfile_template": "Vagrantfile.template"
+    }
+  ]
+}

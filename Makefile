@@ -13,6 +13,10 @@ build-core-insider-libvirt: windows-core-insider-2016-amd64-libvirt.box
 
 build-core-insider-virtualbox: windows-core-insider-2016-amd64-virtualbox.box
 
+build-windows-10-libvirt: windows-10-amd64-libvirt.box
+
+build-windows-10-virtualbox: windows-10-amd64-virtualbox.box
+
 windows-2016-amd64-libvirt.box: windows-2016.json autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
 	packer build -only=windows-2016-amd64-libvirt -on-error=abort windows-2016.json
@@ -54,6 +58,20 @@ windows-core-insider-2016-amd64-virtualbox.box: windows-core-insider-2016.json w
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f windows-core-insider-2016-amd64 $@
+
+windows-10-amd64-libvirt.box: windows-10.json windows-10/autounattend.xml Vagrantfile.template *.ps1 drivers
+	rm -f $@
+	packer build -only=windows-10-amd64-libvirt -on-error=abort windows-10.json
+	@echo BOX successfully built!
+	@echo to add to local vagrant install do:
+	@echo vagrant box add -f windows-10-amd64 $@
+
+windows-10-amd64-virtualbox.box: windows-10.json windows-10/autounattend.xml Vagrantfile.template *.ps1
+	rm -f $@
+	packer build -only=windows-10-amd64-virtualbox -on-error=abort windows-10.json
+	@echo BOX successfully built!
+	@echo to add to local vagrant install do:
+	@echo vagrant box add -f windows-10-amd64 $@
 
 drivers:
 	rm -rf drivers.tmp
