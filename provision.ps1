@@ -72,6 +72,8 @@ if ($systemVendor -eq 'QEMU') {
     if ($p.ExitCode) {
         throw "failed to install with exit code $($p.ExitCode). Check the logs at C:\Program Files\Oracle\VirtualBox Guest Additions\install.log."
     }
+} elseif ($systemVendor -eq 'VMware, Inc.') {
+    # do nothing. VMware Tools were already installed by vmtools.ps1 (executed from autounattend.xml).
 } else {
     throw "Cannot install Guest Additions: Unsupported system ($systemVendor)."
 }
