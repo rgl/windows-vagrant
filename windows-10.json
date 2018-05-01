@@ -124,6 +124,10 @@
     },
     {
       "type": "powershell",
+      "script": "eject-media.ps1"
+    },
+    {
+      "type": "powershell",
       "script": "optimize.ps1"
     }
   ],
