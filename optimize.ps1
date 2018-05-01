@@ -92,10 +92,16 @@ Wait-Condition {@(Get-ScheduledTasks | Where-Object {($_.State -ge 4) -and (Test
 
 
 #
-# zero fill the free disk space.
+# reclaim the free disk space.
 
-Write-Host 'Zero filling the free disk space...'
-(New-Object System.Net.WebClient).DownloadFile('https://download.sysinternals.com/files/SDelete.zip', "$env:TEMP\SDelete.zip")
-Expand-Archive "$env:TEMP\SDelete.zip" $env:TEMP
-Remove-Item "$env:TEMP\SDelete.zip"
-&"$env:TEMP\sdelete64.exe" -accepteula -z C:
+Write-Host 'Reclaiming the free disk space...'
+$results = defrag.exe C: /H /L
+if ($results -eq 'The operation completed successfully.') {
+    $results
+} else {
+    Write-Host 'Zero filling the free disk space...'
+    (New-Object System.Net.WebClient).DownloadFile('https://download.sysinternals.com/files/SDelete.zip', "$env:TEMP\SDelete.zip")
+    Expand-Archive "$env:TEMP\SDelete.zip" $env:TEMP
+    Remove-Item "$env:TEMP\SDelete.zip"
+    &"$env:TEMP\sdelete64.exe" -accepteula -z C:
+}

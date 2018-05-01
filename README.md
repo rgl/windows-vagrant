@@ -73,6 +73,8 @@ If you want to access the UI run:
 spicy --uri 'spice+unix:///tmp/packer-windows-2016-amd64-libvirt-spice.socket'
 ```
 
+**NB** the packer template file defines `qemuargs` (which overrides the default packer qemu arguments), if you modify it, verify if you also need include the default packer qemu arguments (see [builder/qemu/step_run.go](https://github.com/hashicorp/packer/blob/master/builder/qemu/step_run.go) or start packer without `qemuargs` defined to see how it starts qemu).
+
 
 ## WinRM access
 
