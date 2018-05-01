@@ -33,7 +33,7 @@ $openSshConfigHome = 'C:\ProgramData\ssh'
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 function Install-ZippedApplication($destinationPath, $name, $url, $expectedHash, $expectedHashAlgorithm='SHA256') {
     $localZipPath = "$env:TEMP\$name.zip"
-    Invoke-WebRequest $url -OutFile $localZipPath
+    (New-Object System.Net.WebClient).DownloadFile($url, $localZipPath)
     $actualHash = (Get-FileHash $localZipPath -Algorithm $expectedHashAlgorithm).Hash
     if ($actualHash -ne $expectedHash) {
         throw "$name downloaded from $url to $localZipPath has $actualHash hash that does not match the expected $expectedHash"
@@ -88,6 +88,6 @@ New-NetFirewallRule -Protocol TCP -LocalPort 22 -Direction Inbound -Action Allow
 Write-Host 'Installing the default vagrant insecure public key...'
 $authorizedKeysPath = "$env:USERPROFILE\.ssh\authorized_keys"
 mkdir -Force "$env:USERPROFILE\.ssh" | Out-Null
-Invoke-WebRequest `
-    'https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub' `
-    -OutFile $authorizedKeysPath
+(New-Object System.Net.WebClient).DownloadFile(
+    'https://raw.github.com/hashicorp/vagrant/master/keys/vagrant.pub',
+    $authorizedKeysPath)
