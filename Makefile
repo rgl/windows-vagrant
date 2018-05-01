@@ -77,6 +77,6 @@ drivers:
 	rm -rf drivers.tmp
 	mkdir -p drivers.tmp
 	@# see https://fedoraproject.org/wiki/Windows_Virtio_Drivers
-	wget -P drivers.tmp https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.141-1/virtio-win-0.1.141.iso
+	wget -P drivers.tmp https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.149-2/virtio-win-0.1.149.iso
 	7z x -odrivers.tmp drivers.tmp/virtio-win-*.iso
 	mv drivers.tmp drivers
