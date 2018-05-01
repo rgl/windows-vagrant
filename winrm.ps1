@@ -32,6 +32,7 @@ Get-NetConnectionProfile `
     | Set-NetConnectionProfile -NetworkCategory Private
 
 # configure WinRM.
+Write-Output 'Configuring WinRM...'
 winrm quickconfig -quiet
 winrm set winrm/config/service '@{AllowUnencrypted="true"}'
 winrm set winrm/config/service/auth '@{Basic="true"}'
