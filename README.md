@@ -27,6 +27,13 @@ packer build -var iso_url=<ISO_URL> -var iso_checksum=<ISO_SHA256_CHECKSUM> -onl
 **NB** if you are having trouble building the base box due to floppy drive removal errors try adding, as a
 workaround, `"post_shutdown_delay": "30s",` to the `windows-2016.json` file.
 
+**NB** To troubleshoot, before launching `packer`, you can set the following environment variables:
+
+```bash
+export CHECKPOINT_DISABLE=1
+export PACKER_LOG=1
+export PACKER_LOG_PATH=packer.log
+```
 
 You can then add the base box to your local vagrant installation with:
 
