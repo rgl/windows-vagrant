@@ -73,7 +73,6 @@
       ],
       "disk_size": "{{user `disk_size`}}",
       "hard_drive_interface": "sata",
-      "hard_drive_discard": true,
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
