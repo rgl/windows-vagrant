@@ -98,7 +98,7 @@
     },
     {
       "type": "powershell",
-      "inline": "Disable-WindowsOptionalFeature -FeatureName SMB1Protocol -Online -Remove -NoRestart | Out-Null"
+      "inline": "Disable-WindowsOptionalFeature -FeatureName SMB1Protocol -Online -Remove -NoRestart"
     },
     {
       "type": "powershell",
