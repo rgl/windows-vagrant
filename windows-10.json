@@ -41,18 +41,18 @@
       "floppy_files": [
         "windows-10/autounattend.xml",
         "winrm.ps1",
-        "drivers/vioserial/10/amd64/*.cat",
-        "drivers/vioserial/10/amd64/*.inf",
-        "drivers/vioserial/10/amd64/*.sys",
-        "drivers/viostor/10/amd64/*.cat",
-        "drivers/viostor/10/amd64/*.inf",
-        "drivers/viostor/10/amd64/*.sys",
-        "drivers/NetKVM/10/amd64/*.cat",
-        "drivers/NetKVM/10/amd64/*.inf",
-        "drivers/NetKVM/10/amd64/*.sys",
-        "drivers/qxldod/10/amd64/*.cat",
-        "drivers/qxldod/10/amd64/*.inf",
-        "drivers/qxldod/10/amd64/*.sys"
+        "drivers/vioserial/w10/amd64/*.cat",
+        "drivers/vioserial/w10/amd64/*.inf",
+        "drivers/vioserial/w10/amd64/*.sys",
+        "drivers/viostor/w10/amd64/*.cat",
+        "drivers/viostor/w10/amd64/*.inf",
+        "drivers/viostor/w10/amd64/*.sys",
+        "drivers/NetKVM/w10/amd64/*.cat",
+        "drivers/NetKVM/w10/amd64/*.inf",
+        "drivers/NetKVM/w10/amd64/*.sys",
+        "drivers/qxldod/w10/amd64/*.cat",
+        "drivers/qxldod/w10/amd64/*.inf",
+        "drivers/qxldod/w10/amd64/*.sys"
       ]
     },
     {
