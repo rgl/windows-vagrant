@@ -9,8 +9,7 @@ Vagrant.configure(2) do |config|
     lv.keymap = 'pt'
     # replace the default synced_folder with something that works in cygwin.
     # NB for some reason, this does not work when placed in the base box Vagrantfile.
-    config.vm.synced_folder '.', '/vagrant', disabled: true
-    config.vm.synced_folder '.', '/cygdrive/c/vagrant', type: 'rsync', rsync__exclude: [
+    config.vm.synced_folder '.', '/vagrant', type: 'rsync', rsync__exclude: [
       '.vagrant/',
       '.git/',
       '*.box']

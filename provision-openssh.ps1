@@ -21,12 +21,12 @@ trap {
     -bor [Net.SecurityProtocolType]::Tls12
 
 #
-# install OpenSSH (for rsync vagrant shared folders from a linux host and for general use on clients of this base box).
+# install rsync (for rsync vagrant shared folders from a linux host and for general use on clients of this base box) and OpenSSH.
 # see https://github.com/PowerShell/Win32-OpenSSH/wiki/Install-Win32-OpenSSH
 # NB Binaries are in $openSshHome (C:\Program Files\OpenSSH).
 # NB Configuration, keys, and logs are in $openSshConfigHome (C:\ProgramData\ssh).
 
-Write-Host 'Installing the PowerShell/Win32-OpenSSH service...'
+$rsyncHome = 'C:\Program Files\rsync'
 $openSshHome = 'C:\Program Files\OpenSSH'
 $openSshConfigHome = 'C:\ProgramData\ssh'
 
@@ -41,6 +41,18 @@ function Install-ZippedApplication($destinationPath, $name, $url, $expectedHash,
     [IO.Compression.ZipFile]::ExtractToDirectory($localZipPath, $destinationPath)
     Remove-Item $localZipPath
 }
+function Install-Rsync {
+    Install-ZippedApplication `
+        $rsyncHome `
+        rsync `
+        https://github.com/rgl/rsync-vagrant/releases/download/v3.1.3/rsync-vagrant-3.1.3.zip `
+        aa03c06ac12cbb4c2c5667d735cbf9a672f2f732f4f750c97164751d72448de2
+    [Environment]::SetEnvironmentVariable(
+        'PATH',
+        "$([Environment]::GetEnvironmentVariable('PATH', 'Machine'));$rsyncHome",
+        'Machine')
+    &"$rsyncHome\rsync.exe" --version
+}
 function Install-OpenSshBinaries {
     Install-ZippedApplication `
         $openSshHome `
@@ -53,6 +65,9 @@ function Install-OpenSshBinaries {
     .\ssh.exe -V
     Pop-Location
 }
+Write-Host 'Installing rsync...'
+Install-Rsync
+Write-Host 'Installing the PowerShell/Win32-OpenSSH service...'
 Install-OpenSshBinaries
 mkdir -Force $openSshConfigHome | Out-Null
 Copy-Item "$openSshHome\sshd_config_default" "$openSshConfigHome\sshd_config"
