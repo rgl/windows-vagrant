@@ -91,12 +91,10 @@ Set-Content `
 Write-Host 'Setting the host file permissions...' 
 &"$openSshHome\FixHostFilePermissions.ps1" -Confirm:$false
 
-Write-Host 'Configuring sshd and ssh-agent services to start automatically...' 
-'sshd','ssh-agent' | ForEach-Object {
-    Set-Service $_ -StartupType Automatic
-    sc.exe failure $_ reset= 0 actions= restart/1000
-}
-sc.exe config sshd depend= ssh-agent
+Write-Host 'Configuring sshd and ssh-agent services...' 
+Set-Service 'sshd' -StartupType Automatic
+sc.exe failure 'sshd' reset= 0 actions= restart/1000
+sc.exe failure 'ssh-agent' reset= 0 actions= restart/1000
 
 New-NetFirewallRule -Protocol TCP -LocalPort 22 -Direction Inbound -Action Allow -DisplayName SSH | Out-Null
 
