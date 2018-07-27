@@ -32,14 +32,12 @@ Get-NetConnectionProfile `
     | Set-NetConnectionProfile -NetworkCategory Private
 
 # configure WinRM.
+# WARN do not be tempted to change the default WinRM service startup type from
+#      delayed-auto to auto, as the later proved to be unreliable.
 Write-Output 'Configuring WinRM...'
 winrm quickconfig -quiet
 winrm set winrm/config/service '@{AllowUnencrypted="true"}'
 winrm set winrm/config/service/auth '@{Basic="true"}'
-$result = sc.exe config WinRM start= auto
-if ($result -ne '[SC] ChangeServiceConfig SUCCESS') {
-    throw "sc.exe config failed with $result"
-}
 
 ## dump the WinRM configuration.
 #winrm enumerate winrm/config/listener
