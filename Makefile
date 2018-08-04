@@ -7,6 +7,8 @@ build-virtualbox: windows-2016-amd64-virtualbox.box
 
 build-windows-2019-virtualbox: windows-2019-amd64-virtualbox.box
 
+build-windows-2019-libvirt: windows-2019-amd64-libvirt.box
+
 build-windows-server-core-1709-libvirt: windows-server-core-1709-amd64-libvirt.box
 
 build-windows-server-core-1709-virtualbox: windows-server-core-1709-amd64-virtualbox.box
@@ -32,6 +34,13 @@ windows-2016-amd64-virtualbox.box: windows-2016.json autounattend.xml Vagrantfil
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f windows-2016-amd64 $@
+
+windows-2019-amd64-libvirt.box: windows-2019.json autounattend.xml Vagrantfile.template *.ps1 drivers
+	rm -f $@
+	CHECKPOINT_DISABLE=1 packer build -only=windows-2019-amd64-libvirt -on-error=abort windows-2019.json
+	@echo BOX successfully built!
+	@echo to add to local vagrant install do:
+	@echo vagrant box add -f windows-2019-amd64 $@
 
 windows-2019-amd64-virtualbox.box: windows-2019.json autounattend.xml Vagrantfile.template *.ps1
 	rm -f $@
