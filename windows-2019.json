@@ -1,7 +1,7 @@
 {
   "variables": {
     "disk_size": "61440",
-    "iso_url": "file://./isos/Windows_InsiderPreview_Server_vNext_en-us_17723.iso",
+    "iso_url": "file://./isos/Windows_InsiderPreview_Server_vNext_en-us_17733.iso",
     "iso_checksum": "",
     "iso_checksum_type": "none"
   },
