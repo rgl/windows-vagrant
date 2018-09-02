@@ -48,7 +48,7 @@
             </ImageInstall>
             <UserData>
                 <ProductKey>
-                    <!-- see https://blogs.windows.com/windowsexperience/2018/08/14/announcing-windows-server-2019-insider-preview-build-17733/ -->
+                    <!-- see https://blogs.windows.com/windowsexperience/2018/08/28/announcing-windows-server-2019-insider-preview-build-17744/ -->
                     <Key>MFY9F-XBN2F-TYFMP-CCV49-RMYVH</Key>
                     <WillShowUI>OnError</WillShowUI>
                 </ProductKey>
@@ -133,5 +133,5 @@
             <EnableLUA>false</EnableLUA>
         </component>
     </settings>
-    <cpi:offlineImage cpi:source="wim:c:/wim/windows-2019-17733/install.wim#Windows Server 2019 SERVERSTANDARD" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
+    <cpi:offlineImage cpi:source="wim:c:/wim/windows-2019-17744/install.wim#Windows Server 2019 SERVERSTANDARD" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
 </unattend>
