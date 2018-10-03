@@ -48,8 +48,7 @@
             </ImageInstall>
             <UserData>
                 <ProductKey>
-                    <!-- see https://blogs.windows.com/windowsexperience/2018/08/28/announcing-windows-server-2019-insider-preview-build-17744/ -->
-                    <Key>MFY9F-XBN2F-TYFMP-CCV49-RMYVH</Key>
+                    <!--<Key>MFY9F-XBN2F-TYFMP-CCV49-RMYVH</Key>-->
                     <WillShowUI>OnError</WillShowUI>
                 </ProductKey>
                 <AcceptEula>true</AcceptEula>

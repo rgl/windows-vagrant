@@ -1,9 +1,9 @@
 {
   "variables": {
     "disk_size": "61440",
-    "iso_url": "file://./isos/Windows_InsiderPreview_Server_vNext_en-us_17744.iso",
-    "iso_checksum": "",
-    "iso_checksum_type": "none"
+    "iso_url": "https://software-download.microsoft.com/download/pr/17763.1.180914-1434.rs5_release_SERVER_EVAL_x64FRE_en-us.iso",
+    "iso_checksum": "dbb0ffbab5d114ce7370784c4e24740191fefdb3349917c77a53ff953dd10f72",
+    "iso_checksum_type": "sha256"
   },
   "builders": [
     {
@@ -95,10 +95,6 @@
     {
       "type": "powershell",
       "inline": "Uninstall-WindowsFeature Windows-Defender"
-    },
-    {
-      "type": "powershell",
-      "inline": "Uninstall-WindowsFeature FS-SMB1"
     },
     {
       "type": "powershell",
