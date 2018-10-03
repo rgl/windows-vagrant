@@ -80,7 +80,7 @@ if ($systemVendor -eq 'QEMU') {
     Write-Host "Downloading the qemu-kvm Guest Agent from $qemuAgentSetupUrl..."
     Invoke-WebRequest $qemuAgentSetupUrl -OutFile $qemuAgentSetup
     Write-Host 'Installing the qemu-kvm Guest Agent...'
-    Start-Process $qemuAgentSetup /qn -Wait
+    msiexec.exe /i $qemuAgentSetup /qn | Out-String -Stream
 
     # install spice-vdagent.
     $spiceAgentZipUrl = 'https://www.spice-space.org/download/windows/vdagent/vdagent-win-0.9.0/vdagent-win-0.9.0-x64.zip'
@@ -93,7 +93,7 @@ if ($systemVendor -eq 'QEMU') {
     Move-Item "$spiceAgentDestination\vdagent-win-*\*" $spiceAgentDestination
     Get-ChildItem "$spiceAgentDestination\vdagent-win-*" -Recurse | Remove-Item -Force -Recurse
     Remove-Item -Force "$spiceAgentDestination\vdagent-win-*"
-    Start-Process "$spiceAgentDestination\vdservice.exe" install -Wait # NB the logs are inside C:\Windows\Temp
+    &"$spiceAgentDestination\vdservice.exe" install | Out-String -Stream # NB the logs are inside C:\Windows\Temp
     Start-Service vdservice
 } elseif ($systemVendor -eq 'innotek GmbH') {
     Write-Host 'Importing the Oracle (for VirtualBox) certificate as a Trusted Publisher...'
@@ -103,10 +103,9 @@ if ($systemVendor -eq 'QEMU') {
     }
 
     Write-Host 'Installing the VirtualBox Guest Additions...'
-    $p = Start-Process -Wait -NoNewWindow -PassThru -FilePath E:\VBoxWindowsAdditions-amd64.exe -ArgumentList '/S'
-    $p.WaitForExit()
-    if ($p.ExitCode) {
-        throw "failed to install with exit code $($p.ExitCode). Check the logs at C:\Program Files\Oracle\VirtualBox Guest Additions\install.log."
+    E:\VBoxWindowsAdditions-amd64.exe /S | Out-String -Stream
+    if ($LASTEXITCODE) {
+        throw "failed to install with exit code $LASTEXITCODE. Check the logs at C:\Program Files\Oracle\VirtualBox Guest Additions\install.log."
     }
 } else {
     throw "Cannot install Guest Additions: Unsupported system ($systemVendor)."
