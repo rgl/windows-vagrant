@@ -33,9 +33,47 @@ if (!(New-Object System.Security.Principal.WindowsPrincipal(
     throw 'this must run with Administrator privileges (e.g. in a elevated shell session)'
 }
 
+Add-Type -A System.IO.Compression.FileSystem
+
 # install Guest Additions.
 $systemVendor = (Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor
 if ($systemVendor -eq 'QEMU') {
+    # install drivers.
+    if (Test-Path 'C:\Windows\Temp\virtio\virtio.zip') {
+        function Install-Driver($path) {
+            # trust the driver certificate.
+            $catPath = $path.Replace('.inf', '.cat')
+            $cerPath = $path.Replace('.inf', '.cer')
+            $certificate = (Get-AuthenticodeSignature $catPath).SignerCertificate
+            [System.IO.File]::WriteAllBytes($cerPath, $certificate.Export('Cert'))
+            Import-Certificate -CertStoreLocation Cert:\LocalMachine\TrustedPublisher $cerPath | Out-Null
+
+            # install the driver.
+            pnputil -i -a $path
+            if ($LASTEXITCODE) {
+                throw "Failed with exit code $LASTEXITCODE"
+            }
+        }
+
+        [IO.Compression.ZipFile]::ExtractToDirectory('C:\Windows\Temp\virtio\virtio.zip', 'C:\Windows\Temp\virtio')
+        $virtioDestinationDirectory = "$env:ProgramFiles\virtio"
+        Get-ChildItem -Recurse -File C:\Windows\Temp\virtio\drivers.tmp | ForEach-Object {
+            $driverName = $_.Directory.Parent.Parent.Name
+            $driverSourceDirectory = $_.Directory
+            $driverDestinationDirectory = "$virtioDestinationDirectory\$driverName"
+            if (Test-Path $driverDestinationDirectory) {
+                return
+            }
+            Write-Host "Installing the $driverName driver..."
+            mkdir -Force $driverDestinationDirectory | Out-Null
+            Copy-Item "$driverSourceDirectory\*" $driverDestinationDirectory
+            Install-Driver (Resolve-Path "$driverDestinationDirectory\*.inf").Path
+        }
+
+        Write-Host 'Installing the Balloon service...'
+        &"$virtioDestinationDirectory\Balloon\blnsvr.exe" -i
+    }
+
     # install qemu-qa.
     $qemuAgentSetupUrl = "http://$env:PACKER_HTTP_ADDR/drivers/guest-agent/qemu-ga-x64.msi"
     $qemuAgentSetup = "$env:TEMP\qemu-ga-x64.msi"
@@ -51,7 +89,6 @@ if ($systemVendor -eq 'QEMU') {
     Write-Host "Downloading the spice-vdagent from $spiceAgentZipUrl..."
     Invoke-WebRequest $spiceAgentZipUrl -OutFile $spiceAgentZip
     Write-Host 'Installing the spice-vdagent...'
-    Add-Type -A System.IO.Compression.FileSystem
     [IO.Compression.ZipFile]::ExtractToDirectory($spiceAgentZip, $spiceAgentDestination)
     Move-Item "$spiceAgentDestination\vdagent-win-*\*" $spiceAgentDestination
     Get-ChildItem "$spiceAgentDestination\vdagent-win-*" -Recurse | Remove-Item -Force -Recurse
@@ -64,7 +101,6 @@ if ($systemVendor -eq 'QEMU') {
     if ($LASTEXITCODE) {
         throw "failed to import certificate with exit code $LASTEXITCODE"
     }
-    #Get-ChildItem Cert:\LocalMachine\TrustedPublisher
 
     Write-Host 'Installing the VirtualBox Guest Additions...'
     $p = Start-Process -Wait -NoNewWindow -PassThru -FilePath E:\VBoxWindowsAdditions-amd64.exe -ArgumentList '/S'

@@ -97,4 +97,7 @@ drivers:
 	@# see https://fedoraproject.org/wiki/Windows_Virtio_Drivers
 	wget -P drivers.tmp https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.160-1/virtio-win-0.1.160.iso
 	7z x -odrivers.tmp drivers.tmp/virtio-win-*.iso
+	7z a drivers.tmp/virtio-10.zip drivers.tmp/Balloon/w10/amd64
+	7z a drivers.tmp/virtio-2016.zip drivers.tmp/Balloon/2k16/amd64
+	7z a drivers.tmp/virtio-2019.zip drivers.tmp/Balloon/2k16/amd64
 	mv drivers.tmp drivers
