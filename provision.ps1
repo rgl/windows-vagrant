@@ -127,7 +127,11 @@ $account.Userflags = $AdsNormalAccount -bor $AdsDontExpirePassword -bor $AdsAcco
 $account.SetInfo()
 
 Write-Host 'Disabling auto logon...'
-Set-ItemProperty -Path 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name AutoAdminLogon -Value 0
+$autoLogonKeyPath = 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
+Set-ItemProperty -Path $autoLogonKeyPath -Name AutoAdminLogon -Value 0
+@('DefaultDomainName', 'DefaultUserName', 'DefaultPassword') | ForEach-Object {
+    Remove-ItemProperty -Path $autoLogonKeyPath -Name $_ -ErrorAction SilentlyContinue
+}
 
 Write-Host 'Disabling hibernation...'
 powercfg /hibernate off
