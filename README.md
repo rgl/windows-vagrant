@@ -13,10 +13,10 @@ choco install -y virtualbox packer packer-provisioner-windows-update vagrant
 To build the base box based on the [Windows Server 2016 Evaluation](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2016) ISO run:
 
 ```bash
-packer build -only=windows-2016-amd64-virtualbox windows-2016.json # or make build-libvirt
+make build-windows-2016-libvirt # or make build-windows-2016-virtualbox
 ```
 
-If you want to use your own ISO, run the following instead:
+If you want to use your own ISO, you need to manually run the `packer` command, e.g.:
 
 ```bash
 packer build -var iso_url=<ISO_URL> -var iso_checksum=<ISO_SHA256_CHECKSUM> -only=windows-2016-amd64-virtualbox windows-2016.json
@@ -27,13 +27,7 @@ packer build -var iso_url=<ISO_URL> -var iso_checksum=<ISO_SHA256_CHECKSUM> -onl
 **NB** if you are having trouble building the base box due to floppy drive removal errors try adding, as a
 workaround, `"post_shutdown_delay": "30s",` to the `windows-2016.json` file.
 
-**NB** To troubleshoot, before launching `packer`, you can set the following environment variables:
-
-```bash
-export CHECKPOINT_DISABLE=1
-export PACKER_LOG=1
-export PACKER_LOG_PATH=packer.log
-```
+**NB** the packer logs are saved inside a `*-packer.log` file (e.g. `windows-2016-amd64-libvirt-packer.log`).
 
 You can then add the base box to your local vagrant installation with:
 
@@ -64,7 +58,7 @@ vagrant up --provider=virtualbox # or --provider=libvirt
 Build the base box for the [vagrant-libvirt provider](https://github.com/vagrant-libvirt/vagrant-libvirt) with:
 
 ```bash
-make build-libvirt
+make build-windows-2016-libvirt
 ```
 
 If you want to access the UI run:
