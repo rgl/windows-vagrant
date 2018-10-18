@@ -1,4 +1,5 @@
 help:
+	@echo for Windows 2012 R2 type make build-windows-2012-r2-libvirt or make build-windows-2012-r2-virtualbox
 	@echo for Windows 2016 type make build-windows-2016-libvirt or make build-windows-2016-virtualbox
 	@echo for Windows 2019 type make build-windows-2019-libvirt or make build-windows-2019-virtualbox
 	@echo for Windows 10 type make build-windows-10-libvirt or make build-windows-10-virtualbox
@@ -20,6 +21,22 @@ build-core-insider-virtualbox: windows-core-insider-2016-amd64-virtualbox.box
 
 build-windows-10-libvirt: windows-10-amd64-libvirt.box
 build-windows-10-virtualbox: windows-10-amd64-virtualbox.box
+
+windows-2012-r2-amd64-libvirt.box: windows-2012-r2.json windows-2012-r2/autounattend.xml Vagrantfile.template *.ps1 drivers
+	rm -f $@
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2012-r2-amd64-libvirt-packer.log \
+		packer build -only=windows-2012-r2-amd64-libvirt -on-error=abort windows-2012-r2.json
+	@echo BOX successfully built!
+	@echo to add to local vagrant install do:
+	@echo vagrant box add -f windows-2012-r2-amd64 $@
+
+windows-2012-r2-amd64-virtualbox.box: windows-2012-r2.json windows-2012-r2/autounattend.xml Vagrantfile.template *.ps1 drivers
+	rm -f $@
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2012-r2-amd64-virtualbox-packer.log \
+		packer build -only=windows-2012-r2-amd64-virtualbox -on-error=abort windows-2012-r2.json
+	@echo BOX successfully built!
+	@echo to add to local vagrant install do:
+	@echo vagrant box add -f windows-2012-r2-amd64 $@
 
 windows-2016-amd64-libvirt.box: windows-2016.json autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
@@ -107,6 +124,7 @@ drivers:
 	@# see https://fedoraproject.org/wiki/Windows_Virtio_Drivers
 	wget -P drivers.tmp https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.160-1/virtio-win-0.1.160.iso
 	7z x -odrivers.tmp drivers.tmp/virtio-win-*.iso
+	7z a drivers.tmp/virtio-2012-r2.zip drivers.tmp/Balloon/2k12R2/amd64 drivers.tmp/vioserial/2k12R2/amd64
 	7z a drivers.tmp/virtio-10.zip drivers.tmp/Balloon/w10/amd64
 	7z a drivers.tmp/virtio-2016.zip drivers.tmp/Balloon/2k16/amd64
 	7z a drivers.tmp/virtio-2019.zip drivers.tmp/Balloon/2k16/amd64

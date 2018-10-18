@@ -1,4 +1,4 @@
-This builds a Windows Server 2016 base Vagrant box using [Packer](https://www.packer.io/).
+This builds Windows 2012R2/10/2016/2019 base Vagrant boxes using [Packer](https://www.packer.io/).
 
 
 # Usage
