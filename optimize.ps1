@@ -83,12 +83,38 @@ function Test-IsMaintenanceTask([xml]$definition) {
     # see MaintenanceSettings (maintenanceSettingsType) Element at https://msdn.microsoft.com/en-us/library/windows/desktop/hh832151(v=vs.85).aspx
     $ns = New-Object System.Xml.XmlNamespaceManager($definition.NameTable)
     $ns.AddNamespace('t', $definition.DocumentElement.NamespaceURI)
-    $definition.SelectSingleNode("/t:Task/t:Settings/t:MaintenanceSettings", $ns) -ne $null
+    $null -ne $definition.SelectSingleNode("/t:Task/t:Settings/t:MaintenanceSettings", $ns)
 }
 
 Write-Host 'Running Automatic Maintenance...'
 MSchedExe.exe Start
 Wait-Condition {@(Get-ScheduledTasks | Where-Object {($_.State -ge 4) -and (Test-IsMaintenanceTask $_.XML)}).Count -eq 0} -DebounceSeconds 60
+
+
+#
+# remove temporary files.
+
+Write-Host 'Stopping services that might interfere with temporary file removal...'
+Stop-Service TrustedInstaller   # Windows Modules Installer
+Stop-Service wuauserv           # Windows Update
+Stop-Service BITS               # Background Intelligent Transfer Service
+@(
+    "$env:LOCALAPPDATA\Temp\*"
+    "$env:windir\Temp\*"
+    "$env:windir\Logs\*"
+    "$env:windir\Panther\*"
+    "$env:windir\WinSxS\ManifestCache\*"
+    "$env:windir\SoftwareDistribution\Download"
+) | Where-Object {Test-Path $_} | ForEach-Object {
+    Write-Host "Removing temporary files $_..."
+    takeown.exe /D Y /R /F $_ | Out-Null
+    icacls.exe $_ /grant:r Administrators:F /T /C /Q 2>&1 | Out-Null
+    Remove-Item $_ -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
+}
+
+
+#
+# cleanup the WinSxS folder.
 
 # NB even thou the automatic maintenance includes a component cleanup task,
 #    it will not clean everything, as such, dism will clean the rest.
