@@ -44,6 +44,15 @@ winrm set winrm/config/service/auth '@{Basic="true"}'
 #winrm get winrm/config
 #winrm id
 
+# disable UAC remote restrictions.
+# see https://support.microsoft.com/en-us/help/951016/description-of-user-account-control-and-remote-restrictions-in-windows
+# see https://docs.microsoft.com/en-us/windows/desktop/wmisdk/user-account-control-and-wmi#handling-remote-connections-under-uac
+New-ItemProperty `
+    -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' `
+    -Name LocalAccountTokenFilterPolicy `
+    -Value 1 `
+    -Force
+
 # make sure winrm can be accessed from any network profile.
 $winRmFirewallRuleNames = @(
     'WINRM-HTTP-In-TCP',        # Windows Remote Management (HTTP-In)
