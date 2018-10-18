@@ -113,12 +113,7 @@
       "script": "provision.ps1"
     },
     {
-      "type": "windows-update",
-      "filters": [
-        "exclude:$_.Title -like '*Preview*'",
-        "include:$_.Title -like '*Cumulative Update for Windows*'",
-        "include:$_.AutoSelectOnWebSites"
-      ]
+      "type": "windows-update"
     },
     {
       "type": "powershell",
