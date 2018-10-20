@@ -98,6 +98,10 @@
     },
     {
       "type": "powershell",
+      "inline": "<# disable OneDrive #> $k = 'HKLM:/SOFTWARE/Policies/Microsoft/Windows/OneDrive'; mkdir $k | Out-Null; Set-ItemProperty -Path $k -Name DisableFileSyncNGSC -Value 1"
+    },
+    {
+      "type": "powershell",
       "inline": "Disable-WindowsOptionalFeature -FeatureName SMB1Protocol -Online -Remove -NoRestart"
     },
     {
