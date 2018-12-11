@@ -45,7 +45,6 @@
         "vmtools.ps1",
         "winrm.ps1"
       ],
-      "boot_order": "disk,cdrom",
       "communicator": "winrm",
       "winrm_username": "vagrant",
       "winrm_password": "vagrant",

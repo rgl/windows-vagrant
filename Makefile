@@ -9,8 +9,7 @@ build-windows-2012-r2-libvirt: windows-2012-r2-amd64-libvirt.box
 
 build-windows-2016-libvirt: windows-2016-amd64-libvirt.box
 build-windows-2016-virtualbox: windows-2016-amd64-virtualbox.box
-
-build-vsphere: windows-2016-amd64-vsphere.box
+build-windows-2016-vsphere: windows-2016-amd64-vsphere.box
 
 build-windows-2019-virtualbox: windows-2019-amd64-virtualbox.box
 build-windows-2019-libvirt: windows-2019-amd64-libvirt.box
@@ -56,7 +55,7 @@ windows-2016-amd64-virtualbox.box: windows-2016.json autounattend.xml Vagrantfil
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f windows-2016-amd64 $@
 
-windows-2016-amd64-vsphere.box: windows-2016.json autounattend.xml Vagrantfile.template *.ps1
+windows-2016-amd64-vsphere.box: windows-2016-vsphere.json autounattend.xml Vagrantfile.template *.ps1
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2016-amd64-vsphere-packer.log \
 		packer build -only=windows-2016-amd64-vsphere -on-error=abort windows-2016-vsphere.json

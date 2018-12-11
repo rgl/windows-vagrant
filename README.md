@@ -70,9 +70,19 @@ spicy --uri 'spice+unix:///tmp/packer-windows-2016-amd64-libvirt-spice.socket'
 **NB** the packer template file defines `qemuargs` (which overrides the default packer qemu arguments), if you modify it, verify if you also need include the default packer qemu arguments (see [builder/qemu/step_run.go](https://github.com/hashicorp/packer/blob/master/builder/qemu/step_run.go) or start packer without `qemuargs` defined to see how it starts qemu).
 
 
-## vSphere
+## VMware vSphere
 
-See [README-vsphere.md](README-vsphere.md).
+Download `packer-builder-vsphere-iso.exe` v2.1 from the [jetbrains-infra/packer-builder-vsphere releases page](https://github.com/jetbrains-infra/packer-builder-vsphere/releases) and place it inside your `%APPDATA%\packer.d\plugins` directory.
+
+Download the Windows Evaluation ISO (you can find the full iso URL in the [windows-2016-vsphere.json](windows-2016-vsphere.json) file) and place it inside the datastore as defined by the `vsphere_iso_url` user variable that is inside the [packer template](windows-2016-vsphere.json).
+
+Download the [VMware Tools VMware-tools-windows-&lt;SAME_VERSION_AS_IN_PACKER_TEMPLATE&gt;.iso](https://packages.vmware.com/tools/releases/index.html) file into the datastore defined by the `vsphere_tools_iso_url` user variable that is inside the [packer template](windows-2016-vsphere.json).
+
+Build the base box with:
+
+```bash
+make build-windows-2016-vsphere
+```
 
 
 ## WinRM access
