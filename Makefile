@@ -22,6 +22,7 @@ build-core-insider-virtualbox: windows-core-insider-2016-amd64-virtualbox.box
 
 build-windows-10-libvirt: windows-10-amd64-libvirt.box
 build-windows-10-virtualbox: windows-10-amd64-virtualbox.box
+build-windows-10-vsphere: windows-10-amd64-vsphere.box
 
 windows-2012-r2-amd64-libvirt.box: windows-2012-r2.json windows-2012-r2/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
@@ -124,6 +125,12 @@ windows-10-amd64-virtualbox.box: windows-10.json windows-10/autounattend.xml Vag
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f windows-10-amd64 $@
+
+windows-10-amd64-vsphere.box: windows-10-vsphere.json windows-10/autounattend.xml Vagrantfile.template *.ps1
+	rm -f $@
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-10-amd64-vsphere-packer.log \
+		packer build -only=windows-10-amd64-vsphere -on-error=abort windows-10-vsphere.json
+	@echo BOX successfully built!
 
 drivers:
 	rm -rf drivers.tmp
