@@ -1,6 +1,6 @@
 {
   "variables": {
-    "vsphere_disk_size": "60",
+    "vsphere_disk_size": "61440",
     "vsphere_iso_url": "[Datastore] iso/14393.0.161119-1705.RS1_REFRESH_SERVER_EVAL_X64FRE_EN-US.ISO",
     "vsphere_tools_iso_url": "[Datastore] iso/vmware-tools-10.2.5/windows.iso",
     "vsphere_host": "vcenter.local",
@@ -74,16 +74,11 @@
       "type": "windows-restart"
     },
     {
-      "type": "windows-update",
-      "filters": [
-        "exclude:$_.Title -like '*Preview*'",
-        "include:$_.Title -like '*Cumulative Update for Windows*'",
-        "include:$_.AutoSelectOnWebSites"
-      ]
-    },
-    {
       "type": "powershell",
       "script": "provision.ps1"
+    },
+    {
+      "type": "windows-update"
     },
     {
       "type": "powershell",

@@ -4,7 +4,7 @@
         <component name="Microsoft-Windows-PnpCustomizationsWinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <DriverPaths>
                 <PathAndCredentials wcm:action="add" wcm:keyValue="1">
-                    <Path>a:\</Path>
+                    <Path>A:\</Path>
                 </PathAndCredentials>
             </DriverPaths>
         </component>
@@ -41,14 +41,13 @@
                     <InstallFrom>
                         <MetaData wcm:action="add">
                             <Key>/IMAGE/NAME</Key>
-                            <Value>Windows Server 2019 SERVERSTANDARD</Value>
+                            <Value>Windows Server 2012 R2 SERVERSTANDARD</Value>
                         </MetaData>
                     </InstallFrom>
                 </OSImage>
             </ImageInstall>
             <UserData>
                 <ProductKey>
-                    <!--<Key>MFY9F-XBN2F-TYFMP-CCV49-RMYVH</Key>-->
                     <WillShowUI>OnError</WillShowUI>
                 </ProductKey>
                 <AcceptEula>true</AcceptEula>
@@ -132,5 +131,5 @@
             <EnableLUA>false</EnableLUA>
         </component>
     </settings>
-    <cpi:offlineImage cpi:source="wim:c:/wim/windows-2019-17744/install.wim#Windows Server 2019 SERVERSTANDARD" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
+    <cpi:offlineImage cpi:source="wim:c:/wim/windows-2012-r2/install.wim#Windows Server 2012 R2 SERVERSTANDARD" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
 </unattend>

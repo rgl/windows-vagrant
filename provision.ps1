@@ -33,16 +33,54 @@ if (!(New-Object System.Security.Principal.WindowsPrincipal(
     throw 'this must run with Administrator privileges (e.g. in a elevated shell session)'
 }
 
+Add-Type -A System.IO.Compression.FileSystem
+
 # install Guest Additions.
 $systemVendor = (Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor
 if ($systemVendor -eq 'QEMU') {
+    # install drivers.
+    if (Test-Path 'C:\Windows\Temp\virtio\virtio.zip') {
+        function Install-Driver($path) {
+            # trust the driver certificate.
+            $catPath = $path.Replace('.inf', '.cat')
+            $cerPath = $path.Replace('.inf', '.cer')
+            $certificate = (Get-AuthenticodeSignature $catPath).SignerCertificate
+            [System.IO.File]::WriteAllBytes($cerPath, $certificate.Export('Cert'))
+            Import-Certificate -CertStoreLocation Cert:\LocalMachine\TrustedPublisher $cerPath | Out-Null
+
+            # install the driver.
+            pnputil -i -a $path
+            if ($LASTEXITCODE) {
+                throw "Failed with exit code $LASTEXITCODE"
+            }
+        }
+
+        [IO.Compression.ZipFile]::ExtractToDirectory('C:\Windows\Temp\virtio\virtio.zip', 'C:\Windows\Temp\virtio')
+        $virtioDestinationDirectory = "$env:ProgramFiles\virtio"
+        Get-ChildItem -Recurse -File C:\Windows\Temp\virtio\drivers.tmp | ForEach-Object {
+            $driverName = $_.Directory.Parent.Parent.Name
+            $driverSourceDirectory = $_.Directory
+            $driverDestinationDirectory = "$virtioDestinationDirectory\$driverName"
+            if (Test-Path $driverDestinationDirectory) {
+                return
+            }
+            Write-Host "Installing the $driverName driver..."
+            mkdir -Force $driverDestinationDirectory | Out-Null
+            Copy-Item "$driverSourceDirectory\*" $driverDestinationDirectory
+            Install-Driver (Resolve-Path "$driverDestinationDirectory\*.inf").Path
+        }
+
+        Write-Host 'Installing the Balloon service...'
+        &"$virtioDestinationDirectory\Balloon\blnsvr.exe" -i
+    }
+
     # install qemu-qa.
     $qemuAgentSetupUrl = "http://$env:PACKER_HTTP_ADDR/drivers/guest-agent/qemu-ga-x64.msi"
     $qemuAgentSetup = "$env:TEMP\qemu-ga-x64.msi"
     Write-Host "Downloading the qemu-kvm Guest Agent from $qemuAgentSetupUrl..."
     Invoke-WebRequest $qemuAgentSetupUrl -OutFile $qemuAgentSetup
     Write-Host 'Installing the qemu-kvm Guest Agent...'
-    Start-Process $qemuAgentSetup /qn -Wait
+    msiexec.exe /i $qemuAgentSetup /qn | Out-String -Stream
 
     # install spice-vdagent.
     $spiceAgentZipUrl = 'https://www.spice-space.org/download/windows/vdagent/vdagent-win-0.9.0/vdagent-win-0.9.0-x64.zip'
@@ -51,12 +89,11 @@ if ($systemVendor -eq 'QEMU') {
     Write-Host "Downloading the spice-vdagent from $spiceAgentZipUrl..."
     Invoke-WebRequest $spiceAgentZipUrl -OutFile $spiceAgentZip
     Write-Host 'Installing the spice-vdagent...'
-    Add-Type -A System.IO.Compression.FileSystem
     [IO.Compression.ZipFile]::ExtractToDirectory($spiceAgentZip, $spiceAgentDestination)
     Move-Item "$spiceAgentDestination\vdagent-win-*\*" $spiceAgentDestination
     Get-ChildItem "$spiceAgentDestination\vdagent-win-*" -Recurse | Remove-Item -Force -Recurse
     Remove-Item -Force "$spiceAgentDestination\vdagent-win-*"
-    Start-Process "$spiceAgentDestination\vdservice.exe" install -Wait # NB the logs are inside C:\Windows\Temp
+    &"$spiceAgentDestination\vdservice.exe" install | Out-String -Stream # NB the logs are inside C:\Windows\Temp
     Start-Service vdservice
 } elseif ($systemVendor -eq 'innotek GmbH') {
     Write-Host 'Importing the Oracle (for VirtualBox) certificate as a Trusted Publisher...'
@@ -64,13 +101,11 @@ if ($systemVendor -eq 'QEMU') {
     if ($LASTEXITCODE) {
         throw "failed to import certificate with exit code $LASTEXITCODE"
     }
-    #Get-ChildItem Cert:\LocalMachine\TrustedPublisher
 
     Write-Host 'Installing the VirtualBox Guest Additions...'
-    $p = Start-Process -Wait -NoNewWindow -PassThru -FilePath E:\VBoxWindowsAdditions-amd64.exe -ArgumentList '/S'
-    $p.WaitForExit()
-    if ($p.ExitCode) {
-        throw "failed to install with exit code $($p.ExitCode). Check the logs at C:\Program Files\Oracle\VirtualBox Guest Additions\install.log."
+    E:\VBoxWindowsAdditions-amd64.exe /S | Out-String -Stream
+    if ($LASTEXITCODE) {
+        throw "failed to install with exit code $LASTEXITCODE. Check the logs at C:\Program Files\Oracle\VirtualBox Guest Additions\install.log."
     }
 } elseif ($systemVendor -eq 'VMware, Inc.') {
     # do nothing. VMware Tools were already installed by vmtools.ps1 (executed from autounattend.xml).
@@ -94,7 +129,11 @@ $account.Userflags = $AdsNormalAccount -bor $AdsDontExpirePassword -bor $AdsAcco
 $account.SetInfo()
 
 Write-Host 'Disabling auto logon...'
-Set-ItemProperty -Path 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name AutoAdminLogon -Value 0
+$autoLogonKeyPath = 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
+Set-ItemProperty -Path $autoLogonKeyPath -Name AutoAdminLogon -Value 0
+@('DefaultDomainName', 'DefaultUserName', 'DefaultPassword') | ForEach-Object {
+    Remove-ItemProperty -Path $autoLogonKeyPath -Name $_ -ErrorAction SilentlyContinue
+}
 
 Write-Host 'Disabling hibernation...'
 powercfg /hibernate off

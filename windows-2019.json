@@ -1,9 +1,9 @@
 {
   "variables": {
     "disk_size": "61440",
-    "iso_url": "file://./isos/Windows_InsiderPreview_Server_vNext_en-us_17677.iso",
-    "iso_checksum": "",
-    "iso_checksum_type": "none"
+    "iso_url": "https://software-download.microsoft.com/download/pr/17763.1.180914-1434.rs5_release_SERVER_EVAL_x64FRE_en-us.iso",
+    "iso_checksum": "dbb0ffbab5d114ce7370784c4e24740191fefdb3349917c77a53ff953dd10f72",
+    "iso_checksum_type": "sha256"
   },
   "builders": [
     {
@@ -35,7 +35,7 @@
       "communicator": "winrm",
       "winrm_username": "vagrant",
       "winrm_password": "vagrant",
-      "winrm_timeout": "2h",
+      "winrm_timeout": "4h",
       "shutdown_command": "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\"",
       "http_directory": ".",
       "floppy_files": [
@@ -79,7 +79,7 @@
       "communicator": "winrm",
       "winrm_username": "vagrant",
       "winrm_password": "vagrant",
-      "winrm_timeout": "2h",
+      "winrm_timeout": "4h",
       "shutdown_command": "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\"",
       "floppy_files": [
         "windows-2019/autounattend.xml",
@@ -94,11 +94,7 @@
     },
     {
       "type": "powershell",
-      "inline": "Uninstall-WindowsFeature Windows-Defender-Features"
-    },
-    {
-      "type": "powershell",
-      "inline": "Uninstall-WindowsFeature FS-SMB1"
+      "inline": "Uninstall-WindowsFeature Windows-Defender"
     },
     {
       "type": "powershell",
@@ -108,16 +104,16 @@
       "type": "windows-restart"
     },
     {
-      "type": "windows-update",
-      "filters": [
-        "exclude:$_.Title -like '*Preview*'",
-        "include:$_.Title -like '*Cumulative Update for Windows*'",
-        "include:$_.AutoSelectOnWebSites"
-      ]
+      "type": "file",
+      "source": "drivers/virtio-2019.zip",
+      "destination": "C:/Windows/Temp/virtio/virtio.zip"
     },
     {
       "type": "powershell",
       "script": "provision.ps1"
+    },
+    {
+      "type": "windows-update"
     },
     {
       "type": "powershell",
