@@ -1,8 +1,8 @@
 {
   "variables": {
     "disk_size": "61440",
-    "iso_url": "http://download.microsoft.com/download/1/B/F/1BFE5194-5951-452C-B62C-B2F667F9B86D/14393.0.160715-1616.RS1_RELEASE_CLIENTENTERPRISE_S_EVAL_X64FRE_EN-US.ISO",
-    "iso_checksum": "af9a46ddd2a88ea01e9d3a52f56cf48e6e9d989e5a35f6e88d68be48dccfcb8d",
+    "iso_url": "https://software-download.microsoft.com/download/sg/17763.107.101029-1455.rs5_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso",
+    "iso_checksum": "668fe1af70c2f7416328aee3a0bb066b12dc6bbd2576f40f812b95741e18bc3a",
     "iso_checksum_type": "sha256"
   },
   "builders": [
@@ -99,10 +99,6 @@
     {
       "type": "powershell",
       "inline": "<# disable OneDrive #> $k = 'HKLM:/SOFTWARE/Policies/Microsoft/Windows/OneDrive'; mkdir $k | Out-Null; Set-ItemProperty -Path $k -Name DisableFileSyncNGSC -Value 1"
-    },
-    {
-      "type": "powershell",
-      "inline": "Disable-WindowsOptionalFeature -FeatureName SMB1Protocol -Online -Remove -NoRestart"
     },
     {
       "type": "powershell",

@@ -1,7 +1,7 @@
 {
   "variables": {
     "vsphere_disk_size": "61440",
-    "vsphere_iso_url": "[Datastore] iso/14393.0.160715-1616.RS1_RELEASE_CLIENTENTERPRISE_S_EVAL_X64FRE_EN-US.ISO",
+    "vsphere_iso_url": "[Datastore] iso/17763.107.101029-1455.rs5_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso",
     "vsphere_tools_iso_url": "[Datastore] iso/vmware-tools-10.2.5/windows.iso",
     "vsphere_host": "vcenter.local",
     "vsphere_username": "administrator@vsphere.local",
@@ -64,10 +64,6 @@
     {
       "type": "powershell",
       "inline": "<# disable OneDrive #> $k = 'HKLM:/SOFTWARE/Policies/Microsoft/Windows/OneDrive'; mkdir $k | Out-Null; Set-ItemProperty -Path $k -Name DisableFileSyncNGSC -Value 1"
-    },
-    {
-      "type": "powershell",
-      "inline": "Disable-WindowsOptionalFeature -FeatureName SMB1Protocol -Online -Remove -NoRestart"
     },
     {
       "type": "powershell",
