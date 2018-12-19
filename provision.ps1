@@ -135,6 +135,12 @@ Set-ItemProperty -Path $autoLogonKeyPath -Name AutoAdminLogon -Value 0
     Remove-ItemProperty -Path $autoLogonKeyPath -Name $_ -ErrorAction SilentlyContinue
 }
 
+Write-Host 'Disabling Automatic Private IP Addressing (APIPA)...'
+Set-ItemProperty `
+    -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' `
+    -Name IPAutoconfigurationEnabled `
+    -Value 0
+
 Write-Host 'Disabling hibernation...'
 powercfg /hibernate off
 
