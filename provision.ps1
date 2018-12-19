@@ -141,6 +141,12 @@ Set-ItemProperty `
     -Name IPAutoconfigurationEnabled `
     -Value 0
 
+Write-Host 'Disabling IPv6...'
+Set-ItemProperty `
+    -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters' `
+    -Name DisabledComponents `
+    -Value 0xff
+
 Write-Host 'Disabling hibernation...'
 powercfg /hibernate off
 
