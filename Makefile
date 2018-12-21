@@ -15,6 +15,7 @@ build-windows-2019-libvirt: windows-2019-amd64-libvirt.box
 build-windows-2019-uefi-libvirt: windows-2019-uefi-amd64-libvirt.box
 build-windows-2019-virtualbox: windows-2019-amd64-virtualbox.box
 build-windows-2019-uefi-virtualbox: windows-2019-uefi-amd64-virtualbox.box
+build-windows-2019-vsphere: windows-2019-amd64-vsphere.box
 
 build-windows-server-core-1709-libvirt: windows-server-core-1709-amd64-libvirt.box
 build-windows-server-core-1709-virtualbox: windows-server-core-1709-amd64-virtualbox.box
@@ -98,6 +99,12 @@ windows-2019-uefi-amd64-virtualbox.box: windows-2019-uefi.json windows-2019-uefi
 
 windows-2019-uefi-amd64-virtualbox.iso: windows-2019-uefi/autounattend.xml winrm.ps1
 	xorrisofs -J -R -input-charset ascii -o $@ $^
+
+windows-2019-amd64-vsphere.box: windows-2019-vsphere.json windows-2019/autounattend.xml Vagrantfile.template *.ps1
+	rm -f $@
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2019-amd64-vsphere-packer.log \
+		packer build -only=windows-2019-amd64-vsphere -on-error=abort windows-2019-vsphere.json
+	@echo BOX successfully built!
 
 windows-server-core-1709-amd64-libvirt.box: windows-server-core-1709.json windows-server-core-1709/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@

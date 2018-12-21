@@ -1,0 +1,94 @@
+{
+  "variables": {
+    "vsphere_disk_size": "61440",
+    "vsphere_iso_url": "[Datastore] iso/17763.253.190108-0006.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
+    "vsphere_tools_iso_url": "[Datastore] iso/vmware-tools-10.2.5/windows.iso",
+    "vsphere_host": "vcenter.local",
+    "vsphere_username": "administrator@vsphere.local",
+    "vsphere_password": "password",
+    "vsphere_esxi_host": "esxi.local",
+    "vsphere_datacenter": "Datacenter",
+    "vsphere_cluster": "Cluster",
+    "vsphere_datastore": "Datastore",
+    "vsphere_folder": "test",
+    "vsphere_network": "packer"
+  },
+  "builders": [
+    {
+      "name": "windows-2019-amd64-vsphere",
+      "vm_name": "windows-2019-amd64-vsphere",
+      "type": "vsphere-iso",
+      "guest_os_type": "windows9Server64Guest",
+      "disk_size": "{{user `vsphere_disk_size`}}",
+      "disk_thin_provisioned": true,
+      "disk_controller_type": "pvscsi",
+      "vcenter_server": "{{user `vsphere_host`}}",
+      "username": "{{user `vsphere_username`}}",
+      "password": "{{user `vsphere_password`}}",
+      "insecure_connection": "true",
+      "datacenter": "{{user `vsphere_datacenter`}}",
+      "cluster": "{{user `vsphere_cluster`}}",
+      "host": "{{user `vsphere_esxi_host`}}",
+      "folder": "{{user `vsphere_folder`}}",
+      "datastore": "{{user `vsphere_datastore`}}",
+      "network_card": "vmxnet3",
+      "network": "{{user `vsphere_network`}}",
+      "convert_to_template": true,
+      "RAM": 2048,
+      "CPUs": 4,
+      "iso_paths": [
+        "{{user `vsphere_iso_url`}}",
+        "{{user `vsphere_tools_iso_url`}}"
+      ],
+      "floppy_files": [
+        "windows-2019/autounattend.xml",
+        "vmtools.ps1",
+        "winrm.ps1"
+      ],
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "4h",
+      "shutdown_command": "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "script": "disable-windows-updates.ps1"
+    },
+    {
+      "type": "powershell",
+      "inline": "Uninstall-WindowsFeature Windows-Defender"
+    },
+    {
+      "type": "powershell",
+      "script": "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
+      "script": "provision.ps1"
+    },
+    {
+      "type": "windows-update"
+    },
+    {
+      "type": "powershell",
+      "script": "provision-openssh.ps1"
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
+      "script": "eject-media.ps1"
+    },
+    {
+      "type": "powershell",
+      "script": "optimize.ps1"
+    }
+  ]
+}
