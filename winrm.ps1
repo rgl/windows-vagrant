@@ -32,12 +32,19 @@ Get-NetConnectionProfile `
     | Set-NetConnectionProfile -NetworkCategory Private
 
 # configure WinRM.
-# WARN do not be tempted to change the default WinRM service startup type from
-#      delayed-auto to auto, as the later proved to be unreliable.
 Write-Output 'Configuring WinRM...'
 winrm quickconfig -quiet
 winrm set winrm/config/service '@{AllowUnencrypted="true"}'
 winrm set winrm/config/service/auth '@{Basic="true"}'
+# make sure the WinRM service startup type is delayed-auto
+# even when the default config is auto (e.g. Windows 2019
+# changed that default).
+# WARN do not be tempted to change the default WinRM service startup type from
+#      delayed-auto to auto, as the later proved to be unreliable.
+$result = sc.exe config WinRM start= delayed-auto
+if ($result -ne '[SC] ChangeServiceConfig SUCCESS') {
+    throw "sc.exe config failed with $result"
+}
 
 ## dump the WinRM configuration.
 #winrm enumerate winrm/config/listener
