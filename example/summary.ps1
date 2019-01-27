@@ -37,6 +37,14 @@ function Get-DotNetVersion {
     return 'No 4.5 or later version detected'
 }
 
+Write-title 'Firmware'
+Get-ComputerInfo `
+    -Property `
+        BiosFirmwareType,
+        BiosManufacturer,
+        BiosVersion `
+    | Format-List
+
 Write-Title 'Operating System version (from Get-ComputerInfo)'
 Get-ComputerInfo `
     -Property `
@@ -125,6 +133,12 @@ function Get-MachineSID {
 }
 Write-Title 'Windows SID'
 Write-Output "$(Get-MachineSID)"
+
+Write-Title 'Partitions'
+Get-Partition `
+    | Format-Table -AutoSize `
+    | Out-String -Stream -Width ([int]::MaxValue) `
+    | ForEach-Object {$_.TrimEnd()}
 
 Write-Title 'Volumes'
 Get-Volume `

@@ -153,6 +153,11 @@ powercfg /hibernate off
 Write-Host 'Setting the power plan to high performance...'
 powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 
+Write-Host 'Disabling the Windows Boot Manager menu...'
+# NB to have the menu show with a lower timeout, run this instead: bcdedit /timeout 2
+#    NB with a timeout of 2 you can still press F8 to show the boot manager menu.
+bcdedit /set '{bootmgr}' displaybootmenu no
+
 # remove temporary files.
 'C:\tmp','C:\Windows\Temp',$env:TEMP | ForEach-Object {
     Get-ChildItem $_ -Recurse | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue

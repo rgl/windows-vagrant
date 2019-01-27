@@ -24,5 +24,6 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", inline: "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
   config.vm.provision "shell", path: "provision-adk.ps1"
+  config.vm.provision "shell", path: "mount-system-partition.ps1"
   config.vm.provision "shell", path: "summary.ps1"
 end

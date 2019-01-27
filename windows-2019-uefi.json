@@ -1,0 +1,111 @@
+{
+  "variables": {
+    "disk_size": "61440",
+    "iso_url": "https://software-download.microsoft.com/download/sg/17763.253.190108-0006.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
+    "iso_checksum": "57faf4a2ea4484cfdf5e964c539313c061c4d9cac474e723d60405f2ea02d570",
+    "iso_checksum_type": "sha256"
+  },
+  "builders": [
+    {
+      "name": "windows-2019-uefi-amd64-libvirt",
+      "type": "qemu",
+      "accelerator": "kvm",
+      "qemuargs": [
+        ["-bios", "/usr/share/ovmf/OVMF.fd"],
+        ["-m", "2048"],
+        ["-cpu", "host"],
+        ["-smp", "2"],
+        ["-soundhw", "hda"],
+        ["-usbdevice", "tablet"],
+        ["-device", "virtio-net,netdev=user.0"],
+        ["-vga", "qxl"],
+        ["-device", "virtio-serial-pci"],
+        ["-chardev", "socket,path=/tmp/{{.Name}}-qga.sock,server,nowait,id=qga0"],
+        ["-device", "virtserialport,chardev=qga0,name=org.qemu.guest_agent.0"],
+        ["-chardev", "spicevmc,id=spicechannel0,name=vdagent"],
+        ["-device", "virtserialport,chardev=spicechannel0,name=com.redhat.spice.0"],
+        ["-spice", "unix,addr=/tmp/{{.Name}}-spice.socket,disable-ticketing"]
+      ],
+      "headless": true,
+      "format": "qcow2",
+      "disk_size": "{{user `disk_size`}}",
+      "disk_interface": "virtio",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "4h",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<enter>"
+      ],
+      "shutdown_command": "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "http_directory": ".",
+      "floppy_files": [
+        "windows-2019-uefi/autounattend.xml",
+        "winrm.ps1",
+        "drivers/vioserial/2k16/amd64/*.cat",
+        "drivers/vioserial/2k16/amd64/*.inf",
+        "drivers/vioserial/2k16/amd64/*.sys",
+        "drivers/viostor/2k16/amd64/*.cat",
+        "drivers/viostor/2k16/amd64/*.inf",
+        "drivers/viostor/2k16/amd64/*.sys",
+        "drivers/NetKVM/2k16/amd64/*.cat",
+        "drivers/NetKVM/2k16/amd64/*.inf",
+        "drivers/NetKVM/2k16/amd64/*.sys",
+        "drivers/qxldod/2k16/amd64/*.cat",
+        "drivers/qxldod/2k16/amd64/*.inf",
+        "drivers/qxldod/2k16/amd64/*.sys"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "script": "disable-windows-updates.ps1"
+    },
+    {
+      "type": "powershell",
+      "inline": "Uninstall-WindowsFeature Windows-Defender"
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "file",
+      "source": "drivers/virtio-2019.zip",
+      "destination": "C:/Windows/Temp/virtio/virtio.zip"
+    },
+    {
+      "type": "powershell",
+      "script": "provision.ps1"
+    },
+    {
+      "type": "windows-update"
+    },
+    {
+      "type": "powershell",
+      "script": "provision-openssh.ps1"
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
+      "script": "eject-media.ps1"
+    },
+    {
+      "type": "powershell",
+      "script": "optimize.ps1"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "{{.BuildName}}.box",
+      "vagrantfile_template": "Vagrantfile-uefi.template"
+    }
+  ]
+}
