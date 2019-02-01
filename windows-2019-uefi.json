@@ -59,6 +59,45 @@
         "drivers/qxldod/2k16/amd64/*.inf",
         "drivers/qxldod/2k16/amd64/*.sys"
       ]
+    },
+    {
+      "name": "windows-2019-uefi-amd64-virtualbox",
+      "type": "virtualbox-iso",
+      "guest_os_type": "Windows2016_64",
+      "guest_additions_mode": "disable",
+      "headless": true,
+      "vboxmanage": [
+        ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "2", "--type", "dvddrive", "--medium", "/usr/share/virtualbox/VBoxGuestAdditions.iso"],
+        ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "3", "--type", "dvddrive", "--medium", "windows-2019-uefi-amd64-virtualbox.iso"],
+        ["modifyvm", "{{.Name}}", "--firmware", "efi"],
+        ["modifyvm", "{{.Name}}", "--memory", "2048"],
+        ["modifyvm", "{{.Name}}", "--cpus", "2"],
+        ["modifyvm", "{{.Name}}", "--vram", "64"],
+        ["modifyvm", "{{.Name}}", "--audio", "none"],
+        ["modifyvm", "{{.Name}}", "--nictype1", "82540EM"],
+        ["modifyvm", "{{.Name}}", "--nictype2", "82540EM"],
+        ["modifyvm", "{{.Name}}", "--nictype3", "82540EM"],
+        ["modifyvm", "{{.Name}}", "--nictype4", "82540EM"]
+      ],
+      "vboxmanage_post": [
+        ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "3", "--medium", "none"],
+        ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "2", "--medium", "none"]
+      ],
+      "disk_size": "{{user `disk_size`}}",
+      "hard_drive_interface": "sata",
+      "iso_interface": "sata",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "4h",
+      "boot_wait": "3s",
+      "boot_command": [
+        "<enter>"
+      ],
+      "shutdown_command": "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
     }
   ],
   "provisioners": [
@@ -71,12 +110,18 @@
       "inline": "Uninstall-WindowsFeature Windows-Defender"
     },
     {
+      "type": "powershell",
+      "script": "virtualbox-prevent-vboxsrv-resolution-delay.ps1",
+      "only": ["windows-2019-uefi-amd64-virtualbox"]
+    },
+    {
       "type": "windows-restart"
     },
     {
       "type": "file",
       "source": "drivers/virtio-2019.zip",
-      "destination": "C:/Windows/Temp/virtio/virtio.zip"
+      "destination": "C:/Windows/Temp/virtio/virtio.zip",
+      "only": ["windows-2019-uefi-amd64-libvirt"]
     },
     {
       "type": "powershell",

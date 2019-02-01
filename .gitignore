@@ -6,3 +6,4 @@ drivers/
 isos/
 *.log
 *.old
+*.iso

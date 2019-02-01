@@ -136,7 +136,7 @@
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <Order>3</Order>
-                    <CommandLine>PowerShell -File a:\winrm.ps1</CommandLine>
+                    <CommandLine>PowerShell "Get-PSDRive -PSProvider FileSystem | ForEach-Object {$p = Join-Path $_.Root winrm.ps1; if (Test-Path $p) {&amp;$p}}"</CommandLine>
                 </SynchronousCommand>
             </FirstLogonCommands>
         </component>
