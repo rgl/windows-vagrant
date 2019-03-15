@@ -2,7 +2,7 @@
   "variables": {
     "vsphere_disk_size": "61440",
     "vsphere_iso_url": "[Datastore] iso/17763.253.190108-0006.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
-    "vsphere_tools_iso_url": "[Datastore] iso/vmware-tools-10.2.5/windows.iso",
+    "vsphere_tools_iso_url": "[Datastore] iso/VMware-tools-windows-10.3.5-10430147.iso",
     "vsphere_host": "vcenter.local",
     "vsphere_username": "administrator@vsphere.local",
     "vsphere_password": "password",
