@@ -72,7 +72,7 @@ spicy --uri 'spice+unix:///tmp/packer-windows-2016-amd64-libvirt-spice.socket'
 
 ## VMware vSphere
 
-Download `packer-builder-vsphere-iso.exe` v2.1 from the [jetbrains-infra/packer-builder-vsphere releases page](https://github.com/jetbrains-infra/packer-builder-vsphere/releases) and place it inside your `%APPDATA%\packer.d\plugins` directory.
+Download `packer-builder-vsphere-iso.exe` v2.3 from the [jetbrains-infra/packer-builder-vsphere releases page](https://github.com/jetbrains-infra/packer-builder-vsphere/releases) and place it inside your `%USERPROFILE%\packer.d\plugins` or `%APPDATA%\packer.d\plugins` directory.
 
 Download the Windows Evaluation ISO (you can find the full iso URL in the [windows-2016-vsphere.json](windows-2016-vsphere.json) file) and place it inside the datastore as defined by the `vsphere_iso_url` user variable that is inside the [packer template](windows-2016-vsphere.json).
 
