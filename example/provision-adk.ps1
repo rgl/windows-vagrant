@@ -1,4 +1,4 @@
-$artifactUrl = 'http://download.microsoft.com/download/6/8/9/689E62E5-C50F-407B-9C3C-B7F00F8C93C0/adk/adksetup.exe' # v1803
+$artifactUrl = 'https://download.microsoft.com/download/0/1/C/01CC78AA-B53B-4884-B7EA-74F2878AA79F/adk/adksetup.exe' # v1809
 $artifactPath = "$env:TEMP\$(Split-Path -Leaf $artifactUrl)"
 
 Write-Host 'Downloading the Windows Assessment and Deployment Kit (ADK) setup...'
