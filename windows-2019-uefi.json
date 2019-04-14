@@ -1,8 +1,8 @@
 {
   "variables": {
     "disk_size": "61440",
-    "iso_url": "https://software-download.microsoft.com/download/sg/17763.253.190108-0006.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
-    "iso_checksum": "57faf4a2ea4484cfdf5e964c539313c061c4d9cac474e723d60405f2ea02d570",
+    "iso_url": "https://software-download.microsoft.com/download/sg/17763.379.190312-0539.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
+    "iso_checksum": "221f9acbc727297a56674a0f1722b8ac7b6e840b4e1ffbdd538a9ed0da823562",
     "iso_checksum_type": "sha256"
   },
   "builders": [
