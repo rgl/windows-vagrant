@@ -74,9 +74,9 @@ if ($systemVendor -eq 'QEMU') {
         &"$virtioDestinationDirectory\Balloon\blnsvr.exe" -i
     }
 
-    # install qemu-qa.
-    $qemuAgentSetupUrl = "http://$env:PACKER_HTTP_ADDR/drivers/guest-agent/qemu-ga-x64.msi"
-    $qemuAgentSetup = "$env:TEMP\qemu-ga-x64.msi"
+    # install qemu-ga.
+    $qemuAgentSetupUrl = "http://$env:PACKER_HTTP_ADDR/drivers/guest-agent/qemu-ga-x86_64.msi"
+    $qemuAgentSetup = "$env:TEMP\qemu-ga-x86_64.msi"
     Write-Host "Downloading the qemu-kvm Guest Agent from $qemuAgentSetupUrl..."
     Invoke-WebRequest $qemuAgentSetupUrl -OutFile $qemuAgentSetup
     Write-Host 'Installing the qemu-kvm Guest Agent...'

@@ -41,18 +41,18 @@
       "floppy_files": [
         "windows-2019/autounattend.xml",
         "winrm.ps1",
-        "drivers/vioserial/2k16/amd64/*.cat",
-        "drivers/vioserial/2k16/amd64/*.inf",
-        "drivers/vioserial/2k16/amd64/*.sys",
-        "drivers/viostor/2k16/amd64/*.cat",
-        "drivers/viostor/2k16/amd64/*.inf",
-        "drivers/viostor/2k16/amd64/*.sys",
-        "drivers/NetKVM/2k16/amd64/*.cat",
-        "drivers/NetKVM/2k16/amd64/*.inf",
-        "drivers/NetKVM/2k16/amd64/*.sys",
-        "drivers/qxldod/2k16/amd64/*.cat",
-        "drivers/qxldod/2k16/amd64/*.inf",
-        "drivers/qxldod/2k16/amd64/*.sys"
+        "drivers/vioserial/2k19/amd64/*.cat",
+        "drivers/vioserial/2k19/amd64/*.inf",
+        "drivers/vioserial/2k19/amd64/*.sys",
+        "drivers/viostor/2k19/amd64/*.cat",
+        "drivers/viostor/2k19/amd64/*.inf",
+        "drivers/viostor/2k19/amd64/*.sys",
+        "drivers/NetKVM/2k19/amd64/*.cat",
+        "drivers/NetKVM/2k19/amd64/*.inf",
+        "drivers/NetKVM/2k19/amd64/*.sys",
+        "drivers/qxldod/2k19/amd64/*.cat",
+        "drivers/qxldod/2k19/amd64/*.inf",
+        "drivers/qxldod/2k19/amd64/*.sys"
       ]
     },
     {
