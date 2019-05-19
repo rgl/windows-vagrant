@@ -11,7 +11,7 @@
       "type": "qemu",
       "accelerator": "kvm",
       "cpus": 2,
-      "memory": 2048,
+      "memory": 4096,
       "qemuargs": [
         ["-bios", "/usr/share/ovmf/OVMF.fd"],
         ["-cpu", "host"],
@@ -67,7 +67,7 @@
       "guest_additions_mode": "disable",
       "headless": true,
       "cpus": 2,
-      "memory": 2048,
+      "memory": 4096,
       "vboxmanage": [
         ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "2", "--type", "dvddrive", "--medium", "/usr/share/virtualbox/VBoxGuestAdditions.iso"],
         ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "3", "--type", "dvddrive", "--medium", "windows-2019-uefi-amd64-virtualbox.iso"],

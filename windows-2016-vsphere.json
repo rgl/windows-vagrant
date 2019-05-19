@@ -34,7 +34,7 @@
       "network_card": "vmxnet3",
       "network": "{{user `vsphere_network`}}",
       "convert_to_template": true,
-      "RAM": 2048,
+      "RAM": 4096,
       "CPUs": 4,
       "iso_paths": [
         "{{user `vsphere_iso_url`}}",

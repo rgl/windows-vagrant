@@ -11,7 +11,7 @@
       "type": "qemu",
       "accelerator": "kvm",
       "cpus": 2,
-      "memory": 2048,
+      "memory": 4096,
       "qemuargs": [
         ["-cpu", "host"],
         ["-soundhw", "hda"],
@@ -62,7 +62,7 @@
       "guest_additions_mode": "attach",
       "headless": true,
       "cpus": 2,
-      "memory": 2048,
+      "memory": 4096,
       "vboxmanage": [
         ["modifyvm", "{{.Name}}", "--vram", "64"],
         ["modifyvm", "{{.Name}}", "--audio", "none"],
