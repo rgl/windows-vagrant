@@ -137,6 +137,29 @@ Write-Output "$(Get-MachineSID)"
 Write-Title 'Windows License'
 cscript -nologo c:/windows/system32/slmgr.vbs -dlv
 
+Write-Title 'Installed Windows Updates'
+function Get-InstalledWindowsUpdates {
+    $session = New-Object -ComObject 'Microsoft.Update.Session'
+    $searcher = $session.CreateUpdateSearcher()
+    $session.QueryHistory($null, 0, $searcher.GetTotalHistoryCount()) | Where-Object {$_.ResultCode} | ForEach-Object {
+        New-Object PSObject -Property @{
+            Date = $_.Date
+            Title = $_.Title
+            Status = switch ($_.ResultCode) {
+                0 {"NotStarted"}
+                1 {"InProgress"}
+                2 {"Succeeded"}
+                3 {"SucceededWithErrors"}
+                4 {"Failed"}
+                5 {"Aborted"}
+                default {"Unknown #$($_.ResultCode)"}
+            }
+            Product = $_.Categories | Where-Object {$_.Type -eq 'Product'} | Select-Object -First 1 -ExpandProperty Name
+        }
+    }
+}
+Get-InstalledWindowsUpdates
+
 Write-Title 'Partitions'
 Get-Partition `
     | Format-Table -AutoSize `
