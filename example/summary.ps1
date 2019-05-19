@@ -134,6 +134,9 @@ function Get-MachineSID {
 Write-Title 'Windows SID'
 Write-Output "$(Get-MachineSID)"
 
+Write-Title 'Windows License'
+cscript -nologo c:/windows/system32/slmgr.vbs -dlv
+
 Write-Title 'Partitions'
 Get-Partition `
     | Format-Table -AutoSize `
