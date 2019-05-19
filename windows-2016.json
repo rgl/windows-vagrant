@@ -121,6 +121,12 @@
       "script": "provision.ps1"
     },
     {
+      "type": "windows-update",
+      "filters": [
+          "include:$_.Title -like '*Servicing Stack Update for Windows*'"
+      ]
+    },
+    {
       "type": "windows-update"
     },
     {
