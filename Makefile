@@ -3,6 +3,7 @@ help:
 	@echo for Windows 2016 type make build-windows-2016-libvirt or make build-windows-2016-virtualbox
 	@echo for Windows 2019 type make build-windows-2019-libvirt or make build-windows-2019-virtualbox
 	@echo for Windows 10 type make build-windows-10-libvirt or make build-windows-10-virtualbox
+	@echo for Windows 10 1903 type make build-windows-10-1903-libvirt or make build-windows-10-1903-virtualbox
 
 build-windows-2012-r2-virtualbox: windows-2012-r2-amd64-virtualbox.box
 build-windows-2012-r2-libvirt: windows-2012-r2-amd64-libvirt.box
@@ -26,6 +27,9 @@ build-core-insider-virtualbox: windows-core-insider-2016-amd64-virtualbox.box
 build-windows-10-libvirt: windows-10-amd64-libvirt.box
 build-windows-10-virtualbox: windows-10-amd64-virtualbox.box
 build-windows-10-vsphere: windows-10-amd64-vsphere.box
+
+build-windows-10-1903-libvirt: windows-10-1903-amd64-libvirt.box
+build-windows-10-1903-virtualbox: windows-10-1903-amd64-virtualbox.box
 
 windows-2012-r2-amd64-libvirt.box: windows-2012-r2.json windows-2012-r2/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
@@ -159,6 +163,22 @@ windows-10-amd64-vsphere.box: windows-10-vsphere.json windows-10/autounattend.xm
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-10-amd64-vsphere-packer.log \
 		packer build -only=windows-10-amd64-vsphere -on-error=abort windows-10-vsphere.json
 	@echo BOX successfully built!
+
+windows-10-1903-amd64-libvirt.box: windows-10-1903.json windows-10/autounattend.xml Vagrantfile.template *.ps1 drivers
+	rm -f $@
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-10-1903-amd64-libvirt-packer.log \
+		packer build -only=windows-10-1903-amd64-libvirt -on-error=abort windows-10-1903.json
+	@echo BOX successfully built!
+	@echo to add to local vagrant install do:
+	@echo vagrant box add -f windows-10-1903-amd64 $@
+
+windows-10-1903-amd64-virtualbox.box: windows-10-1903.json windows-10/autounattend.xml Vagrantfile.template *.ps1 drivers
+	rm -f $@
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-10-1903-amd64-virtualbox-packer.log \
+		packer build -only=windows-10-1903-amd64-virtualbox -on-error=abort windows-10-1903.json
+	@echo BOX successfully built!
+	@echo to add to local vagrant install do:
+	@echo vagrant box add -f windows-10-1903-amd64 $@
 
 drivers:
 	rm -rf drivers.tmp
