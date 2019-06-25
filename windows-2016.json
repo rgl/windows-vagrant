@@ -39,7 +39,7 @@
       "shutdown_command": "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\"",
       "http_directory": ".",
       "floppy_files": [
-        "autounattend.xml",
+        "windows-2016/autounattend.xml",
         "winrm.ps1",
         "drivers/vioserial/2k16/amd64/*.cat",
         "drivers/vioserial/2k16/amd64/*.inf",
@@ -82,7 +82,7 @@
       "winrm_timeout": "4h",
       "shutdown_command": "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\"",
       "floppy_files": [
-        "autounattend.xml",
+        "windows-2016/autounattend.xml",
         "winrm.ps1"
       ]
     }

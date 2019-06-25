@@ -47,7 +47,7 @@ windows-2012-r2-amd64-virtualbox.box: windows-2012-r2.json windows-2012-r2/autou
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f windows-2012-r2-amd64 $@
 
-windows-2016-amd64-libvirt.box: windows-2016.json autounattend.xml Vagrantfile.template *.ps1 drivers
+windows-2016-amd64-libvirt.box: windows-2016.json windows-2016/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2016-amd64-libvirt-packer.log \
 		packer build -only=windows-2016-amd64-libvirt -on-error=abort windows-2016.json
@@ -55,7 +55,7 @@ windows-2016-amd64-libvirt.box: windows-2016.json autounattend.xml Vagrantfile.t
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f windows-2016-amd64 $@
 
-windows-2016-amd64-virtualbox.box: windows-2016.json autounattend.xml Vagrantfile.template *.ps1 drivers
+windows-2016-amd64-virtualbox.box: windows-2016.json windows-2016/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2016-amd64-virtualbox-packer.log \
 		packer build -only=windows-2016-amd64-virtualbox -on-error=abort windows-2016.json
@@ -63,7 +63,7 @@ windows-2016-amd64-virtualbox.box: windows-2016.json autounattend.xml Vagrantfil
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f windows-2016-amd64 $@
 
-windows-2016-amd64-vsphere.box: windows-2016-vsphere.json autounattend.xml Vagrantfile.template *.ps1
+windows-2016-amd64-vsphere.box: windows-2016-vsphere.json windows-2016/autounattend.xml Vagrantfile.template *.ps1
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2016-amd64-vsphere-packer.log \
 		packer build -only=windows-2016-amd64-vsphere -on-error=abort windows-2016-vsphere.json
