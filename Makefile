@@ -21,8 +21,8 @@ build-windows-2019-vsphere: windows-2019-amd64-vsphere.box
 build-windows-server-core-1709-libvirt: windows-server-core-1709-amd64-libvirt.box
 build-windows-server-core-1709-virtualbox: windows-server-core-1709-amd64-virtualbox.box
 
-build-core-insider-libvirt: windows-core-insider-2016-amd64-libvirt.box
-build-core-insider-virtualbox: windows-core-insider-2016-amd64-virtualbox.box
+build-windows-core-insider-2016-libvirt: windows-core-insider-2016-amd64-libvirt.box
+build-windows-core-insider-2016-virtualbox: windows-core-insider-2016-amd64-virtualbox.box
 
 build-windows-10-libvirt: windows-10-amd64-libvirt.box
 build-windows-10-virtualbox: windows-10-amd64-virtualbox.box
