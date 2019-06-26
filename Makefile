@@ -1,184 +1,90 @@
+# Disable builtin rules and variables since they aren't used
+# This makes the output of "make -d" much easier to follow and speeds up evaluation
+MAKEFLAGS += --no-builtin-rules
+MAKEFLAGS += --no-builtin-variables
+
+# Normal (libvirt and VirtualBox) images
+IMAGES=
+IMAGES += windows-2012-r2
+IMAGES += windows-2016
+IMAGES += windows-2019
+IMAGES += windows-2019-uefi
+IMAGES += windows-server-core-1709
+IMAGES += windows-core-insider-2016
+IMAGES += windows-10
+IMAGES += windows-10-1903
+
+# Images supporting vSphere
+VSPHERE_IMAGES=windows-2016 windows-2019 windows-10
+
+# Generate build-* targets
+VIRTUALBOX_BUILDS=$(addsuffix -virtualbox,$(addprefix build-,$(IMAGES)))
+LIBVIRT_BUILDS=$(addsuffix -libvirt,$(addprefix build-,$(IMAGES)))
+VSPHERE_BUILDS=$(addsuffix -vsphere,$(addprefix build-,$(VSPHERE_IMAGES)))
+
+.PHONY: help $(VIRTUALBOX_BUILDS) $(LIBVIRT_BUILDS) $(VSPHERE_BUILDS)
+
 help:
-	@echo for Windows 2012 R2 type make build-windows-2012-r2-libvirt or make build-windows-2012-r2-virtualbox
-	@echo for Windows 2016 type make build-windows-2016-libvirt or make build-windows-2016-virtualbox
-	@echo for Windows 2019 type make build-windows-2019-libvirt or make build-windows-2019-virtualbox
-	@echo for Windows 10 type make build-windows-10-libvirt or make build-windows-10-virtualbox
-	@echo for Windows 10 1903 type make build-windows-10-1903-libvirt or make build-windows-10-1903-virtualbox
+	@echo VirtualBox Targets:
+	@$(addprefix echo make ,$(addsuffix ;,$(VIRTUALBOX_BUILDS)))
+	@echo
+	@echo libvirt Targets:
+	@$(addprefix echo make ,$(addsuffix ;,$(LIBVIRT_BUILDS)))
+	@echo
+	@echo vSphere Targets:
+	@$(addprefix echo make ,$(addsuffix ;,$(VSPHERE_BUILDS)))
 
-build-windows-2012-r2-virtualbox: windows-2012-r2-amd64-virtualbox.box
-build-windows-2012-r2-libvirt: windows-2012-r2-amd64-libvirt.box
+# Target Specific Pattern Rules for build-* targets
+$(VIRTUALBOX_BUILDS): build-%-virtualbox: %-amd64-virtualbox.box
+$(LIBVIRT_BUILDS): build-%-libvirt: %-amd64-libvirt.box
+$(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 
-build-windows-2016-libvirt: windows-2016-amd64-libvirt.box
-build-windows-2016-virtualbox: windows-2016-amd64-virtualbox.box
-build-windows-2016-vsphere: windows-2016-amd64-vsphere.box
-
-build-windows-2019-libvirt: windows-2019-amd64-libvirt.box
-build-windows-2019-uefi-libvirt: windows-2019-uefi-amd64-libvirt.box
-build-windows-2019-virtualbox: windows-2019-amd64-virtualbox.box
-build-windows-2019-uefi-virtualbox: windows-2019-uefi-amd64-virtualbox.box
-build-windows-2019-vsphere: windows-2019-amd64-vsphere.box
-
-build-windows-server-core-1709-libvirt: windows-server-core-1709-amd64-libvirt.box
-build-windows-server-core-1709-virtualbox: windows-server-core-1709-amd64-virtualbox.box
-
-build-core-insider-libvirt: windows-core-insider-2016-amd64-libvirt.box
-build-core-insider-virtualbox: windows-core-insider-2016-amd64-virtualbox.box
-
-build-windows-10-libvirt: windows-10-amd64-libvirt.box
-build-windows-10-virtualbox: windows-10-amd64-virtualbox.box
-build-windows-10-vsphere: windows-10-amd64-vsphere.box
-
-build-windows-10-1903-libvirt: windows-10-1903-amd64-libvirt.box
-build-windows-10-1903-virtualbox: windows-10-1903-amd64-virtualbox.box
-
-windows-2012-r2-amd64-libvirt.box: windows-2012-r2.json windows-2012-r2/autounattend.xml Vagrantfile.template *.ps1 drivers
+%-amd64-virtualbox.box: %.json %/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2012-r2-amd64-libvirt-packer.log \
-		packer build -only=windows-2012-r2-amd64-libvirt -on-error=abort windows-2012-r2.json
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-virtualbox-packer.log \
+		packer build -only=$*-amd64-virtualbox -on-error=abort $*.json
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-2012-r2-amd64 $@
+	@echo vagrant box add -f $*-amd64 $@
 
-windows-2012-r2-amd64-virtualbox.box: windows-2012-r2.json windows-2012-r2/autounattend.xml Vagrantfile.template *.ps1 drivers
+%-amd64-libvirt.box: %.json %/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2012-r2-amd64-virtualbox-packer.log \
-		packer build -only=windows-2012-r2-amd64-virtualbox -on-error=abort windows-2012-r2.json
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-libvirt-packer.log \
+		packer build -only=$*-amd64-libvirt -on-error=abort $*.json
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-2012-r2-amd64 $@
+	@echo vagrant box add -f $*-amd64 $@
 
-windows-2016-amd64-libvirt.box: windows-2016.json autounattend.xml Vagrantfile.template *.ps1 drivers
+%-uefi-amd64-virtualbox.box: %-uefi.json %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers %-uefi-amd64-virtualbox.iso
 	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2016-amd64-libvirt-packer.log \
-		packer build -only=windows-2016-amd64-libvirt -on-error=abort windows-2016.json
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-virtualbox-packer.log \
+		packer build -only=$*-uefi-amd64-virtualbox -on-error=abort $*-uefi.json
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-2016-amd64 $@
+	@echo vagrant box add -f $*-uefi-amd64 $@
 
-windows-2016-amd64-virtualbox.box: windows-2016.json autounattend.xml Vagrantfile.template *.ps1 drivers
+%-uefi-amd64-libvirt.box: %-uefi.json  %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
 	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2016-amd64-virtualbox-packer.log \
-		packer build -only=windows-2016-amd64-virtualbox -on-error=abort windows-2016.json
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-libvirt-packer.log \
+		packer build -only=$*-uefi-amd64-libvirt -on-error=abort $*-uefi.json
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-2016-amd64 $@
-
-windows-2016-amd64-vsphere.box: windows-2016-vsphere.json autounattend.xml Vagrantfile.template *.ps1
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2016-amd64-vsphere-packer.log \
-		packer build -only=windows-2016-amd64-vsphere -on-error=abort windows-2016-vsphere.json
-	@echo BOX successfully built!
-
-windows-2019-amd64-libvirt.box: windows-2019.json windows-2019/autounattend.xml Vagrantfile.template *.ps1 drivers
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2019-amd64-libvirt-packer.log \
-		packer build -only=windows-2019-amd64-libvirt -on-error=abort windows-2019.json
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-2019-amd64 $@
-
-windows-2019-uefi-amd64-libvirt.box: windows-2019-uefi.json windows-2019-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2019-uefi-amd64-libvirt-packer.log \
-		packer build -only=windows-2019-uefi-amd64-libvirt -on-error=abort windows-2019-uefi.json
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-2019-uefi-amd64 $@
-
-windows-2019-amd64-virtualbox.box: windows-2019.json windows-2019/autounattend.xml Vagrantfile.template *.ps1 drivers
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2019-amd64-virtualbox-packer.log \
-		packer build -only=windows-2019-amd64-virtualbox -on-error=abort windows-2019.json
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-2019-amd64 $@
-
-windows-2019-uefi-amd64-virtualbox.box: windows-2019-uefi.json windows-2019-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers windows-2019-uefi-amd64-virtualbox.iso
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2019-uefi-amd64-virtualbox-packer.log \
-		packer build -only=windows-2019-uefi-amd64-virtualbox -on-error=abort windows-2019-uefi.json
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-2019-uefi-amd64 $@
+	@echo vagrant box add -f $*-uefi-amd64 $@
 
 windows-2019-uefi-amd64-virtualbox.iso: windows-2019-uefi/autounattend.xml winrm.ps1
 	xorrisofs -J -R -input-charset ascii -o $@ $^
 
-windows-2019-amd64-vsphere.box: windows-2019-vsphere.json windows-2019/autounattend.xml Vagrantfile.template *.ps1
+%-amd64-vsphere.box: %-vsphere.json %/autounattend.xml Vagrantfile.template *.ps1
 	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-2019-amd64-vsphere-packer.log \
-		packer build -only=windows-2019-amd64-vsphere -on-error=abort windows-2019-vsphere.json
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-vsphere-packer.log \
+		packer build -only=$*-amd64-vsphere -on-error=abort $*-vsphere.json
 	@echo BOX successfully built!
 
-windows-server-core-1709-amd64-libvirt.box: windows-server-core-1709.json windows-server-core-1709/autounattend.xml Vagrantfile.template *.ps1 drivers
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-server-core-1709-amd64-libvirt-packer.log \
-		packer build -only=windows-server-core-1709-amd64-libvirt -on-error=abort windows-server-core-1709.json
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-server-core-1709-amd64 $@
-
-windows-server-core-1709-amd64-virtualbox.box: windows-server-core-1709.json windows-server-core-1709/autounattend.xml Vagrantfile.template *.ps1 drivers
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-server-core-1709-amd64-virtualbox-packer.log \
-		packer build -only=windows-server-core-1709-amd64-virtualbox -on-error=abort windows-server-core-1709.json
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-server-core-1709-amd64 $@
-
-windows-core-insider-2016-amd64-libvirt.box: windows-core-insider-2016.json windows-core-insider-2016/autounattend.xml Vagrantfile.template *.ps1 drivers
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-core-insider-2016-amd64-libvirt-packer.log \
-		packer build -only=windows-core-insider-2016-amd64-libvirt -on-error=abort windows-core-insider-2016.json
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-core-insider-2016-amd64 $@
-
-windows-core-insider-2016-amd64-virtualbox.box: windows-core-insider-2016.json windows-core-insider-2016/autounattend.xml Vagrantfile.template *.ps1 drivers
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-core-insider-2016-amd64-virtualbox-packer.log \
-		packer build -only=windows-core-insider-2016-amd64-virtualbox -on-error=abort windows-core-insider-2016.json
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-core-insider-2016-amd64 $@
-
-windows-10-amd64-libvirt.box: windows-10.json windows-10/autounattend.xml Vagrantfile.template *.ps1 drivers
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-10-amd64-libvirt-packer.log \
-		packer build -only=windows-10-amd64-libvirt -on-error=abort windows-10.json
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-10-amd64 $@
-
-windows-10-amd64-virtualbox.box: windows-10.json windows-10/autounattend.xml Vagrantfile.template *.ps1 drivers
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-10-amd64-virtualbox-packer.log \
-		packer build -only=windows-10-amd64-virtualbox -on-error=abort windows-10.json
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-10-amd64 $@
-
-windows-10-amd64-vsphere.box: windows-10-vsphere.json windows-10/autounattend.xml Vagrantfile.template *.ps1
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-10-amd64-vsphere-packer.log \
-		packer build -only=windows-10-amd64-vsphere -on-error=abort windows-10-vsphere.json
-	@echo BOX successfully built!
-
-windows-10-1903-amd64-libvirt.box: windows-10-1903.json windows-10/autounattend.xml Vagrantfile.template *.ps1 drivers
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-10-1903-amd64-libvirt-packer.log \
-		packer build -only=windows-10-1903-amd64-libvirt -on-error=abort windows-10-1903.json
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-10-1903-amd64 $@
-
-windows-10-1903-amd64-virtualbox.box: windows-10-1903.json windows-10/autounattend.xml Vagrantfile.template *.ps1 drivers
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=windows-10-1903-amd64-virtualbox-packer.log \
-		packer build -only=windows-10-1903-amd64-virtualbox -on-error=abort windows-10-1903.json
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f windows-10-1903-amd64 $@
+# Windows 10 1903 depends on same autounattend as original Windows 10
+# Create a dummy to allow use of pattern rules and maintain prerequisite chain
+windows-10-1903/autounattend.xml: windows-10/autounattend.xml
+	mkdir -p windows-10-1903
+	touch $@
 
 drivers:
 	rm -rf drivers.tmp
