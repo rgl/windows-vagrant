@@ -83,11 +83,9 @@ windows-2019-uefi-amd64-virtualbox.iso: windows-2019-uefi/autounattend.xml winrm
 		packer build -only=$*-amd64-vsphere -on-error=abort $*-vsphere.json
 	@echo BOX successfully built!
 
-# Windows 10 1903 depends on same autounattend as original Windows 10
-# Create a dummy to allow use of pattern rules and maintain prerequisite chain
-windows-10-1903/autounattend.xml: windows-10/autounattend.xml
-	mkdir -p windows-10-1903
-	touch $@
+# Windows 10 1903 depends on the same autounattend as Windows 10
+# This allows the use of pattern rules by satisfying the prerequisite
+.PHONY: windows-10-1903/autounattend.xml
 
 drivers:
 	rm -rf drivers.tmp
