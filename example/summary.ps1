@@ -48,6 +48,13 @@ Get-ComputerInfo `
         BiosVersion `
     | Format-List
 
+Write-Title 'Device Drivers'
+driverquery.exe /fo csv /v `
+    | ConvertFrom-Csv `
+    | Where-Object {$_.State -ne 'Stopped'} `
+    | Select-Object -Property 'Module Name','Path','Display Name' `
+    | Sort-Object -Property 'Module Name'
+
 Write-Title 'Operating System version (from Get-ComputerInfo)'
 Get-ComputerInfo `
     -Property `
