@@ -131,6 +131,10 @@
     },
     {
       "type": "powershell",
+      "script": "enable-remote-desktop.ps1"
+    },
+    {
+      "type": "powershell",
       "script": "provision-openssh.ps1"
     },
     {
