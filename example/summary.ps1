@@ -151,7 +151,14 @@ Write-Title 'Installed Windows Updates'
 function Get-InstalledWindowsUpdates {
     $session = New-Object -ComObject 'Microsoft.Update.Session'
     $searcher = $session.CreateUpdateSearcher()
-    $session.QueryHistory($null, 0, $searcher.GetTotalHistoryCount()) | Where-Object {$_.ResultCode} | ForEach-Object {
+    $totalHistoryCount = $searcher.GetTotalHistoryCount()
+    if ($totalHistoryCount -eq 0) {
+        # on recent windows updates (e.g. 2019-09) after we optimize the SxS,
+        # the searcher no longer returns any results, despite the cummulative
+        # updates being installed.
+        return
+    }
+    $session.QueryHistory($null, 0, $totalHistoryCount) | Where-Object {$_.ResultCode} | ForEach-Object {
         New-Object PSObject -Property @{
             Date = $_.Date
             Title = $_.Title
