@@ -39,6 +39,7 @@ And test this base box by launching an example Vagrant environment:
 
 ```bash
 cd example
+vagrant plugin install vagrant-windows-sysprep
 vagrant up --provider=virtualbox # or --provider=libvirt
 ```
 
