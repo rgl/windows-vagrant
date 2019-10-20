@@ -57,8 +57,8 @@ function Install-OpenSshBinaries {
     Install-ZippedApplication `
         $openSshHome `
         OpenSSH `
-        https://github.com/PowerShell/Win32-OpenSSH/releases/download/v7.7.2.0p1-Beta/OpenSSH-Win64.zip `
-        8631f00013116388362cb06f3e6fd2c44c8e57d8f857033111f98feb34fa5bce
+        https://github.com/PowerShell/Win32-OpenSSH/releases/download/v8.0.0.0p1-Beta/OpenSSH-Win64.zip `
+        222b5f035392d4daae4caf180257b8da8d42613f68a1aee82ba917984ac630ba
     Push-Location $openSshHome
     Move-Item OpenSSH-Win64\* .
     Remove-Item OpenSSH-Win64
@@ -70,7 +70,13 @@ Install-Rsync
 Write-Host 'Installing the PowerShell/Win32-OpenSSH service...'
 Install-OpenSshBinaries
 mkdir -Force $openSshConfigHome | Out-Null
-Copy-Item "$openSshHome\sshd_config_default" "$openSshConfigHome\sshd_config"
+$originalSshdConfig = Get-Content -Raw "$openSshHome\sshd_config_default"
+# Configure the Administrators group to also use the ~/.ssh/authorized_keys file.
+# see https://github.com/PowerShell/Win32-OpenSSH/issues/1324
+$sshdConfig = $originalSshdConfig `
+    -replace '(?m)^(Match Group administrators.*)','#$1' `
+    -replace '(?m)^(\s*AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys.*)','#$1'
+Set-Content -Encoding ascii "$openSshConfigHome\sshd_config" $sshdConfig
 &"$openSshHome\install-sshd.ps1"
 
 Write-Host 'Generating the host SSH keys...' 
