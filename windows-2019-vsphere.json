@@ -88,6 +88,10 @@
     },
     {
       "type": "powershell",
+      "script": "provision-cloudbase-init.ps1"
+    },
+    {
+      "type": "powershell",
       "script": "eject-media.ps1"
     },
     {

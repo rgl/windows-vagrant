@@ -20,6 +20,18 @@ $artifactUrl = 'https://www.cloudbase.it/downloads/CloudbaseInitSetup_x64.msi'
 $artifactPath = "$env:TEMP\$(Split-Path -Leaf $artifactUrl)"
 $artifactLogPath = "$artifactPath.log"
 
+$systemVendor = (Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor
+if ($systemVendor -eq 'QEMU') {
+    $branch = 'add-no-cloud'
+    $metadataServices = 'cloudbaseinit.metadata.services.nocloud.NoCloudConfigDriveService'
+} elseif ($systemVendor -eq 'VMware, Inc.') {
+    $branch = 'add-vmware-guestinfo-service'
+    $metadataServices = 'cloudbaseinit.metadata.services.vmwareguestinfoservice.VMwareGuestInfoService'
+} else {
+    Write-Host "WARNING: cloudbase-init is not supported on your system vendor $systemVendor"
+    Exit 0
+}
+
 Write-Host 'Downloading the cloudbase-init setup...'
 (New-Object System.Net.WebClient).DownloadFile($artifactUrl, $artifactPath)
 
@@ -31,8 +43,8 @@ if ($LASTEXITCODE) {
     throw "Failed with Exit Code $LASTEXITCODE"
 }
 
-Write-Host 'Downloading the rgl/cloudbase-init no-cloud branch...'
-$artifactUrl = 'https://github.com/rgl/cloudbase-init/archive/add-no-cloud.zip'
+Write-Host "Downloading the rgl/cloudbase-init $branch branch..."
+$artifactUrl = "https://github.com/rgl/cloudbase-init/archive/$branch.zip"
 $artifactPath = "$env:TEMP\$(Split-Path -Leaf $artifactUrl)"
 (New-Object System.Net.WebClient).DownloadFile($artifactUrl, $artifactPath)
 
@@ -75,7 +87,7 @@ log_dir=$cloudbaseInitHome\log
 log_file=cloudbase-init.log
 bsdtar_path=$cloudbaseInitHome\bin\bsdtar.exe
 mtools_path=$cloudbaseInitHome\bin\
-metadata_services=cloudbaseinit.metadata.services.nocloud.NoCloudConfigDriveService
+metadata_services=$metadataServices
 
 [config_drive]
 locations=cdrom
