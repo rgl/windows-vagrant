@@ -12,6 +12,11 @@ trap {
     Exit 1
 }
 
+# enable TLS 1.1 and 1.2.
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol `
+    -bor [Net.SecurityProtocolType]::Tls11 `
+    -bor [Net.SecurityProtocolType]::Tls12
+
 $cloudbaseInitHome = 'C:\Program Files\Cloudbase Solutions\Cloudbase-Init'
 $cloudbaseInitConfPath = "$cloudbaseInitHome\conf\cloudbase-init.conf"
 $cloudbaseInitPackagePath = "$cloudbaseInitHome\Python\Lib\site-packages\cloudbaseinit"
