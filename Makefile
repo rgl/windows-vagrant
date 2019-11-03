@@ -77,15 +77,23 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 windows-2019-uefi-amd64-virtualbox.iso: windows-2019-uefi/autounattend.xml winrm.ps1
 	xorrisofs -J -R -input-charset ascii -o $@ $^
 
-%-amd64-vsphere.box: %-vsphere.json %/autounattend.xml Vagrantfile.template *.ps1
+%-amd64-vsphere.box: %-vsphere.json %/autounattend.xml dummy-windows-vsphere.box *.ps1
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-vsphere-packer.log \
 		packer build -only=$*-amd64-vsphere -on-error=abort $*-vsphere.json
 	@echo BOX successfully built!
+	@echo to add to local vagrant install do:
+	@echo vagrant box add -f dummy-windows dummy-windows-vsphere.box
 
 # Windows 10 1903 depends on the same autounattend as Windows 10
 # This allows the use of pattern rules by satisfying the prerequisite
 .PHONY: windows-10-1903/autounattend.xml
+
+dummy-windows-vsphere.box: Vagrantfile.template
+	echo '{"provider":"vsphere"}' >metadata.json
+	cp Vagrantfile.template Vagrantfile
+	tar cvf $@ metadata.json Vagrantfile
+	rm metadata.json Vagrantfile
 
 drivers:
 	rm -rf drivers.tmp

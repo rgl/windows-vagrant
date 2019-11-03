@@ -7,3 +7,4 @@ isos/
 *.log
 *.old
 *.iso
+secrets*

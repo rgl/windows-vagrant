@@ -22,6 +22,24 @@ Vagrant.configure(2) do |config|
     vb.cpus = 2
   end
 
+  config.vm.provider 'vsphere' do |vsphere, override|
+    override.vm.box = 'dummy-windows'
+    vsphere.name = ENV['VSPHERE_VM_NAME']
+    vsphere.notes = "Created from #{__FILE__}"
+    vsphere.cpu_count = 2
+    vsphere.memory_mb = 4*1024
+    vsphere.user = ENV['GOVC_USERNAME']
+    vsphere.password = ENV['GOVC_PASSWORD']
+    vsphere.insecure = true
+    vsphere.host = ENV['GOVC_HOST']
+    vsphere.data_center_name = ENV['GOVC_DATACENTER']
+    vsphere.compute_resource_name = ENV['GOVC_CLUSTER']
+    vsphere.data_store_name = ENV['GOVC_DATASTORE']
+    vsphere.template_name = ENV['VSPHERE_TEMPLATE_NAME']
+    vsphere.vm_base_path = ENV['VSPHERE_VM_FOLDER']
+    vsphere.vlan = ENV['VSPHERE_VLAN']
+  end
+
   config.vm.provision "windows-sysprep"
   config.vm.provision "shell", inline: "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
   config.vm.provision "shell", path: "provision-adk.ps1"

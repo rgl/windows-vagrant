@@ -73,16 +73,60 @@ spicy --uri 'spice+unix:///tmp/packer-windows-2016-amd64-libvirt-spice.socket'
 
 ## VMware vSphere
 
-Download `packer-builder-vsphere-iso.exe` v2.3 from the [jetbrains-infra/packer-builder-vsphere releases page](https://github.com/jetbrains-infra/packer-builder-vsphere/releases) and place it inside your `%USERPROFILE%\packer.d\plugins` or `%APPDATA%\packer.d\plugins` directory.
+Download `packer-builder-vsphere-iso` v2.3 from the [jetbrains-infra/packer-builder-vsphere releases page](https://github.com/jetbrains-infra/packer-builder-vsphere/releases) and place it inside your `~/.packer.d/plugins` directory (on Windows its at `%USERPROFILE%\packer.d\plugins` or `%APPDATA%\packer.d\plugins`).
 
 Download the Windows Evaluation ISO (you can find the full iso URL in the [windows-2016-vsphere.json](windows-2016-vsphere.json) file) and place it inside the datastore as defined by the `vsphere_iso_url` user variable that is inside the [packer template](windows-2016-vsphere.json).
 
 Download the [VMware Tools VMware-tools-windows-&lt;SAME_VERSION_AS_IN_PACKER_TEMPLATE&gt;.iso](https://packages.vmware.com/tools/releases/index.html) file into the datastore defined by the `vsphere_tools_iso_url` user variable that is inside the [packer template](windows-2016-vsphere.json).
 
+Download [govc](https://github.com/vmware/govmomi/releases/latest) and place it inside your `/usr/local/bin` directory.
+
+Install the vsphere vagrant plugin, set your vSphere details, and test the connection to vSphere:
+
+```bash
+sudo apt-get install build-essential patch ruby-dev zlib1g-dev liblzma-dev
+vagrant plugin install vagrant-vsphere
+vagrant plugin install vagrant-windows-sysprep
+cd example
+cat >secrets.sh <<EOF
+export GOVC_INSECURE='1'
+export GOVC_HOST='vsphere.local'
+export GOVC_URL="https://$GOVC_HOST/sdk"
+export GOVC_USERNAME='administrator@vsphere.local'
+export GOVC_PASSWORD='password'
+export GOVC_DATACENTER='Datacenter'
+export GOVC_CLUSTER='Cluster'
+export GOVC_DATASTORE='Datastore'
+export VSPHERE_ESXI_HOST='esxi.local'
+export VSPHERE_TEMPLATE_FOLDER='test/templates'
+export VSPHERE_TEMPLATE_NAME="$VSPHERE_TEMPLATE_FOLDER/windows-2019-amd64-vsphere"
+export VSPHERE_VM_FOLDER='test'
+export VSPHERE_VM_NAME='windows-2019-vagrant-example'
+export VSPHERE_VLAN='packer'
+EOF
+source secrets.sh
+# see https://github.com/vmware/govmomi/blob/master/govc/USAGE.md
+govc version
+govc about
+govc datacenter.info # list datacenters
+govc find # find all managed objects
+```
+
 Build the base box with:
 
 ```bash
-make build-windows-2016-vsphere
+make build-windows-2019-vsphere
+```
+
+Try the example guest:
+
+```bash
+source secrets.sh
+echo $VSPHERE_TEMPLATE_NAME # check if you are using the expected template.
+vagrant up --provider=vsphere
+vagrant ssh
+exit
+vagrant destroy -f
 ```
 
 

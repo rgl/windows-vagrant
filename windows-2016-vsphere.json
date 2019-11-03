@@ -1,18 +1,21 @@
 {
   "variables": {
     "vsphere_disk_size": "61440",
-    "vsphere_iso_url": "[Datastore] iso/14393.0.161119-1705.RS1_REFRESH_SERVER_EVAL_X64FRE_EN-US.ISO",
-    "vsphere_tools_iso_url": "[Datastore] iso/VMware-tools-windows-10.3.5-10430147.iso",
-    "vsphere_host": "vcenter.local",
-    "vsphere_username": "administrator@vsphere.local",
-    "vsphere_password": "password",
-    "vsphere_esxi_host": "esxi.local",
-    "vsphere_datacenter": "Datacenter",
-    "vsphere_cluster": "Cluster",
-    "vsphere_datastore": "Datastore",
-    "vsphere_folder": "test",
-    "vsphere_network": "packer"
+    "vsphere_iso_url": "[{{env `GOVC_DATASTORE`}}] iso/windows-2016-14393.0.161119-1705.RS1_REFRESH_SERVER_EVAL_X64FRE_EN-US.ISO",
+    "vsphere_tools_iso_url": "[{{env `GOVC_DATASTORE`}}] iso/VMware-tools-windows-11.0.1-14773994.iso",
+    "vsphere_host": "{{env `GOVC_HOST`}}",
+    "vsphere_username": "{{env `GOVC_USERNAME`}}",
+    "vsphere_password": "{{env `GOVC_PASSWORD`}}",
+    "vsphere_esxi_host": "{{env `VSPHERE_ESXI_HOST`}}",
+    "vsphere_datacenter": "{{env `GOVC_DATACENTER`}}",
+    "vsphere_cluster": "{{env `GOVC_CLUSTER`}}",
+    "vsphere_datastore": "{{env `GOVC_DATASTORE`}}",
+    "vsphere_folder": "{{env `VSPHERE_TEMPLATE_FOLDER`}}",
+    "vsphere_network": "{{env `VSPHERE_VLAN`}}"
   },
+  "sensitive-variables": [
+    "vsphere_password"
+  ],
   "builders": [
     {
       "name": "windows-2016-amd64-vsphere",
