@@ -81,6 +81,14 @@ windows-2019-uefi-amd64-virtualbox.iso: windows-2019-uefi/autounattend.xml winrm
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-vsphere-packer.log \
 		packer build -only=$*-amd64-vsphere -on-error=abort $*-vsphere.json
+	@echo 'Removing all cd-roms (except the first)...'
+	govc device.ls "-vm.ipath=$$VSPHERE_TEMPLATE_IPATH" \
+		| grep ^cdrom- \
+		| tail -n+2 \
+		| awk '{print $$1}' \
+		| xargs -L1 govc device.remove "-vm.ipath=$$VSPHERE_TEMPLATE_IPATH"
+	@echo 'Converting to template...'
+	govc vm.markastemplate "$$VSPHERE_TEMPLATE_IPATH"
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f dummy-windows dummy-windows-vsphere.box

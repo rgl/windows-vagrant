@@ -36,7 +36,7 @@
       "datastore": "{{user `vsphere_datastore`}}",
       "network_card": "vmxnet3",
       "network": "{{user `vsphere_network`}}",
-      "convert_to_template": true,
+      "convert_to_template": false,
       "RAM": 4096,
       "CPUs": 4,
       "iso_paths": [

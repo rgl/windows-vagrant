@@ -88,7 +88,7 @@ sudo apt-get install build-essential patch ruby-dev zlib1g-dev liblzma-dev
 vagrant plugin install vagrant-vsphere
 vagrant plugin install vagrant-windows-sysprep
 cd example
-cat >secrets.sh <<EOF
+cat >secrets.sh <<'EOF'
 export GOVC_INSECURE='1'
 export GOVC_HOST='vsphere.local'
 export GOVC_URL="https://$GOVC_HOST/sdk"
@@ -100,6 +100,7 @@ export GOVC_DATASTORE='Datastore'
 export VSPHERE_ESXI_HOST='esxi.local'
 export VSPHERE_TEMPLATE_FOLDER='test/templates'
 export VSPHERE_TEMPLATE_NAME="$VSPHERE_TEMPLATE_FOLDER/windows-2019-amd64-vsphere"
+export VSPHERE_TEMPLATE_IPATH="//$GOVC_DATACENTER/vm/$VSPHERE_TEMPLATE_NAME"
 export VSPHERE_VM_FOLDER='test'
 export VSPHERE_VM_NAME='windows-2019-vagrant-example'
 export VSPHERE_VLAN='packer'
