@@ -1,7 +1,7 @@
 {
   "variables": {
     "vsphere_disk_size": "61440",
-    "vsphere_iso_url": "[{{env `GOVC_DATASTORE`}}] iso/windows-10-17763.107.101029-1455.rs5_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso",
+    "vsphere_iso_url": "[{{env `GOVC_DATASTORE`}}] iso/windows-10-1607-17763.107.101029-1455.rs5_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso",
     "vsphere_tools_iso_url": "[{{env `GOVC_DATASTORE`}}] iso/VMware-tools-windows-11.0.1-14773994.iso",
     "vsphere_host": "{{env `GOVC_HOST`}}",
     "vsphere_username": "{{env `GOVC_USERNAME`}}",

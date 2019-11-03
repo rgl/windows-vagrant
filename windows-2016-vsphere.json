@@ -1,7 +1,7 @@
 {
   "variables": {
     "vsphere_disk_size": "61440",
-    "vsphere_iso_url": "[{{env `GOVC_DATASTORE`}}] iso/windows-2016-14393.0.161119-1705.RS1_REFRESH_SERVER_EVAL_X64FRE_EN-US.ISO",
+    "vsphere_iso_url": "[{{env `GOVC_DATASTORE`}}] iso/windows-2016-Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
     "vsphere_tools_iso_url": "[{{env `GOVC_DATASTORE`}}] iso/VMware-tools-windows-11.0.1-14773994.iso",
     "vsphere_host": "{{env `GOVC_HOST`}}",
     "vsphere_username": "{{env `GOVC_USERNAME`}}",
@@ -44,7 +44,7 @@
         "{{user `vsphere_tools_iso_url`}}"
       ],
       "floppy_files": [
-        "autounattend.xml",
+        "windows-2016/autounattend.xml",
         "vmtools.ps1",
         "winrm.ps1"
       ],
