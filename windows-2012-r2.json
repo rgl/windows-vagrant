@@ -105,11 +105,6 @@
       "type": "windows-restart"
     },
     {
-      "type": "file",
-      "source": "drivers/virtio-2012-r2.zip",
-      "destination": "C:/Windows/Temp/virtio/virtio.zip"
-    },
-    {
       "type": "powershell",
       "script": "provision.ps1"
     },

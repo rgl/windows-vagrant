@@ -118,12 +118,6 @@
       "type": "windows-restart"
     },
     {
-      "type": "file",
-      "source": "drivers/virtio-2019.zip",
-      "destination": "C:/Windows/Temp/virtio/virtio.zip",
-      "only": ["windows-2019-uefi-amd64-libvirt"]
-    },
-    {
       "type": "powershell",
       "script": "provision.ps1"
     },

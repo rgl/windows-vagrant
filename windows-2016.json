@@ -112,11 +112,6 @@
       "script": "libvirt-fix-cpu-driver.ps1"
     },
     {
-      "type": "file",
-      "source": "drivers/virtio-2016.zip",
-      "destination": "C:/Windows/Temp/virtio/virtio.zip"
-    },
-    {
       "type": "powershell",
       "script": "provision.ps1"
     },
