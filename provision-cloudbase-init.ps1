@@ -37,8 +37,18 @@ if ($systemVendor -eq 'QEMU') {
     Exit 0
 }
 
-Write-Host 'Downloading the cloudbase-init setup...'
-(New-Object System.Net.WebClient).DownloadFile($artifactUrl, $artifactPath)
+# NB we might have to retry the download due to errors:
+#       The underlying connection was closed: Could not establish trust relationship for the SSL/TLS secure channel
+while ($true) {
+    try {
+        Write-Host 'Downloading the cloudbase-init setup...'
+        (New-Object System.Net.WebClient).DownloadFile($artifactUrl, $artifactPath)
+        break
+    } catch {
+        Write-Host "Failed to download the cloudbase-init setup. Trying in a bit due to error $_"
+        Start-Sleep -Seconds 5
+    }
+}
 
 Write-Host 'Installing cloudbase-init...'
 # NB this also installs the cloudbase-init service, which will automatically start on the next boot.
