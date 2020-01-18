@@ -7,7 +7,7 @@ Install [VirtualBox](https://www.virtualbox.org/) (or [libvirt](https://libvirt.
 If you are using Windows and [Chocolatey](https://chocolatey.org/), you can install everything with:
 
 ```batch
-choco install -y virtualbox packer packer-provisioner-windows-update vagrant
+choco install -y virtualbox packer packer-provisioner-windows-update vagrant msys2
 ```
 
 To build the base box based on the [Windows Server 2016 Evaluation](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2016) ISO run:
