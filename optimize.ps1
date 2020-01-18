@@ -92,6 +92,18 @@ Wait-Condition {@(Get-ScheduledTasks | Where-Object {($_.State -ge 4) -and (Test
 
 
 #
+# generate the .net frameworks native images.
+# NB this is normally done in the Automatic Maintenance step, but for
+#    some reason, sometimes its not.
+# see https://docs.microsoft.com/en-us/dotnet/framework/tools/ngen-exe-native-image-generator
+
+Get-ChildItem "$env:windir\Microsoft.NET\*\*\ngen.exe" | ForEach-Object {
+    Write-Host "Generating the .NET Framework native images with $_..."
+    &$_ executeQueuedItems /nologo /silent
+}
+
+
+#
 # remove temporary files.
 
 Write-Host 'Stopping services that might interfere with temporary file removal...'
