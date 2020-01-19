@@ -8,8 +8,6 @@ IMAGES+= windows-2012-r2
 IMAGES+= windows-2016
 IMAGES+= windows-2019
 IMAGES+= windows-2019-uefi
-IMAGES+= windows-server-core-1709
-IMAGES+= windows-core-insider-2016
 IMAGES+= windows-10
 IMAGES+= windows-10-1903
 
