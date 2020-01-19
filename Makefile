@@ -46,6 +46,9 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-virtualbox-packer.log \
 		packer build -only=$*-amd64-virtualbox -on-error=abort $*.json
+	./get-windows-updates-from-packer-log.sh \
+		$*-amd64-virtualbox-packer.log \
+		>$*-amd64-virtualbox-windows-updates.log
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-amd64 $@
@@ -54,6 +57,9 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-libvirt-packer.log \
 		packer build -only=$*-amd64-libvirt -on-error=abort $*.json
+	./get-windows-updates-from-packer-log.sh \
+		$*-amd64-libvirt-packer.log \
+		>$*-amd64-libvirt-windows-updates.log
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-amd64 $@
@@ -62,6 +68,9 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-virtualbox-packer.log \
 		packer build -only=$*-uefi-amd64-virtualbox -on-error=abort $*-uefi.json
+	./get-windows-updates-from-packer-log.sh \
+		$*-uefi-amd64-virtualbox-packer.log \
+		>$*-uefi-amd64-virtualbox-windows-updates.log
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-uefi-amd64 $@
@@ -70,6 +79,9 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-libvirt-packer.log \
 		packer build -only=$*-uefi-amd64-libvirt -on-error=abort $*-uefi.json
+	./get-windows-updates-from-packer-log.sh \
+		$*-uefi-amd64-libvirt-packer.log \
+		>$*-uefi-amd64-libvirt-windows-updates.log
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-uefi-amd64 $@
@@ -81,6 +93,9 @@ windows-2019-uefi-amd64-virtualbox.iso: windows-2019-uefi/autounattend.xml winrm
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-vsphere-packer.log \
 		packer build -only=$*-amd64-vsphere -on-error=abort $*-vsphere.json
+	./get-windows-updates-from-packer-log.sh \
+		$*-amd64-vsphere-packer.log \
+		>$*-amd64-vsphere-windows-updates.log
 	@echo 'Removing all cd-roms (except the first)...'
 	govc device.ls "-vm.ipath=$$VSPHERE_TEMPLATE_IPATH" \
 		| grep ^cdrom- \
