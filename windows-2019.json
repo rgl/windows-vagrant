@@ -66,6 +66,7 @@
       "memory": 4096,
       "vboxmanage": [
         ["storagectl", "{{.Name}}", "--name", "IDE Controller", "--remove"],
+        ["modifyvm", "{{.Name}}", "--vrde", "off"],
         ["modifyvm", "{{.Name}}", "--vram", "64"],
         ["modifyvm", "{{.Name}}", "--audio", "none"],
         ["modifyvm", "{{.Name}}", "--nictype1", "82540EM"],

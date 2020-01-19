@@ -73,6 +73,7 @@
         ["storagectl", "{{.Name}}", "--name", "IDE Controller", "--remove"],
         ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "3", "--type", "dvddrive", "--medium", "windows-2019-uefi-amd64-virtualbox.iso"],
         ["modifyvm", "{{.Name}}", "--firmware", "efi"],
+        ["modifyvm", "{{.Name}}", "--vrde", "off"],
         ["modifyvm", "{{.Name}}", "--vram", "64"],
         ["modifyvm", "{{.Name}}", "--audio", "none"],
         ["modifyvm", "{{.Name}}", "--nictype1", "82540EM"],
