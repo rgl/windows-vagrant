@@ -64,12 +64,13 @@
       "name": "windows-2019-uefi-amd64-virtualbox",
       "type": "virtualbox-iso",
       "guest_os_type": "Windows2016_64",
-      "guest_additions_mode": "disable",
+      "guest_additions_mode": "attach",
+      "guest_additions_interface": "sata",
       "headless": true,
       "cpus": 2,
       "memory": 4096,
       "vboxmanage": [
-        ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "2", "--type", "dvddrive", "--medium", "/usr/share/virtualbox/VBoxGuestAdditions.iso"],
+        ["storagectl", "{{.Name}}", "--name", "IDE Controller", "--remove"],
         ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "3", "--type", "dvddrive", "--medium", "windows-2019-uefi-amd64-virtualbox.iso"],
         ["modifyvm", "{{.Name}}", "--firmware", "efi"],
         ["modifyvm", "{{.Name}}", "--vram", "64"],
@@ -80,8 +81,7 @@
         ["modifyvm", "{{.Name}}", "--nictype4", "82540EM"]
       ],
       "vboxmanage_post": [
-        ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "3", "--medium", "none"],
-        ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "2", "--medium", "none"]
+        ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "3", "--medium", "none"]
       ],
       "disk_size": "{{user `disk_size`}}",
       "hard_drive_interface": "sata",
