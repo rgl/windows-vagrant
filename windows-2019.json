@@ -67,7 +67,11 @@
       "vboxmanage": [
         ["storagectl", "{{.Name}}", "--name", "IDE Controller", "--remove"],
         ["modifyvm", "{{.Name}}", "--vrde", "off"],
-        ["modifyvm", "{{.Name}}", "--vram", "64"],
+        ["modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga"],
+        ["modifyvm", "{{.Name}}", "--vram", "128"],
+        ["modifyvm", "{{.Name}}", "--accelerate3d", "on"],
+        ["modifyvm", "{{.Name}}", "--usb", "on"],
+        ["modifyvm", "{{.Name}}", "--mouse", "usbtablet"],
         ["modifyvm", "{{.Name}}", "--audio", "none"],
         ["modifyvm", "{{.Name}}", "--nictype1", "82540EM"],
         ["modifyvm", "{{.Name}}", "--nictype2", "82540EM"],
