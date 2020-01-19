@@ -58,7 +58,7 @@
     {
       "name": "windows-2019-amd64-virtualbox",
       "type": "virtualbox-iso",
-      "guest_os_type": "Windows2016_64",
+      "guest_os_type": "Windows2019_64",
       "guest_additions_mode": "attach",
       "guest_additions_interface": "sata",
       "headless": true,
