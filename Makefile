@@ -122,6 +122,6 @@ drivers:
 	@# see https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/index.html
 	@# see https://github.com/virtio-win/virtio-win-guest-tools-installer
 	@# see https://github.com/crobinso/virtio-win-pkg-scripts
-	wget -P drivers.tmp https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.173-6/virtio-win-0.1.173.iso
+	wget -P drivers.tmp https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.173-7/virtio-win-0.1.173.iso
 	7z x -odrivers.tmp drivers.tmp/virtio-win-*.iso
 	mv drivers.tmp drivers
