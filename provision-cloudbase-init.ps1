@@ -19,18 +19,15 @@ trap {
 
 $cloudbaseInitHome = 'C:\Program Files\Cloudbase Solutions\Cloudbase-Init'
 $cloudbaseInitConfPath = "$cloudbaseInitHome\conf\cloudbase-init.conf"
-$cloudbaseInitPackagePath = "$cloudbaseInitHome\Python\Lib\site-packages\cloudbaseinit"
 
-$artifactUrl = 'https://www.cloudbase.it/downloads/CloudbaseInitSetup_x64.msi'
+$artifactUrl = 'https://github.com/rgl/cloudbase-init-installer/releases/download/v0.0.0.20200215/CloudbaseInitSetup-add-no-cloud.msi'
 $artifactPath = "$env:TEMP\$(Split-Path -Leaf $artifactUrl)"
 $artifactLogPath = "$artifactPath.log"
 
 $systemVendor = (Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor
 if ($systemVendor -eq 'QEMU') {
-    $branch = 'add-no-cloud'
-    $metadataServices = 'cloudbaseinit.metadata.services.nocloud.NoCloudConfigDriveService'
+    $metadataServices = 'cloudbaseinit.metadata.services.configdrive.NoCloudConfigDriveService'
 } elseif ($systemVendor -eq 'VMware, Inc.') {
-    $branch = 'add-vmware-guestinfo-service'
     $metadataServices = 'cloudbaseinit.metadata.services.vmwareguestinfoservice.VMwareGuestInfoService'
 } else {
     Write-Host "WARNING: cloudbase-init is not supported on your system vendor $systemVendor"
@@ -57,18 +54,6 @@ msiexec /i $artifactPath /qn /l*v $artifactLogPath | Out-String -Stream
 if ($LASTEXITCODE) {
     throw "Failed with Exit Code $LASTEXITCODE"
 }
-
-Write-Host "Downloading the rgl/cloudbase-init $branch branch..."
-$artifactUrl = "https://github.com/rgl/cloudbase-init/archive/$branch.zip"
-$artifactPath = "$env:TEMP\$(Split-Path -Leaf $artifactUrl)"
-(New-Object System.Net.WebClient).DownloadFile($artifactUrl, $artifactPath)
-
-Write-Host 'Replacing the cloudbaseinit package with rgl/cloudbase-init...'
-Expand-Archive $artifactPath "$artifactPath-extracted"
-$cloudbaseInitTmpPackagePath = Resolve-Path "$artifactPath-extracted\*\cloudbaseinit"
-Remove-Item -Recurse $cloudbaseInitPackagePath
-Copy-Item -Recurse $cloudbaseInitTmpPackagePath $cloudbaseInitPackagePath
-Remove-Item -Recurse "$artifactPath-extracted"
 
 Write-Host 'Replacing the configuration...'
 # The default configuration is:
