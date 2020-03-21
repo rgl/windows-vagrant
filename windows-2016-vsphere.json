@@ -44,7 +44,7 @@
         "{{user `vsphere_tools_iso_url`}}"
       ],
       "floppy_files": [
-        "windows-2016/autounattend.xml",
+        "tmp/windows-2016-vsphere/autounattend.xml",
         "vmtools.ps1",
         "winrm.ps1"
       ],

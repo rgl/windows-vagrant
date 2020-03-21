@@ -4,6 +4,7 @@ output*/
 packer_cache/
 drivers/
 isos/
+tmp/
 *.log
 *.old
 *.iso

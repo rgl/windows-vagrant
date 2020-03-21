@@ -87,7 +87,18 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 windows-2019-uefi-amd64-virtualbox.iso: windows-2019-uefi/autounattend.xml winrm.ps1
 	xorrisofs -J -R -input-charset ascii -o $@ $^
 
-%-amd64-vsphere.box: %-vsphere.json %/autounattend.xml dummy-windows-vsphere.box *.ps1
+tmp/%-vsphere/autounattend.xml: %/autounattend.xml
+	mkdir -p "$$(dirname $@)"
+	@# add the vmware tools iso to the drivers search path.
+	@# NB we cannot have this in the main autounattend.xml because windows 2016
+	@#    will fail to install when the virtualbox guest additions iso is in E:
+	@#    with the error message:
+	@#        Windows Setup could not install one or more boot-critical drivers.
+	@#        To install Windows, make sure that the drivers are valid, and
+	@#        restart the installation.
+	sed -E 's,(.+)</DriverPaths>,\1    <PathAndCredentials wcm:action="add" wcm:keyValue="2"><Path>E:\\</Path></PathAndCredentials>\n\0,g' $< >$@
+
+%-amd64-vsphere.box: %-vsphere.json tmp/%-vsphere/autounattend.xml dummy-windows-vsphere.box *.ps1
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-vsphere-packer.log \
 		packer build -only=$*-amd64-vsphere -on-error=abort $*-vsphere.json
