@@ -23,7 +23,6 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.provider 'vsphere' do |vsphere, override|
-    override.vm.box = 'dummy-windows'
     vsphere.name = ENV['VSPHERE_VM_NAME']
     vsphere.notes = "Created from #{__FILE__}"
     vsphere.cpu_count = 2

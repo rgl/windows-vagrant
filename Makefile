@@ -98,7 +98,7 @@ tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 	@#        restart the installation.
 	sed -E 's,(.+)</DriverPaths>,\1    <PathAndCredentials wcm:action="add" wcm:keyValue="2"><Path>E:\\</Path></PathAndCredentials>\n\0,g' $< >$@
 
-%-amd64-vsphere.box: %-vsphere.json tmp/%-vsphere/autounattend.xml dummy-windows-vsphere.box *.ps1
+%-amd64-vsphere.box: %-vsphere.json tmp/%-vsphere/autounattend.xml Vagrantfile.template *.ps1
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-vsphere-packer.log \
 		packer build -only=$*-amd64-vsphere -on-error=abort $*-vsphere.json
@@ -113,19 +113,19 @@ tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 		| xargs -L1 govc device.remove "-vm.ipath=$$VSPHERE_TEMPLATE_IPATH"
 	@echo 'Converting to template...'
 	govc vm.markastemplate "$$VSPHERE_TEMPLATE_IPATH"
+	@echo 'Creating the local box file...'
+	rm -rf tmp/$@-contents
+	mkdir -p tmp/$@-contents
+	echo '{"provider":"vsphere"}' >tmp/$@-contents/metadata.json
+	cp Vagrantfile.template tmp/$@-contents/Vagrantfile
+	tar cvf $@ -C tmp/$@-contents .
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
-	@echo vagrant box add -f dummy-windows dummy-windows-vsphere.box
+	@echo vagrant box add -f $*-amd64 $@
 
 # Windows 10 1903 depends on the same autounattend as Windows 10
 # This allows the use of pattern rules by satisfying the prerequisite
 .PHONY: windows-10-1903/autounattend.xml
-
-dummy-windows-vsphere.box: Vagrantfile.template
-	echo '{"provider":"vsphere"}' >metadata.json
-	cp Vagrantfile.template Vagrantfile
-	tar cvf $@ metadata.json Vagrantfile
-	rm metadata.json Vagrantfile
 
 drivers:
 	rm -rf drivers.tmp
