@@ -2,7 +2,7 @@
   "variables": {
     "vsphere_disk_size": "61440",
     "vsphere_iso_url": "[{{env `GOVC_DATASTORE`}}] iso/windows-2016-Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
-    "vsphere_tools_iso_url": "[{{env `GOVC_DATASTORE`}}] iso/VMware-tools-windows-11.0.1-14773994.iso",
+    "vsphere_tools_iso_url": "[{{env `GOVC_DATASTORE`}}] iso/VMware-tools-windows-11.0.5-15389592.iso",
     "vsphere_host": "{{env `GOVC_HOST`}}",
     "vsphere_username": "{{env `GOVC_USERNAME`}}",
     "vsphere_password": "{{env `GOVC_PASSWORD`}}",
