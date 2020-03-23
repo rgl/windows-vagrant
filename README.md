@@ -73,8 +73,6 @@ spicy --uri 'spice+unix:///tmp/packer-windows-2019-amd64-libvirt-spice.socket'
 
 ## VMware vSphere
 
-Download `packer-builder-vsphere-iso` v2.3 from the [jetbrains-infra/packer-builder-vsphere releases page](https://github.com/jetbrains-infra/packer-builder-vsphere/releases) and place it inside your `~/.packer.d/plugins` directory (on Windows its at `%USERPROFILE%\packer.d\plugins` or `%APPDATA%\packer.d\plugins`).
-
 Download the Windows Evaluation ISO (you can find the full iso URL in the [windows-2019-vsphere.json](windows-2019-vsphere.json) file) and place it inside the datastore as defined by the `vsphere_iso_url` user variable that is inside the [packer template](windows-2019-vsphere.json).
 
 Download the [VMware Tools VMware-tools-windows-&lt;SAME_VERSION_AS_IN_PACKER_TEMPLATE&gt;.iso](https://packages.vmware.com/tools/releases/index.html) file into the datastore defined by the `vsphere_tools_iso_url` user variable that is inside the [packer template](windows-2019-vsphere.json).
