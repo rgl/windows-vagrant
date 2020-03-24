@@ -1,0 +1,160 @@
+{
+  "variables": {
+    "disk_size": "61440",
+    "iso_url": "https://software-download.microsoft.com/download/pr/18363.418.191007-0143.19h2_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso",
+    "iso_checksum": "9ef81b6a101afd57b2dbfa44d5c8f7bc94ff45b51b82c5a1f9267ce2e63e9f53",
+    "iso_checksum_type": "sha256"
+  },
+  "builders": [
+    {
+      "name": "windows-10-1909-amd64-libvirt",
+      "type": "qemu",
+      "accelerator": "kvm",
+      "cpus": 2,
+      "memory": 4096,
+      "qemuargs": [
+        ["-cpu", "host"],
+        ["-soundhw", "hda"],
+        ["-usbdevice", "tablet"],
+        ["-device", "virtio-net,netdev=user.0"],
+        ["-vga", "qxl"],
+        ["-device", "virtio-serial-pci"],
+        ["-chardev", "socket,path=/tmp/{{.Name}}-qga.sock,server,nowait,id=qga0"],
+        ["-device", "virtserialport,chardev=qga0,name=org.qemu.guest_agent.0"],
+        ["-chardev", "spicevmc,id=spicechannel0,name=vdagent"],
+        ["-device", "virtserialport,chardev=spicechannel0,name=com.redhat.spice.0"],
+        ["-spice", "unix,addr=/tmp/{{.Name}}-spice.socket,disable-ticketing"]
+      ],
+      "headless": true,
+      "format": "qcow2",
+      "disk_size": "{{user `disk_size`}}",
+      "disk_interface": "virtio",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "4h",
+      "shutdown_command": "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "http_directory": ".",
+      "floppy_files": [
+        "windows-10/autounattend.xml",
+        "winrm.ps1",
+        "drivers/vioserial/w10/amd64/*.cat",
+        "drivers/vioserial/w10/amd64/*.inf",
+        "drivers/vioserial/w10/amd64/*.sys",
+        "drivers/viostor/w10/amd64/*.cat",
+        "drivers/viostor/w10/amd64/*.inf",
+        "drivers/viostor/w10/amd64/*.sys",
+        "drivers/NetKVM/w10/amd64/*.cat",
+        "drivers/NetKVM/w10/amd64/*.inf",
+        "drivers/NetKVM/w10/amd64/*.sys",
+        "drivers/qxldod/w10/amd64/*.cat",
+        "drivers/qxldod/w10/amd64/*.inf",
+        "drivers/qxldod/w10/amd64/*.sys"
+      ]
+    },
+    {
+      "name": "windows-10-1909-amd64-virtualbox",
+      "type": "virtualbox-iso",
+      "guest_os_type": "Windows10_64",
+      "guest_additions_mode": "attach",
+      "guest_additions_interface": "sata",
+      "headless": true,
+      "cpus": 2,
+      "memory": 4096,
+      "vboxmanage": [
+        ["storagectl", "{{.Name}}", "--name", "IDE Controller", "--remove"],
+        ["modifyvm", "{{.Name}}", "--vrde", "off"],
+        ["modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga"],
+        ["modifyvm", "{{.Name}}", "--vram", "128"],
+        ["modifyvm", "{{.Name}}", "--accelerate3d", "on"],
+        ["modifyvm", "{{.Name}}", "--usb", "on"],
+        ["modifyvm", "{{.Name}}", "--mouse", "usbtablet"],
+        ["modifyvm", "{{.Name}}", "--audio", "none"],
+        ["modifyvm", "{{.Name}}", "--nictype1", "82540EM"],
+        ["modifyvm", "{{.Name}}", "--nictype2", "82540EM"],
+        ["modifyvm", "{{.Name}}", "--nictype3", "82540EM"],
+        ["modifyvm", "{{.Name}}", "--nictype4", "82540EM"]
+      ],
+      "disk_size": "{{user `disk_size`}}",
+      "hard_drive_interface": "sata",
+      "iso_interface": "sata",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "4h",
+      "shutdown_command": "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "floppy_files": [
+        "windows-10/autounattend.xml",
+        "winrm.ps1"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "script": "disable-windows-updates.ps1"
+    },
+    {
+      "type": "powershell",
+      "inline": "<# disable Windows Defender #> Set-MpPreference -DisableRealtimeMonitoring $true; Set-ItemProperty -Path 'HKLM:/SOFTWARE/Policies/Microsoft/Windows Defender' -Name DisableAntiSpyware -Value 1"
+    },
+    {
+      "type": "powershell",
+      "inline": "<# disable OneDrive #> $k = 'HKLM:/SOFTWARE/Policies/Microsoft/Windows/OneDrive'; mkdir $k | Out-Null; Set-ItemProperty -Path $k -Name DisableFileSyncNGSC -Value 1"
+    },
+    {
+      "type": "powershell",
+      "script": "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
+      "script": "libvirt-fix-cpu-driver.ps1"
+    },
+    {
+      "type": "powershell",
+      "script": "provision.ps1"
+    },
+    {
+      "type": "windows-update"
+    },
+    {
+      "type": "powershell",
+      "script": "enable-remote-desktop.ps1"
+    },
+    {
+      "type": "powershell",
+      "script": "provision-openssh.ps1"
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
+      "script": "provision-cloudbase-init.ps1"
+    },
+    {
+      "type": "powershell",
+      "script": "eject-media.ps1"
+    },
+    {
+      "type": "powershell",
+      "script": "optimize.ps1"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "{{.BuildName}}.box",
+      "vagrantfile_template": "Vagrantfile.template"
+    }
+  ]
+}
