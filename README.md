@@ -130,6 +130,51 @@ exit
 vagrant destroy -f
 ```
 
+### Non-Administrator account
+
+The above example uses the administrator account, but you can use a
+less privileged account like in the following example.
+
+#### Example
+
+First, review the glossary:
+
+<dl>
+<dt>Privilege</dt>
+<dd>The ability to perform a specific action or read a specific property.</dd>
+<dt>Role</dt>
+<dd>A collection of privileges. Roles provide a way to aggregate all the individual privileges that are required to perform a higher-level task.</dd>
+<dt>Permission</dt>
+<dd>Consists of a user or group and an assigned role for an inventory object.</dd>
+</dl>
+
+Then follow the next steps to create an example configuration.
+
+In the vSphere Single Sign-On (SSO) configuration page create a `Vagrants` group and add your non-administrator user to it.
+
+In the vSphere Access Control page create a `Vagrant` role with the privileges:
+
+* Datastore
+  * Allocate space
+* Network
+  * Assign network
+* Resource
+  * Assign virtual machine to resource pool
+* Virtual machine
+  * Provisioning
+    * Deploy template
+
+In vSphere configure the following Inventory Objects permissions:
+
+| Inventory Object | Role          | Principal (User or Group) | Propagate |
+|------------------|---------------|---------------------------|-----------|
+| Datacenter       | Vagrant       | VSPHERE.LOCAL\Vagrants    | yes       |
+| test             | Administrator | VSPHERE.LOCAL\Vagrants    | yes       |
+
+**NB** `test` is a folder that will store the virtual machines launched by `vagrant`.
+
+For more information see the [vSphere Virtual Machine Administration/Required Privileges for Common Tasks document](https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.vm_admin.doc/GUID-4D0F8E63-2961-4B71-B365-BBFA24673FDB.html) in the [vSphere Virtual Machine Administration manual](https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.vm_admin.doc/GUID-55238059-912E-411F-A0E9-A7A536972A91.html).
+
 
 ## WinRM access
 
