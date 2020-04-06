@@ -1,5 +1,6 @@
 # Disable builtin rules and variables since they aren't used
 # This makes the output of "make -d" much easier to follow and speeds up evaluation
+# NB you can use make --print-data-base --dry-run to troubleshoot this Makefile.
 MAKEFLAGS+= --no-builtin-rules
 MAKEFLAGS+= --no-builtin-variables
 
@@ -13,6 +14,9 @@ IMAGES+= windows-10-1903
 IMAGES+= windows-10-1909
 IMAGES+= windows-10-2004
 
+# Images supporting Hyper-V
+HYPERV_IMAGES+= windows-2019
+
 # Images supporting vSphere
 VSPHERE_IMAGES+= windows-2016
 VSPHERE_IMAGES+= windows-2019
@@ -21,6 +25,7 @@ VSPHERE_IMAGES+= windows-10-1809
 # Generate build-* targets
 VIRTUALBOX_BUILDS= $(addsuffix -virtualbox,$(addprefix build-,$(IMAGES)))
 LIBVIRT_BUILDS= $(addsuffix -libvirt,$(addprefix build-,$(IMAGES)))
+HYPERV_BUILDS= $(addsuffix -hyperv,$(addprefix build-,$(HYPERV_IMAGES)))
 VSPHERE_BUILDS= $(addsuffix -vsphere,$(addprefix build-,$(VSPHERE_IMAGES)))
 
 .PHONY: help $(VIRTUALBOX_BUILDS) $(LIBVIRT_BUILDS) $(VSPHERE_BUILDS)
@@ -34,12 +39,16 @@ help:
 	@echo libvirt Targets:
 	@$(addprefix echo make ,$(addsuffix ;,$(LIBVIRT_BUILDS)))
 	@echo
+	@echo Hyper-V Targets:
+	@$(addprefix echo make ,$(addsuffix ;,$(HYPERV_BUILDS)))
+	@echo
 	@echo vSphere Targets:
 	@$(addprefix echo make ,$(addsuffix ;,$(VSPHERE_BUILDS)))
 
 # Target specific pattern rules for build-* targets
 $(VIRTUALBOX_BUILDS): build-%-virtualbox: %-amd64-virtualbox.box
 $(LIBVIRT_BUILDS): build-%-libvirt: %-amd64-libvirt.box
+$(HYPERV_BUILDS): build-%-hyperv: %-amd64-hyperv.box
 $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 
 %-amd64-virtualbox.box: %.json %/autounattend.xml Vagrantfile.template *.ps1 drivers
@@ -63,6 +72,21 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-amd64 $@
+
+%-amd64-hyperv.box: %.json Vagrantfile.template *.ps1 %-amd64-hyperv.iso
+	rm -f $@
+	mkdir -p tmp
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-hyperv-packer.log \
+		packer build -only=$*-amd64-hyperv -on-error=abort $*.json
+	./get-windows-updates-from-packer-log.sh \
+		$*-amd64-hyperv-packer.log \
+		>$*-amd64-hyperv-windows-updates.log
+	@echo BOX successfully built!
+	@echo to add to local vagrant install do:
+	@echo vagrant box add -f $*-amd64 $@
+
+%-amd64-hyperv.iso: %-uefi/autounattend.xml winrm.ps1
+	xorrisofs -J -R -input-charset ascii -o $@ $^
 
 %-uefi-amd64-virtualbox.box: %-uefi.json %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers %-uefi-amd64-virtualbox.iso
 	rm -f $@

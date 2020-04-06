@@ -71,6 +71,69 @@ spicy --uri 'spice+unix:///tmp/packer-windows-2019-amd64-libvirt-spice.socket'
 **NB** the packer template file defines `qemuargs` (which overrides the default packer qemu arguments), if you modify it, verify if you also need include the default packer qemu arguments (see [builder/qemu/step_run.go](https://github.com/hashicorp/packer/blob/master/builder/qemu/step_run.go) or start packer without `qemuargs` defined to see how it starts qemu).
 
 
+
+## Hyper-V usage
+
+Install [Hyper-V](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v)
+and also install the `Windows Sandbox` feature (for some reason,
+installing this makes DHCP work properly in the vEthernet Default Switch).
+
+Make sure your user is in the `Hyper-V Administrators` group
+or you run with Administrative privileges.
+
+Make sure your Virtual Switch (its vEthernet network adapter) is excluded
+from the Windows Firewall protected network connections by executing the
+following commands in a bash shell with Administrative privileges:
+
+```bash
+PowerShell -Command 'Get-NetFirewallProfile | Select-Object -Property Name,DisabledInterfaceAliases'
+PowerShell -Command 'Set-NetFirewallProfile -DisabledInterfaceAliases (Get-NetAdapter -name "vEthernet*" | Where-Object {$_.ifIndex}).InterfaceAlias'
+```
+
+Create the base image in a bash shell with Administrative privileges:
+
+```bash
+cat >secrets.sh <<'EOF'
+# set this value when you need to set the VM Switch Name.
+export HYPERV_SWITCH_NAME='Default Switch'
+# set this value when you need to set the VM VLAN ID.
+export HYPERV_VLAN_ID=''
+# set the credentials that the guest will use
+# to connect to this host smb share.
+# NB you should create a new local user named _vagrant_share
+#    and use that one here instead of your user credentials.
+# NB it would be nice for this user to have its credentials
+#    automatically rotated, if you implement that feature,
+#    let me known!
+export VAGRANT_SMB_USERNAME='_vagrant_share'
+export VAGRANT_SMB_PASSWORD=''
+# remove the virtual switch from the windows firewall.
+# NB execute if the VM fails to obtain an IP address from DHCP.
+PowerShell -Command 'Set-NetFirewallProfile -DisabledInterfaceAliases (Get-NetAdapter -name "vEthernet*" | Where-Object {$_.ifIndex}).InterfaceAlias'
+EOF
+source secrets.sh
+time make build-windows-2019-hyperv
+```
+
+Try the example guest:
+
+**NB** You will need Administrative privileges to create the SMB share.
+
+```bash
+cd example
+# grant $VAGRANT_SMB_USERNAME full permissions to the
+# current directory.
+# NB you must first install the Carbon PowerShell module
+#    with choco install -y carbon.
+# TODO set VM screen resolution.
+PowerShell -Command 'Import-Module Carbon; Grant-Permission . $env:VAGRANT_SMB_USERNAME FullControl'
+vagrant up --provider=hyperv
+vagrant ssh
+exit
+vagrant destroy -f
+```
+
+
 ## VMware vSphere
 
 Download the Windows Evaluation ISO (you can find the full iso URL in the [windows-2019-vsphere.json](windows-2019-vsphere.json) file) and place it inside the datastore as defined by the `vsphere_iso_url` user variable that is inside the [packer template](windows-2019-vsphere.json).

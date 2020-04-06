@@ -95,6 +95,8 @@ if ($systemVendor -eq 'QEMU') {
     if ($LASTEXITCODE) {
         throw "failed to install with exit code $LASTEXITCODE. Check the logs at C:\Program Files\Oracle\VirtualBox Guest Additions\install.log."
     }
+} elseif ($systemVendor -eq 'Microsoft Corporation') {
+    # do nothing. Hyper-V enlightments are already bundled with Windows.
 } elseif ($systemVendor -eq 'VMware, Inc.') {
     # do nothing. VMware Tools were already installed by vmtools.ps1 (executed from autounattend.xml).
 } else {
