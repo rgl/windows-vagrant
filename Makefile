@@ -17,6 +17,7 @@ IMAGES+= windows-10-2004
 # Images supporting Hyper-V
 HYPERV_IMAGES+= windows-2016
 HYPERV_IMAGES+= windows-2019
+HYPERV_IMAGES+= windows-10-1809
 
 # Images supporting vSphere
 VSPHERE_IMAGES+= windows-2016
@@ -87,6 +88,10 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	@echo vagrant box add -f $*-amd64 $@
 
 %-amd64-hyperv.iso: %-uefi/autounattend.xml winrm.ps1
+	xorrisofs -J -R -input-charset ascii -o $@ $^
+
+# NB all windows 10 versions share the same autounattend.xml file.
+windows-10-%-amd64-hyperv.iso: windows-10-uefi/autounattend.xml winrm.ps1
 	xorrisofs -J -R -input-charset ascii -o $@ $^
 
 %-uefi-amd64-virtualbox.box: %-uefi.json %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers %-uefi-amd64-virtualbox.iso
