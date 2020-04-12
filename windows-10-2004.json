@@ -2,7 +2,9 @@
   "variables": {
     "disk_size": "61440",
     "iso_url": "https://software-download.microsoft.com/download/pr/19041.264.200511-0456.vb_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso",
-    "iso_checksum": "sha256:f1a4f2176259167cd2c8bf83f3f5a4039753b6cc28c35ac624da95a36e9620fc"
+    "iso_checksum": "sha256:f1a4f2176259167cd2c8bf83f3f5a4039753b6cc28c35ac624da95a36e9620fc",
+    "hyperv_switch_name": "{{env `HYPERV_SWITCH_NAME`}}",
+    "hyperv_vlan_id": "{{env `HYPERV_VLAN_ID`}}"
   },
   "builders": [
     {
@@ -90,6 +92,34 @@
         "windows-10/autounattend.xml",
         "winrm.ps1"
       ]
+    },
+    {
+      "name": "windows-10-2004-amd64-hyperv",
+      "type": "hyperv-iso",
+      "temp_path": "tmp",
+      "headless": true,
+      "generation": 2,
+      "cpus": 2,
+      "memory": 4096,
+      "switch_name": "{{user `hyperv_switch_name`}}",
+      "vlan_id": "{{user `hyperv_vlan_id`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "secondary_iso_images": [
+        "windows-10-2004-amd64-hyperv.iso"
+      ],
+      "first_boot_device": "DVD",
+      "boot_order": ["SCSI:0:0"],
+      "boot_wait": "1s",
+      "boot_command": [
+        "<up><wait><up><wait><up><wait><up><wait><up><wait>"
+      ],
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "4h",
+      "shutdown_command": "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
     }
   ],
   "provisioners": [

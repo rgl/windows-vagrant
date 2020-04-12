@@ -20,11 +20,17 @@ if (!(Test-Path $oneDriveSetup)) {
 }
 
 # disable OneDrive.
+New-Item `
+    -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows' `
+    -Name OneDrive `
+    -Force `
+    | Out-Null
 New-ItemProperty `
     -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive' `
     -Name DisableFileSyncNGSC `
     -Value 1 `
-    -Force
+    -Force `
+    | Out-Null
 
 # uninstall OneDrive.
 # NB one drive setup will still be WinSxS and it does not seem possible to
