@@ -15,6 +15,7 @@ IMAGES+= windows-10-1909
 IMAGES+= windows-10-2004
 
 # Images supporting Hyper-V
+HYPERV_IMAGES+= windows-2016
 HYPERV_IMAGES+= windows-2019
 
 # Images supporting vSphere

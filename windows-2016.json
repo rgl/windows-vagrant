@@ -2,7 +2,9 @@
   "variables": {
     "disk_size": "61440",
     "iso_url": "https://software-download.microsoft.com/download/pr/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
-    "iso_checksum": "sha256:1ce702a578a3cb1ac3d14873980838590f06d5b7101c5daaccbac9d73f1fb50f"
+    "iso_checksum": "sha256:1ce702a578a3cb1ac3d14873980838590f06d5b7101c5daaccbac9d73f1fb50f",
+    "hyperv_switch_name": "{{env `HYPERV_SWITCH_NAME`}}",
+    "hyperv_vlan_id": "{{env `HYPERV_VLAN_ID`}}"
   },
   "builders": [
     {
@@ -90,6 +92,34 @@
         "windows-2016/autounattend.xml",
         "winrm.ps1"
       ]
+    },
+    {
+      "name": "windows-2016-amd64-hyperv",
+      "type": "hyperv-iso",
+      "temp_path": "tmp",
+      "headless": true,
+      "generation": 2,
+      "cpus": 2,
+      "memory": 6144,
+      "switch_name": "{{user `hyperv_switch_name`}}",
+      "vlan_id": "{{user `hyperv_vlan_id`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "secondary_iso_images": [
+        "windows-2016-amd64-hyperv.iso"
+      ],
+      "first_boot_device": "DVD",
+      "boot_order": ["SCSI:0:0"],
+      "boot_wait": "1s",
+      "boot_command": [
+        "<up><wait><up><wait><up><wait><up><wait><up><wait>"
+      ],
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "4h",
+      "shutdown_command": "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
     }
   ],
   "provisioners": [
