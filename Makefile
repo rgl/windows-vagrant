@@ -11,6 +11,7 @@ IMAGES+= windows-2019-uefi
 IMAGES+= windows-10
 IMAGES+= windows-10-1903
 IMAGES+= windows-10-1909
+IMAGES+= windows-10-2004
 
 # Images supporting vSphere
 VSPHERE_IMAGES+= windows-2016
@@ -124,9 +125,9 @@ tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-amd64 $@
 
-# Windows 10 1903/1909 depends on the same autounattend as Windows 10
+# Windows 10 1903/1909/2004 depends on the same autounattend as Windows 10
 # This allows the use of pattern rules by satisfying the prerequisite
-.PHONY: windows-10-1903/autounattend.xml windows-10-1909/autounattend.xml
+.PHONY: windows-10-1903/autounattend.xml windows-10-1909/autounattend.xml windows-10-2004/autounattend.xml
 
 drivers:
 	rm -rf drivers.tmp

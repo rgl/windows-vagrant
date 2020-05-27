@@ -8,6 +8,7 @@ Vagrant.configure(2) do |config|
     lv.cpus = 2
     lv.cpu_mode = 'host-passthrough'
     lv.keymap = 'pt'
+    lv.nested = true
     # replace the default synced_folder with something that works in the base box.
     # NB for some reason, this does not work when placed in the base box Vagrantfile.
     config.vm.synced_folder '.', '/vagrant', type: 'rsync', rsync__exclude: [
