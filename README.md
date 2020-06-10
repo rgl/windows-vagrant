@@ -40,7 +40,7 @@ And test this base box by launching an example Vagrant environment:
 ```bash
 cd example
 vagrant plugin install vagrant-windows-sysprep
-vagrant up --provider=virtualbox # or --provider=libvirt
+vagrant up --no-destroy-on-error --provider=virtualbox # or --provider=libvirt
 ```
 
 **NB** if you are having trouble running the example with the vagrant libvirt provider check the libvirt logs in the host (e.g. `sudo tail -f /var/log/libvirt/qemu/example_default.log`) and in the guest (inside `C:\Windows\Temp`).
@@ -50,7 +50,7 @@ Then test with a more complete example:
 ```bash
 git clone https://github.com/rgl/customize-windows-vagrant
 cd customize-windows-vagrant
-vagrant up --provider=virtualbox # or --provider=libvirt
+vagrant up --no-destroy-on-error --provider=virtualbox # or --provider=libvirt
 ```
 
 
@@ -124,7 +124,7 @@ Try the example guest:
 ```bash
 source secrets.sh
 echo $VSPHERE_TEMPLATE_NAME # check if you are using the expected template.
-vagrant up --provider=vsphere
+vagrant up --no-destroy-on-error --provider=vsphere
 vagrant ssh
 exit
 vagrant destroy -f
