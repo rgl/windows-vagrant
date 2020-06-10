@@ -3,7 +3,7 @@ This builds Windows 2012R2/10/2016/2019 base Vagrant boxes using [Packer](https:
 
 # Usage
 
-Install [VirtualBox](https://www.virtualbox.org/) (or [libvirt](https://libvirt.org/) on Linux based systems), [packer](https://www.packer.io/), [packer-provisioner-windows-update plugin](https://github.com/rgl/packer-provisioner-windows-update) and [vagrant](https://www.vagrantup.com/).
+Install [VirtualBox](https://www.virtualbox.org/) (or [libvirt](https://libvirt.org/) on Linux based systems), [packer 1.6+](https://www.packer.io/), [packer-provisioner-windows-update plugin](https://github.com/rgl/packer-provisioner-windows-update) and [vagrant](https://www.vagrantup.com/).
 If you are using Windows and [Chocolatey](https://chocolatey.org/), you can install everything with:
 
 ```batch
