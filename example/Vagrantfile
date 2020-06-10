@@ -4,6 +4,7 @@ Vagrant.configure(2) do |config|
   config.vm.hostname = 'example'
 
   config.vm.provider 'libvirt' do |lv, config|
+    lv.default_prefix = "#{File.basename(File.dirname(File.dirname(__FILE__)))}_example_"
     lv.memory = 4*1024
     lv.cpus = 2
     lv.cpu_mode = 'host-passthrough'
