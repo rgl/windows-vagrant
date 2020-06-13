@@ -107,9 +107,17 @@ Get-ChildItem "$env:windir\Microsoft.NET\*\*\ngen.exe" | ForEach-Object {
 # remove temporary files.
 
 Write-Host 'Stopping services that might interfere with temporary file removal...'
-Stop-Service TrustedInstaller   # Windows Modules Installer
-Stop-Service wuauserv           # Windows Update
-Stop-Service BITS               # Background Intelligent Transfer Service
+function Stop-ServiceForReal($name) {
+    while ($true) {
+        Stop-Service -ErrorAction SilentlyContinue $name
+        if ((Get-Service $name).Status -eq 'Stopped') {
+            break
+        }
+    }
+}
+Stop-ServiceForReal TrustedInstaller   # Windows Modules Installer
+Stop-ServiceForReal wuauserv           # Windows Update
+Stop-ServiceForReal BITS               # Background Intelligent Transfer Service
 @(
     "$env:LOCALAPPDATA\Temp\*"
     "$env:windir\Temp\*"
