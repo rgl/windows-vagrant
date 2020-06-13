@@ -105,6 +105,7 @@ Get-ChildItem "$env:windir\Microsoft.NET\*\*\ngen.exe" | ForEach-Object {
 
 #
 # remove temporary files.
+# NB we ignore the packer generated files so it won't complain in the output.
 
 Write-Host 'Stopping services that might interfere with temporary file removal...'
 function Stop-ServiceForReal($name) {
@@ -129,7 +130,7 @@ Stop-ServiceForReal BITS               # Background Intelligent Transfer Service
     Write-Host "Removing temporary files $_..."
     takeown.exe /D Y /R /F $_ | Out-Null
     icacls.exe $_ /grant:r Administrators:F /T /C /Q 2>&1 | Out-Null
-    Remove-Item $_ -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
+    Remove-Item $_ -Exclude 'packer-*' -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
 }
 
 

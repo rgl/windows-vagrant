@@ -147,6 +147,7 @@ Write-Host 'Disabling the Windows Boot Manager menu...'
 bcdedit /set '{bootmgr}' displaybootmenu no
 
 # remove temporary files.
+# NB we ignore the packer generated files so it won't complain in the output.
 'C:\tmp','C:\Windows\Temp',$env:TEMP | ForEach-Object {
-    Get-ChildItem $_ -Recurse | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
+    Get-ChildItem $_ -Exclude 'packer-*' -Recurse | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
 }
