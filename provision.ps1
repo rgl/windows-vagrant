@@ -48,7 +48,7 @@ if ($systemVendor -eq 'QEMU') {
     [System.IO.File]::WriteAllBytes($cerPath, $certificate.Export('Cert'))
     Import-Certificate -CertStoreLocation Cert:\LocalMachine\TrustedPublisher $cerPath | Out-Null
 
-    # install qemu-gt (quemu guest tools).
+    # install qemu-gt (qemu guest tools).
     $qemuGuestToolsSetupUrl = "http://$env:PACKER_HTTP_ADDR/drivers/virtio-win-gt-x64.msi"
     $qemuGuestToolsSetup = "$env:TEMP\$(Split-Path -Leaf $qemuGuestToolsSetupUrl)"
     Write-Host "Downloading the qemu-kvm Guest Tools from $qemuGuestToolsSetupUrl..."
@@ -59,7 +59,7 @@ if ($systemVendor -eq 'QEMU') {
         throw "failed to install qemu-kvm Guest Tools with exit code $LASTEXITCODE"
     }
 
-    # install qemu-ga (quemu guest agent).
+    # install qemu-ga (qemu guest agent).
     $qemuAgentSetupUrl = "http://$env:PACKER_HTTP_ADDR/drivers/guest-agent/qemu-ga-x86_64.msi"
     $qemuAgentSetup = "$env:TEMP\$(Split-Path -Leaf $qemuAgentSetupUrl)"
     Write-Host "Downloading the qemu-kvm Guest Agent from $qemuAgentSetupUrl..."
@@ -69,6 +69,20 @@ if ($systemVendor -eq 'QEMU') {
     if ($LASTEXITCODE) {
         throw "failed to install qemu-kvm Guest Agent with exit code $LASTEXITCODE"
     }
+
+    # install spice-vdagent.
+    $spiceAgentZipUrl = 'https://www.spice-space.org/download/windows/vdagent/vdagent-win-0.10.0/vdagent-win-0.10.0-x64.zip'
+    $spiceAgentZip = "$env:TEMP\vdagent-win-0.10.0-x64.zip"
+    $spiceAgentDestination = "C:\Program Files\spice-vdagent"
+    Write-Host "Downloading the spice-vdagent from $spiceAgentZipUrl..."
+    Invoke-WebRequest $spiceAgentZipUrl -OutFile $spiceAgentZip
+    Write-Host 'Installing the spice-vdagent...'
+    Expand-Archive $spiceAgentZip $spiceAgentDestination
+    Move-Item "$spiceAgentDestination\vdagent-win-*\*" $spiceAgentDestination
+    Get-ChildItem "$spiceAgentDestination\vdagent-win-*" -Recurse | Remove-Item -Force -Recurse
+    Remove-Item -Force "$spiceAgentDestination\vdagent-win-*"
+    &"$spiceAgentDestination\vdservice.exe" install | Out-String -Stream # NB the logs are inside C:\Windows\Temp
+    Start-Service vdservice
 } elseif ($systemVendor -eq 'innotek GmbH') {
     Write-Host 'Importing the Oracle (for VirtualBox) certificate as a Trusted Publisher...'
     E:\cert\VBoxCertUtil.exe add-trusted-publisher E:\cert\vbox-sha1.cer
