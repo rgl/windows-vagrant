@@ -8,7 +8,7 @@ IMAGES+= windows-2012-r2
 IMAGES+= windows-2016
 IMAGES+= windows-2019
 IMAGES+= windows-2019-uefi
-IMAGES+= windows-10
+IMAGES+= windows-10-1809
 IMAGES+= windows-10-1903
 IMAGES+= windows-10-1909
 IMAGES+= windows-10-2004
@@ -16,7 +16,7 @@ IMAGES+= windows-10-2004
 # Images supporting vSphere
 VSPHERE_IMAGES+= windows-2016
 VSPHERE_IMAGES+= windows-2019
-VSPHERE_IMAGES+= windows-10
+VSPHERE_IMAGES+= windows-10-1809
 
 # Generate build-* targets
 VIRTUALBOX_BUILDS= $(addsuffix -virtualbox,$(addprefix build-,$(IMAGES)))
@@ -125,9 +125,13 @@ tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-amd64 $@
 
-# Windows 10 1903/1909/2004 depends on the same autounattend as Windows 10
+# All the Windows 10 versions depend on the same autounattend.xml
 # This allows the use of pattern rules by satisfying the prerequisite
-.PHONY: windows-10-1903/autounattend.xml windows-10-1909/autounattend.xml windows-10-2004/autounattend.xml
+.PHONY: \
+	windows-10-1809/autounattend.xml \
+	windows-10-1903/autounattend.xml \
+	windows-10-1909/autounattend.xml \
+	windows-10-2004/autounattend.xml
 
 drivers:
 	rm -rf drivers.tmp

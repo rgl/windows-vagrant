@@ -18,8 +18,8 @@
   ],
   "builders": [
     {
-      "name": "windows-10-amd64-vsphere",
-      "vm_name": "windows-10-amd64-vsphere",
+      "name": "windows-10-1809-amd64-vsphere",
+      "vm_name": "windows-10-1809-amd64-vsphere",
       "type": "vsphere-iso",
       "guest_os_type": "windows9_64Guest",
       "disk_size": "{{user `vsphere_disk_size`}}",

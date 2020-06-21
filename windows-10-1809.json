@@ -6,7 +6,7 @@
   },
   "builders": [
     {
-      "name": "windows-10-amd64-libvirt",
+      "name": "windows-10-1809-amd64-libvirt",
       "type": "qemu",
       "accelerator": "kvm",
       "cpus": 2,
@@ -54,7 +54,7 @@
       ]
     },
     {
-      "name": "windows-10-amd64-virtualbox",
+      "name": "windows-10-1809-amd64-virtualbox",
       "type": "virtualbox-iso",
       "guest_os_type": "Windows10_64",
       "guest_additions_mode": "attach",
