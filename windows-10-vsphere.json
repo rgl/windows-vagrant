@@ -66,7 +66,7 @@
     },
     {
       "type": "powershell",
-      "inline": "<# disable OneDrive #> $k = 'HKLM:/SOFTWARE/Policies/Microsoft/Windows/OneDrive'; mkdir $k | Out-Null; Set-ItemProperty -Path $k -Name DisableFileSyncNGSC -Value 1"
+      "script": "remove-one-drive.ps1"
     },
     {
       "type": "powershell",
