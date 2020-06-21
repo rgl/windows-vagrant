@@ -107,6 +107,10 @@
     },
     {
       "type": "powershell",
+      "script": "remove-apps.ps1"
+    },
+    {
+      "type": "powershell",
       "script": "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
     },
     {
