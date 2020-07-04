@@ -57,7 +57,7 @@ Vagrant.configure(2) do |config|
     vsphere.vlan = ENV['VSPHERE_VLAN']
   end
 
-  config.vm.provision "windows-sysprep"
+  #config.vm.provision "windows-sysprep" # NB the windows-sysprep plugin does not work with hyperv.
   config.vm.provision "shell", path: "ps.ps1", args: "provision-chocolatey.ps1"
   config.vm.provision "shell", path: "ps.ps1", args: "provision-adk.ps1"
   config.vm.provision "shell", path: "ps.ps1", args: "mount-system-partition.ps1"
