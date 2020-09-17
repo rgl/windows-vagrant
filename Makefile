@@ -76,7 +76,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-amd64 $@
 
-%-amd64-hyperv.box: %.json Vagrantfile.template *.ps1 %-amd64-hyperv.iso
+%-amd64-hyperv.box: %.json Vagrantfile.template *.ps1
 	rm -f $@
 	mkdir -p tmp
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-hyperv-packer.log \
@@ -88,14 +88,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-amd64 $@
 
-%-amd64-hyperv.iso: %-uefi/autounattend.xml winrm.ps1
-	xorrisofs -J -R -input-charset ascii -o $@ $^
-
-# NB all windows 10 versions share the same autounattend.xml file.
-windows-10-%-amd64-hyperv.iso: windows-10-uefi/autounattend.xml winrm.ps1
-	xorrisofs -J -R -input-charset ascii -o $@ $^
-
-%-uefi-amd64-virtualbox.box: %-uefi.json %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers %-uefi-amd64-virtualbox.iso
+%-uefi-amd64-virtualbox.box: %-uefi.json %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-virtualbox-packer.log \
 		packer build -only=$*-uefi-amd64-virtualbox -on-error=abort $*-uefi.json
@@ -116,9 +109,6 @@ windows-10-%-amd64-hyperv.iso: windows-10-uefi/autounattend.xml winrm.ps1
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-uefi-amd64 $@
-
-windows-2019-uefi-amd64-virtualbox.iso: windows-2019-uefi/autounattend.xml winrm.ps1
-	xorrisofs -J -R -input-charset ascii -o $@ $^
 
 tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 	mkdir -p "$$(dirname $@)"

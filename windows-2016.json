@@ -106,8 +106,9 @@
       "disk_size": "{{user `disk_size`}}",
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
-      "secondary_iso_images": [
-        "windows-2016-amd64-hyperv.iso"
+      "cd_files": [
+        "windows-2016-uefi/autounattend.xml",
+        "winrm.ps1"
       ],
       "first_boot_device": "DVD",
       "boot_order": ["SCSI:0:0"],
