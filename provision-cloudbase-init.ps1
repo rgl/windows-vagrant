@@ -20,7 +20,7 @@ trap {
 $cloudbaseInitHome = 'C:\Program Files\Cloudbase Solutions\Cloudbase-Init'
 $cloudbaseInitConfPath = "$cloudbaseInitHome\conf\cloudbase-init.conf"
 
-$artifactUrl = 'https://github.com/rgl/cloudbase-init-installer/releases/download/v0.0.0.20200215/CloudbaseInitSetup-add-no-cloud.msi'
+$artifactUrl = 'https://github.com/cloudbase/cloudbase-init/releases/download/1.1.2/CloudbaseInitSetup_1_1_2_x64.msi'
 $artifactPath = "$env:TEMP\$(Split-Path -Leaf $artifactUrl)"
 $artifactLogPath = "$artifactPath.log"
 
@@ -79,6 +79,7 @@ Write-Host 'Replacing the configuration...'
 #   local_scripts_path=C:\Program Files\Cloudbase Solutions\Cloudbase-Init\LocalScripts\
 # see https://cloudbase-init.readthedocs.io/en/latest/tutorial.html#configuration-file
 # see https://cloudbase-init.readthedocs.io/en/latest/config.html#config-list
+Move-Item $cloudbaseInitConfPath "$cloudbaseInitConfPath.orig"
 Set-Content -Encoding ascii $cloudbaseInitConfPath @"
 [DEFAULT]
 username=vagrant
