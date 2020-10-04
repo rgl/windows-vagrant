@@ -134,7 +134,8 @@
     },
     {
       "type": "powershell",
-      "script": "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
+      "script": "virtualbox-prevent-vboxsrv-resolution-delay.ps1",
+      "only": ["windows-2019-amd64-virtualbox"]
     },
     {
       "type": "powershell",
