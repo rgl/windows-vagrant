@@ -137,6 +137,11 @@
       "script": "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
     },
     {
+      "type": "powershell",
+      "script": "provision-guest-tools-qemu-kvm.ps1",
+      "only": ["windows-2019-amd64-libvirt"]
+    },
+    {
       "type": "windows-restart"
     },
     {

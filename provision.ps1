@@ -38,51 +38,7 @@ Add-Type -A System.IO.Compression.FileSystem
 # install Guest Additions.
 $systemVendor = (Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor
 if ($systemVendor -eq 'QEMU') {
-    # trust the qemu driver publisher certificate.
-    # NB this is needed for the qemu-gt silent installation to succeed.
-    $catPath = 'A:\netkvm.cat'
-    $cerPath = "$env:TEMP\$(Split-Path -Leaf $catPath)" -replace '\.cat$','.cer'
-    Write-Host "Getting the qemu driver publisher certificate from $catPath..."
-    $certificate = (Get-AuthenticodeSignature $catPath).SignerCertificate
-    Write-Host "Trusting the qemu $($certificate.Subject) driver publisher certificate..."
-    [System.IO.File]::WriteAllBytes($cerPath, $certificate.Export('Cert'))
-    Import-Certificate -CertStoreLocation Cert:\LocalMachine\TrustedPublisher $cerPath | Out-Null
-
-    # install qemu-gt (qemu guest tools).
-    $qemuGuestToolsSetupUrl = "http://$env:PACKER_HTTP_ADDR/drivers/virtio-win-gt-x64.msi"
-    $qemuGuestToolsSetup = "$env:TEMP\$(Split-Path -Leaf $qemuGuestToolsSetupUrl)"
-    Write-Host "Downloading the qemu-kvm Guest Tools from $qemuGuestToolsSetupUrl..."
-    Invoke-WebRequest $qemuGuestToolsSetupUrl -OutFile $qemuGuestToolsSetup
-    Write-Host 'Installing the qemu-kvm Guest Tools...'
-    msiexec.exe /i $qemuGuestToolsSetup /qn /l*v "$qemuGuestToolsSetup.log" | Out-String -Stream
-    if ($LASTEXITCODE) {
-        throw "failed to install qemu-kvm Guest Tools with exit code $LASTEXITCODE"
-    }
-
-    # install qemu-ga (qemu guest agent).
-    $qemuAgentSetupUrl = "http://$env:PACKER_HTTP_ADDR/drivers/guest-agent/qemu-ga-x86_64.msi"
-    $qemuAgentSetup = "$env:TEMP\$(Split-Path -Leaf $qemuAgentSetupUrl)"
-    Write-Host "Downloading the qemu-kvm Guest Agent from $qemuAgentSetupUrl..."
-    Invoke-WebRequest $qemuAgentSetupUrl -OutFile $qemuAgentSetup
-    Write-Host 'Installing the qemu-kvm Guest Agent...'
-    msiexec.exe /i $qemuAgentSetup /qn /l*v "$qemuAgentSetup.log" | Out-String -Stream
-    if ($LASTEXITCODE) {
-        throw "failed to install qemu-kvm Guest Agent with exit code $LASTEXITCODE"
-    }
-
-    # install spice-vdagent.
-    $spiceAgentZipUrl = 'https://www.spice-space.org/download/windows/vdagent/vdagent-win-0.10.0/vdagent-win-0.10.0-x64.zip'
-    $spiceAgentZip = "$env:TEMP\vdagent-win-0.10.0-x64.zip"
-    $spiceAgentDestination = "C:\Program Files\spice-vdagent"
-    Write-Host "Downloading the spice-vdagent from $spiceAgentZipUrl..."
-    Invoke-WebRequest $spiceAgentZipUrl -OutFile $spiceAgentZip
-    Write-Host 'Installing the spice-vdagent...'
-    Expand-Archive $spiceAgentZip $spiceAgentDestination
-    Move-Item "$spiceAgentDestination\vdagent-win-*\*" $spiceAgentDestination
-    Get-ChildItem "$spiceAgentDestination\vdagent-win-*" -Recurse | Remove-Item -Force -Recurse
-    Remove-Item -Force "$spiceAgentDestination\vdagent-win-*"
-    &"$spiceAgentDestination\vdservice.exe" install | Out-String -Stream # NB the logs are inside C:\Windows\Temp
-    Start-Service vdservice
+    # do nothing. this was installed in provision-guest-tools-qemu-kvm.ps1.
 } elseif ($systemVendor -eq 'innotek GmbH') {
     Write-Host 'Importing the Oracle (for VirtualBox) certificate as a Trusted Publisher...'
     E:\cert\VBoxCertUtil.exe add-trusted-publisher E:\cert\vbox-sha1.cer
