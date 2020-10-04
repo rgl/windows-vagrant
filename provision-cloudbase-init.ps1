@@ -26,9 +26,9 @@ $artifactLogPath = "$artifactPath.log"
 
 $systemVendor = (Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor
 if ($systemVendor -eq 'QEMU') {
-    $metadataServices = 'cloudbaseinit.metadata.services.configdrive.NoCloudConfigDriveService'
+    $metadataServices = 'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'
 } elseif ($systemVendor -eq 'Microsoft Corporation') {
-    $metadataServices = 'cloudbaseinit.metadata.services.configdrive.NoCloudConfigDriveService'
+    $metadataServices = 'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'
 } elseif ($systemVendor -eq 'VMware, Inc.') {
     $metadataServices = 'cloudbaseinit.metadata.services.vmwareguestinfoservice.VMwareGuestInfoService'
 } else {
