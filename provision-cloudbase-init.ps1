@@ -82,7 +82,7 @@ Write-Host 'Replacing the configuration...'
 Move-Item $cloudbaseInitConfPath "$cloudbaseInitConfPath.orig"
 Set-Content -Encoding ascii $cloudbaseInitConfPath @"
 [DEFAULT]
-username=vagrant
+username=Administrator
 groups=Administrators
 first_logon_behaviour=no
 debug=true
