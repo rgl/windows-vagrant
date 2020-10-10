@@ -4,11 +4,43 @@ This builds Windows 2012R2/10/2016/2019 base Vagrant boxes using [Packer](https:
 # Usage
 
 Install [VirtualBox](https://www.virtualbox.org/) (or [libvirt](https://libvirt.org/) on Linux based systems), [packer 1.6.3+](https://www.packer.io/), [packer-provisioner-windows-update plugin](https://github.com/rgl/packer-provisioner-windows-update) and [vagrant](https://www.vagrantup.com/).
-If you are using Windows and [Chocolatey](https://chocolatey.org/), you can install everything with:
+If you are using Windows and [Chocolatey](https://chocolatey.org/), you can install everything from an administrative PowerShell session with:
 
-```batch
+```powershell
 choco install -y virtualbox packer packer-provisioner-windows-update vagrant msys2
+
+# configure the msys2 launcher to let the shell inherith the PATH.
+$msys2BasePath = 'C:\tools\msys64'
+$msys2ConfigPath = "$msys2BasePath\msys2.ini"
+[IO.File]::WriteAllText(
+    $msys2ConfigPath,
+    ([IO.File]::ReadAllText($msys2ConfigPath) `
+        -replace '#?(MSYS2_PATH_TYPE=).+','$1inherit')
+)
+
+# define a function for easying the execution of bash scripts.
+$bashPath = "$msys2BasePath\usr\bin\bash.exe"
+function Bash($script) {
+    $eap = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        # we also redirect the stderr to stdout because PowerShell
+        # oddly interleaves them.
+        # see https://www.gnu.org/software/bash/manual/bash.html#The-Set-Builtin
+        echo 'exec 2>&1;set -eu;export PATH="/usr/bin:$PATH";export HOME=$USERPROFILE;' $script | &$bashPath
+        if ($LASTEXITCODE) {
+            throw "bash execution failed with exit code $LASTEXITCODE"
+        }
+    } finally {
+        $ErrorActionPreference = $eap
+    }
+}
+
+Bash 'pacman --noconfirm -Sy make zip unzip tar dos2unix xorriso'
 ```
+
+Open a bash shell by starting `C:\tools\msys64\mingw64.exe` and execute the
+remaining commands inside it.
 
 To build the base box based on the [Windows Server 2019 Evaluation](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2019) ISO run:
 
