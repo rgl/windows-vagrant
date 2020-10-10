@@ -138,14 +138,21 @@
     },
     {
       "type": "powershell",
-      "script": "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
+      "script": "virtualbox-prevent-vboxsrv-resolution-delay.ps1",
+      "only": ["windows-2016-amd64-virtualbox"]
+    },
+    {
+      "type": "powershell",
+      "script": "provision-guest-tools-qemu-kvm.ps1",
+      "only": ["windows-2016-amd64-libvirt"]
     },
     {
       "type": "windows-restart"
     },
     {
       "type": "powershell",
-      "script": "libvirt-fix-cpu-driver.ps1"
+      "script": "libvirt-fix-cpu-driver.ps1",
+      "only": ["windows-2016-amd64-libvirt"]
     },
     {
       "type": "powershell",
