@@ -26,10 +26,16 @@ $artifactLogPath = "$artifactPath.log"
 
 $systemVendor = (Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor
 if ($systemVendor -eq 'QEMU') {
+    # qemu-kvm.
     $metadataServices = 'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'
 } elseif ($systemVendor -eq 'Microsoft Corporation') {
+    # Hyper-V.
+    $metadataServices = 'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'
+} elseif ($systemVendor -eq 'innotek GmbH') {
+    # VirtualBox.
     $metadataServices = 'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'
 } elseif ($systemVendor -eq 'VMware, Inc.') {
+    # VMware ESXi.
     $metadataServices = 'cloudbaseinit.metadata.services.vmwareguestinfoservice.VMwareGuestInfoService'
 } else {
     Write-Host "WARNING: cloudbase-init is not supported on your system vendor $systemVendor"
