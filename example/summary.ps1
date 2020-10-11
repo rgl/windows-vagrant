@@ -40,6 +40,25 @@ function Get-DotNetVersion {
     return 'No 4.5 or later version detected'
 }
 
+function Get-WindowsVersion {
+    # see https://en.wikipedia.org/wiki/Windows_10_version_history
+    # see https://en.wikipedia.org/wiki/Microsoft_Windows_version_history
+    $builds = @{
+        14393 = @{Version='1607';   Codename='Redstone 1';  Name='Anniversary Update';      ReleaseDate='August 2, 2016'}
+        15063 = @{Version='1703';   Codename='Redstone 2';  Name='Creators Update';         ReleaseDate='April 5, 2017'}
+        16299 = @{Version='1709';   Codename='Redstone 3';  Name='Fall Creators Update';    ReleaseDate='October 17, 2017'}
+        17134 = @{Version='1803';   Codename='Redstone 4';  Name='April 2018 Update';       ReleaseDate='April 30, 2018'}
+        17763 = @{Version='1809';   Codename='Redstone 5';  Name='October 2018 Update';     ReleaseDate='November 13, 2018'}
+        18362 = @{Version='1903';   Codename='19H1';        Name='May 2019 Update';         ReleaseDate='May 21, 2019'}
+        18363 = @{Version='1909';   Codename='19H2';        Name='November 2019 Update';    ReleaseDate='November 12, 2019'}
+        19041 = @{Version='2004';   Codename='20H1';        Name='May 2020 Update';         ReleaseDate='May 27, 2020'}
+        19042 = @{Version='20H2';   Codename='20H2';        Name='October 2020 Update';     ReleaseDate='TBA'}
+    }
+    $currentVersionKey = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+    $build = [int]$currentVersionKey.CurrentBuildNumber
+    New-Object PSObject -Property $builds[$build]
+}
+
 Write-title 'Firmware'
 Get-ComputerInfo `
     -Property `
@@ -65,9 +84,16 @@ Get-ComputerInfo `
         WindowsBuildLabEx `
     | Format-List
 
-Write-Title 'Operating System version (from registry)'
+# show more version details when running in Windows 10+.
+# NB CurrentMajorVersionNumber and CurrentMinorVersionNumber properties are only available in Windows 10+.
 $currentVersionKey = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
-Write-Output "$($currentVersionKey.CurrentMajorVersionNumber).$($currentVersionKey.CurrentMinorVersionNumber).$($currentVersionKey.CurrentBuildNumber).$($currentVersionKey.UBR)"
+if ([int]$currentVersionKey.CurrentBuildNumber -gt 10000) {
+    Write-Title 'Operating System version (from registry)'
+    Write-Output "$($currentVersionKey.CurrentMajorVersionNumber).$($currentVersionKey.CurrentMinorVersionNumber).$($currentVersionKey.CurrentBuildNumber).$($currentVersionKey.UBR)"
+
+    Write-Title 'Operating System version information'
+    Get-WindowsVersion | Format-Table Version,Codename,Name,ReleaseDate
+}
 
 Write-Title '.NET Framework version'
 Get-DotNetVersion
