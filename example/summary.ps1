@@ -67,6 +67,22 @@ Get-ComputerInfo `
         BiosVersion `
     | Format-List
 
+Write-Title 'CPU'
+Get-CimInstance Win32_Processor | Select-Object `
+    -Property `
+        DeviceID,
+        Name,
+        NumberOfCores,
+        NumberOfLogicalProcessors `
+    | Format-List
+
+Write-Title 'Memory (KiB)'
+Get-CimInstance Win32_OperatingSystem | Select-Object `
+    -Property `
+        TotalVisibleMemorySize,
+        FreePhysicalMemory `
+    | Format-List
+
 Write-Title 'Device Drivers'
 driverquery.exe /fo csv /v `
     | ConvertFrom-Csv `
