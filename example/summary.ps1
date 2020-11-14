@@ -152,7 +152,7 @@ function Get-MachineSID {
     )
 
     # Retrieve the Win32_ComputerSystem class and determine if machine is a Domain Controller
-    $WmiComputerSystem = Get-WmiObject -Class Win32_ComputerSystem
+    $WmiComputerSystem = Get-CimInstance Win32_ComputerSystem
     $IsDomainController = $WmiComputerSystem.DomainRole -ge 4
 
     if ($IsDomainController -or $DomainSID) {
@@ -162,7 +162,7 @@ function Get-MachineSID {
         New-Object System.Security.Principal.SecurityIdentifier -ArgumentList ([Byte[]]$SIDBytes),0
     } else {
         # Going for the local SID by finding a local account and removing its Relative ID (RID)
-        $LocalAccountSID = Get-WmiObject -Query "SELECT SID FROM Win32_UserAccount WHERE LocalAccount = 'True'" | Select-Object -First 1 -ExpandProperty SID
+        $LocalAccountSID = Get-CimInstance -Query "SELECT SID FROM Win32_UserAccount WHERE LocalAccount = 'True'" | Select-Object -First 1 -ExpandProperty SID
         $MachineSID      = ($p = $LocalAccountSID -split "-")[0..($p.Length-2)]-join"-"
         New-Object System.Security.Principal.SecurityIdentifier -ArgumentList $MachineSID
     }
@@ -177,7 +177,16 @@ Write-Title 'Windows Product-Key'
 # NB this C# code came from
 #       https://github.com/mrpeardotnet/WinProdKeyFinder/blob/d05bd525214d571a24298830cccaa466b22f3c87/WinProdKeyFind/KeyDecoder.cs
 #    and was slightly modified to work only in Windows8+/PowerShell.
-Add-Type @'
+Add-Type `
+    -ReferencedAssemblies @(
+        if ('7.0' -eq "$($PSVersionTable.PSVersion.Major).$($PSVersionTable.PSVersion.Minor)") {
+            'System.Runtime.Extensions'
+        } else {
+            'System.Runtime'
+        }
+        'Microsoft.Win32.Registry'
+    ) `
+    -TypeDefinition @'
 using System;
 using Microsoft.Win32;
 
