@@ -195,12 +195,13 @@ Write-Title 'Windows Product-Key'
 #    and was slightly modified to work only in Windows8+/PowerShell.
 Add-Type `
     -ReferencedAssemblies @(
-        if ('7.0' -eq "$($PSVersionTable.PSVersion.Major).$($PSVersionTable.PSVersion.Minor)") {
-            'System.Runtime.Extensions'
-        } else {
+        if ($PSVersionTable.PSVersion.Major -ge 7 -and $PSVersionTable.PSVersion.Minor -ge 1) {
             'System.Runtime'
+            'Microsoft.Win32.Registry'
+        } elseif ($PSVersionTable.PSVersion.Major -ge 7 -and $PSVersionTable.PSVersion.Minor -ge 0) {
+            'System.Runtime.Extensions'
+            'Microsoft.Win32.Registry'
         }
-        'Microsoft.Win32.Registry'
     ) `
     -TypeDefinition @'
 using System;
