@@ -36,7 +36,7 @@ function Bash($script) {
     }
 }
 
-Bash 'pacman --noconfirm -Sy make zip unzip tar dos2unix xorriso'
+Bash 'pacman --noconfirm -Sy make zip unzip tar p7zip dos2unix xorriso'
 ```
 
 Open a bash shell by starting `C:\tools\msys64\mingw64.exe` and execute the
