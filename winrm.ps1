@@ -60,12 +60,11 @@ New-ItemProperty `
     -Value 1 `
     -Force
 
-# make sure winrm can be accessed from any network profile.
-$winRmFirewallRuleNames = @(
-    'WINRM-HTTP-In-TCP',        # Windows Remote Management (HTTP-In)
-    'WINRM-HTTP-In-TCP-PUBLIC'  # Windows Remote Management (HTTP-In)   # Windows Server
-    'WINRM-HTTP-In-TCP-NoScope' # Windows Remote Management (HTTP-In)   # Windows 10
-)
-Get-NetFirewallRule -Direction Inbound -Enabled False `
-    | Where-Object {$winRmFirewallRuleNames -contains $_.Name} `
-    | Set-NetFirewallRule -Enable True
+# make sure winrm can be accessed from any network location.
+New-NetFirewallRule `
+    -DisplayName WINRM-HTTP-In-TCP-VAGRANT `
+    -Direction Inbound `
+    -Action Allow `
+    -Protocol TCP `
+    -LocalPort 5985 `
+    | Out-Null
