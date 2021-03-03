@@ -128,11 +128,12 @@ Get-NetAdapter `
             Name = $_.Name
             Description = $_.InterfaceDescription
             MacAddress = $_.MacAddress
-            IpAddress = ($_ | Get-NetIPConfiguration | ForEach-Object { $_.IPv4Address.IPAddress })
+            IpAddress = Get-NetIPInterface -ErrorAction SilentlyContinue -InterfaceAlias $_.InterfaceAlias -AddressFamily IPv4 | ForEach-Object { (Get-NetIPAddress -InterfaceAlias $_.InterfaceAlias -AddressFamily IPv4).IPAddress }
+            NetConnectionProfile = Get-NetConnectionProfile -ErrorAction SilentlyContinue -InterfaceAlias $_.InterfaceAlias | ForEach-Object { $_.NetworkCategory }
         }
     } `
     | Sort-Object -Property Name `
-    | Format-Table Name,Description,MacAddress,IpAddress `
+    | Format-Table Name,Description,MacAddress,IpAddress,NetConnectionProfile `
     | Out-String -Stream -Width ([int]::MaxValue) `
     | ForEach-Object {$_.TrimEnd()}
 

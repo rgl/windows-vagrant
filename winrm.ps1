@@ -12,6 +12,9 @@ trap {
     Exit 1
 }
 
+## for troubleshoot purposes, save this script output to a file.
+#Start-Transcript C:\winrm-autounattend.txt
+
 ## for troubleshoot purposes, save the current user details. this will be later displayed by provision.ps1.
 #whoami /all >C:\whoami-autounattend.txt
 
@@ -27,6 +30,8 @@ if (!(New-Object System.Security.Principal.WindowsPrincipal(
 
 # move all (non-domain) network interfaces into the private profile to make winrm happy (it needs at
 # least one private interface; for vagrant its enough to configure the first network interface).
+# NB in windows server it would be enough to call winrm -force argument, but
+#    in windows client 10, we must set the network interface profile.
 Get-NetConnectionProfile `
     | Where-Object {$_.NetworkCategory -ne 'DomainAuthenticated'} `
     | Set-NetConnectionProfile -NetworkCategory Private
@@ -46,10 +51,11 @@ if ($result -ne '[SC] ChangeServiceConfig SUCCESS') {
     throw "sc.exe config failed with $result"
 }
 
-## dump the WinRM configuration.
-#winrm enumerate winrm/config/listener
-#winrm get winrm/config
-#winrm id
+# dump the WinRM configuration.
+Write-Output 'WinRM Configuration:'
+winrm enumerate winrm/config/listener
+winrm get winrm/config
+winrm id
 
 # disable UAC remote restrictions.
 # see https://support.microsoft.com/en-us/help/951016/description-of-user-account-control-and-remote-restrictions-in-windows
@@ -58,7 +64,8 @@ New-ItemProperty `
     -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' `
     -Name LocalAccountTokenFilterPolicy `
     -Value 1 `
-    -Force
+    -Force `
+    | Out-Null
 
 # make sure winrm can be accessed from any network location.
 New-NetFirewallRule `
