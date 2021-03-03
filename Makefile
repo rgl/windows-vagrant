@@ -10,8 +10,6 @@ IMAGES+= windows-2016
 IMAGES+= windows-2019
 IMAGES+= windows-2019-uefi
 IMAGES+= windows-10-1809
-IMAGES+= windows-10-1903
-IMAGES+= windows-10-1909
 IMAGES+= windows-10-2004
 
 # Images supporting Hyper-V
@@ -150,8 +148,6 @@ tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 # This allows the use of pattern rules by satisfying the prerequisite
 .PHONY: \
 	windows-10-1809/autounattend.xml \
-	windows-10-1903/autounattend.xml \
-	windows-10-1909/autounattend.xml \
 	windows-10-2004/autounattend.xml
 
 drivers:
