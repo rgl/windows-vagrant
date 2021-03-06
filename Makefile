@@ -13,6 +13,7 @@ IMAGES+= windows-10-1809
 IMAGES+= windows-10-2004
 
 # Images supporting Hyper-V
+HYPERV_IMAGES+= windows-2012-r2
 HYPERV_IMAGES+= windows-2016
 HYPERV_IMAGES+= windows-2019
 HYPERV_IMAGES+= windows-10-1809
@@ -52,10 +53,10 @@ $(LIBVIRT_BUILDS): build-%-libvirt: %-amd64-libvirt.box
 $(HYPERV_BUILDS): build-%-hyperv: %-amd64-hyperv.box
 $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 
-%-amd64-virtualbox.box: %.json %/autounattend.xml Vagrantfile.template *.ps1 drivers
+%-amd64-virtualbox.box: %.pkr.hcl %/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-virtualbox-packer.log \
-		packer build -only=$*-amd64-virtualbox -on-error=abort $*.json
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-virtualbox-packer.log PKR_VAR_vagrant_box=$@ \
+		packer build -only=virtualbox-iso.$*-amd64 -on-error=abort $*.pkr.hcl
 	./get-windows-updates-from-packer-log.sh \
 		$*-amd64-virtualbox-packer.log \
 		>$*-amd64-virtualbox-windows-updates.log
@@ -63,10 +64,10 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-amd64 $@
 
-%-amd64-libvirt.box: %.json %/autounattend.xml Vagrantfile.template *.ps1 drivers
+%-amd64-libvirt.box: %.pkr.hcl %/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-libvirt-packer.log \
-		packer build -only=$*-amd64-libvirt -on-error=abort $*.json
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-libvirt-packer.log PKR_VAR_vagrant_box=$@ \
+		packer build -only=qemu.$*-amd64 -on-error=abort $*.pkr.hcl
 	./get-windows-updates-from-packer-log.sh \
 		$*-amd64-libvirt-packer.log \
 		>$*-amd64-libvirt-windows-updates.log
@@ -74,11 +75,11 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-amd64 $@
 
-%-amd64-hyperv.box: %.json Vagrantfile.template *.ps1
+%-amd64-hyperv.box: %.pkr.hcl Vagrantfile.template *.ps1
 	rm -f $@
 	mkdir -p tmp
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-hyperv-packer.log \
-		packer build -only=$*-amd64-hyperv -on-error=abort $*.json
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-hyperv-packer.log PKR_VAR_vagrant_box=$@ \
+		packer build -only=hyperv-iso.$*-amd64 -on-error=abort $*.pkr.hcl
 	./get-windows-updates-from-packer-log.sh \
 		$*-amd64-hyperv-packer.log \
 		>$*-amd64-hyperv-windows-updates.log
@@ -86,10 +87,10 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-amd64 $@
 
-%-uefi-amd64-virtualbox.box: %-uefi.json %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
+%-uefi-amd64-virtualbox.box: %-uefi.pkr.hcl %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
 	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-virtualbox-packer.log \
-		packer build -only=$*-uefi-amd64-virtualbox -on-error=abort $*-uefi.json
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-virtualbox-packer.log PKR_VAR_vagrant_box=$@ \
+		packer build -only=virtualbox-iso.$*-uefi-amd64 -on-error=abort $*-uefi.pkr.hcl
 	./get-windows-updates-from-packer-log.sh \
 		$*-uefi-amd64-virtualbox-packer.log \
 		>$*-uefi-amd64-virtualbox-windows-updates.log
@@ -97,16 +98,27 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-uefi-amd64 $@
 
-%-uefi-amd64-libvirt.box: %-uefi.json %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
+%-uefi-amd64-libvirt.box: %-uefi.pkr.hcl %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
 	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-libvirt-packer.log \
-		packer build -only=$*-uefi-amd64-libvirt -on-error=abort $*-uefi.json
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-libvirt-packer.log PKR_VAR_vagrant_box=$@ \
+		packer build -only=qemu.$*-uefi-amd64 -on-error=abort $*-uefi.pkr.hcl
 	./get-windows-updates-from-packer-log.sh \
 		$*-uefi-amd64-libvirt-packer.log \
 		>$*-uefi-amd64-libvirt-windows-updates.log
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-uefi-amd64 $@
+
+tmp/windows-10-%-vsphere/autounattend.xml: windows-10/autounattend.xml
+	mkdir -p "$$(dirname $@)"
+	@# add the vmware tools iso to the drivers search path.
+	@# NB we cannot have this in the main autounattend.xml because windows 2016
+	@#    will fail to install when the virtualbox guest additions iso is in E:
+	@#    with the error message:
+	@#        Windows Setup could not install one or more boot-critical drivers.
+	@#        To install Windows, make sure that the drivers are valid, and
+	@#        restart the installation.
+	sed -E 's,(.+)</DriverPaths>,\1    <PathAndCredentials wcm:action="add" wcm:keyValue="2"><Path>E:\\</Path></PathAndCredentials>\n\0,g' $< >$@
 
 tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 	mkdir -p "$$(dirname $@)"
@@ -119,10 +131,10 @@ tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 	@#        restart the installation.
 	sed -E 's,(.+)</DriverPaths>,\1    <PathAndCredentials wcm:action="add" wcm:keyValue="2"><Path>E:\\</Path></PathAndCredentials>\n\0,g' $< >$@
 
-%-amd64-vsphere.box: %-vsphere.json tmp/%-vsphere/autounattend.xml Vagrantfile.template *.ps1
+%-amd64-vsphere.box: %-vsphere.pkr.hcl tmp/%-vsphere/autounattend.xml Vagrantfile.template *.ps1
 	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-vsphere-packer.log \
-		packer build -only=$*-amd64-vsphere -on-error=abort $*-vsphere.json
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-vsphere-packer.log PKR_VAR_vagrant_box=$@ \
+		packer build -only=vsphere-iso.$*-amd64 -on-error=abort $*-vsphere.pkr.hcl
 	./get-windows-updates-from-packer-log.sh \
 		$*-amd64-vsphere-packer.log \
 		>$*-amd64-vsphere-windows-updates.log

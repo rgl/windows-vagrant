@@ -3,7 +3,7 @@ This builds Windows 2012R2/10/2016/2019 base Vagrant boxes using [Packer](https:
 
 # Usage
 
-Install [VirtualBox](https://www.virtualbox.org/) (or [libvirt](https://libvirt.org/) on Linux based systems), [packer 1.6.3+](https://www.packer.io/), [packer-provisioner-windows-update plugin](https://github.com/rgl/packer-provisioner-windows-update) and [vagrant](https://www.vagrantup.com/).
+Install [VirtualBox](https://www.virtualbox.org/) (or [libvirt](https://libvirt.org/) on Linux based systems), [packer 1.7.0+](https://www.packer.io/), [packer-provisioner-windows-update plugin](https://github.com/rgl/packer-provisioner-windows-update) and [vagrant](https://www.vagrantup.com/).
 If you are using Windows and [Chocolatey](https://chocolatey.org/), you can install everything from an administrative PowerShell session with:
 
 ```powershell
@@ -159,7 +159,7 @@ cd example
 #    with choco install -y carbon.
 # TODO set VM screen resolution.
 PowerShell -Command 'Import-Module Carbon; Grant-Permission . $env:VAGRANT_SMB_USERNAME FullControl'
-vagrant up --provider=hyperv
+vagrant up --no-destroy-on-error --provider=hyperv
 vagrant ssh
 exit
 vagrant destroy -f
@@ -180,7 +180,6 @@ Install the [vsphere vagrant plugin](https://github.com/nsidc/vagrant-vsphere), 
 sudo apt-get install build-essential patch ruby-dev zlib1g-dev liblzma-dev
 vagrant plugin install vagrant-vsphere
 vagrant plugin install vagrant-windows-sysprep
-cd example
 cat >secrets.sh <<'EOF'
 export GOVC_INSECURE='1'
 export GOVC_HOST='vsphere.local'
@@ -218,6 +217,7 @@ Try the example guest:
 
 ```bash
 source secrets.sh
+cd example
 echo $VSPHERE_TEMPLATE_NAME # check if you are using the expected template.
 vagrant up --no-destroy-on-error --provider=vsphere
 vagrant ssh

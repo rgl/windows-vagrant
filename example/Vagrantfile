@@ -55,6 +55,10 @@ Vagrant.configure(2) do |config|
     vsphere.template_name = ENV['VSPHERE_TEMPLATE_NAME']
     vsphere.vm_base_path = ENV['VSPHERE_VM_FOLDER']
     vsphere.vlan = ENV['VSPHERE_VLAN']
+    override.vm.synced_folder '.', '/vagrant',
+      type: 'smb',
+      smb_username: ENV['VAGRANT_SMB_USERNAME'] || ENV['USER'],
+      smb_password: ENV['VAGRANT_SMB_PASSWORD']
   end
 
   #config.vm.provision "windows-sysprep" # NB the windows-sysprep plugin does not work with hyperv.
