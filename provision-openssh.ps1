@@ -78,13 +78,13 @@ $sshdConfig = $originalSshdConfig `
 Set-Content -Encoding ascii "$openSshConfigHome\sshd_config" $sshdConfig
 &"$openSshHome\install-sshd.ps1"
 
-Write-Host 'Generating the host SSH keys...' 
+Write-Host 'Generating the host SSH keys...'
 &"$openSshHome\ssh-keygen.exe" -A
 if ($LASTEXITCODE) {
     throw "Failed to run ssh-keygen with exit code $LASTEXITCODE"
 }
 
-Write-Host 'Configuring sshd...' 
+Write-Host 'Configuring sshd...'
 Set-Content `
     -Encoding Ascii `
     "$openSshConfigHome\sshd_config" `
@@ -93,13 +93,25 @@ Set-Content `
             -replace '#?\s*UseDNS .+','UseDNS no' `
     )
 
-Write-Host 'Setting the host file permissions...' 
+Write-Host 'Setting the host file permissions...'
 &"$openSshHome\FixHostFilePermissions.ps1" -Confirm:$false
 
-Write-Host 'Configuring sshd and ssh-agent services...' 
-Set-Service 'sshd' -StartupType Automatic
-sc.exe failure 'sshd' reset= 0 actions= restart/1000
-sc.exe failure 'ssh-agent' reset= 0 actions= restart/1000
+Write-Host 'Configuring sshd and ssh-agent services...'
+# make sure the service startup type is delayed-auto.
+# WARN do not be tempted to change the service startup type from
+#      delayed-auto to auto, as the later proved to be unreliable.
+$result = sc.exe config sshd start= delayed-auto
+if ($result -ne '[SC] ChangeServiceConfig SUCCESS') {
+    throw "sc.exe config sshd failed with $result"
+}
+$result = sc.exe failure sshd reset= 0 actions= restart/60000
+if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
+    throw "sc.exe failure sshd failed with $result"
+}
+$result = sc.exe failure ssh-agent reset= 0 actions= restart/60000
+if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
+    throw "sc.exe failure ssh-agent failed with $result"
+}
 
 New-NetFirewallRule -Protocol TCP -LocalPort 22 -Direction Inbound -Action Allow -DisplayName SSH | Out-Null
 
@@ -109,3 +121,6 @@ mkdir -Force "$env:USERPROFILE\.ssh" | Out-Null
 (New-Object System.Net.WebClient).DownloadFile(
     'https://raw.github.com/hashicorp/vagrant/master/keys/vagrant.pub',
     $authorizedKeysPath)
+
+Write-Host 'Starting the sshd service...'
+Start-Service sshd
