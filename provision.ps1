@@ -18,9 +18,8 @@ trap {
     Exit 1
 }
 
-# enable TLS 1.1 and 1.2.
+# enable TLS 1.2.
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol `
-    -bor [Net.SecurityProtocolType]::Tls11 `
     -bor [Net.SecurityProtocolType]::Tls12
 
 if (![Environment]::Is64BitProcess) {
