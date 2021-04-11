@@ -271,6 +271,31 @@ In vSphere configure the following Inventory Objects permissions:
 For more information see the [vSphere Virtual Machine Administration/Required Privileges for Common Tasks document](https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.vm_admin.doc/GUID-4D0F8E63-2961-4B71-B365-BBFA24673FDB.html) in the [vSphere Virtual Machine Administration manual](https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.vm_admin.doc/GUID-55238059-912E-411F-A0E9-A7A536972A91.html).
 
 
+## SSH access
+
+You can connect to this machine through SSH to run a remote command, e.g.:
+
+```batch
+ssh -p 2222 vagrant@localhost "whoami /all"
+```
+
+**NB** the exact SSH address and port can be obtained with `vagrant ssh-config`.
+
+**NB** we cannot use the vagrant SMB shared folder type when using the `winssh`
+communicator; it will fail to mount the shared folder with the error:
+
+  ```
+  cmdkey /add:192.168.1.xxx /user:xxx /pass:"*****"
+  CMDKEY: Credentials cannot be saved from this logon session.
+  ```
+
+**NB** this is a [Windows design restriction](https://github.com/PowerShell/Win32-OpenSSH/issues/996#issuecomment-610635377)
+that prevents remote network logon sessions from accessing certain parts of the
+system.
+
+**NB** this is why the default vagrant box communicator is `winrm`.
+
+
 ## WinRM access
 
 You can connect to this machine through WinRM to run a remote command, e.g.:

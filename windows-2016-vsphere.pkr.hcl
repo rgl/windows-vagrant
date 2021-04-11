@@ -50,7 +50,6 @@ variable "vsphere_network" {
 }
 
 source "vsphere-iso" "windows-2016-amd64" {
-  communicator  = "winrm"
   CPUs          = 2
   RAM           = 6144
   guest_os_type = "windows9Server64Guest"
@@ -58,6 +57,7 @@ source "vsphere-iso" "windows-2016-amd64" {
     "tmp/windows-2016-vsphere/autounattend.xml",
     "vmtools.ps1",
     "winrm.ps1",
+    "provision-openssh.ps1",
   ]
   iso_paths = [
     "[${var.vsphere_datastore}] iso/windows-2016-Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
@@ -84,9 +84,10 @@ source "vsphere-iso" "windows-2016-amd64" {
   folder              = var.vsphere_folder
   vm_name             = "windows-2016-amd64-vsphere"
   shutdown_command    = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
-  winrm_password      = "vagrant"
-  winrm_username      = "vagrant"
-  winrm_timeout       = "4h"
+  communicator        = "ssh"
+  ssh_password        = "vagrant"
+  ssh_username        = "vagrant"
+  ssh_timeout         = "4h"
 }
 
 build {
@@ -122,13 +123,6 @@ build {
 
   provisioner "powershell" {
     script = "enable-remote-desktop.ps1"
-  }
-
-  provisioner "powershell" {
-    script = "provision-openssh.ps1"
-  }
-
-  provisioner "windows-restart" {
   }
 
   provisioner "powershell" {

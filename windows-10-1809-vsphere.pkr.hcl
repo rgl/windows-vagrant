@@ -50,7 +50,6 @@ variable "vsphere_network" {
 }
 
 source "vsphere-iso" "windows-10-1809-amd64" {
-  communicator  = "winrm"
   CPUs          = 4
   RAM           = 4096
   guest_os_type = "windows9_64Guest"
@@ -58,6 +57,7 @@ source "vsphere-iso" "windows-10-1809-amd64" {
     "tmp/windows-10-1809-vsphere/autounattend.xml",
     "vmtools.ps1",
     "winrm.ps1",
+    "provision-openssh.ps1",
   ]
   iso_paths = [
     "[${var.vsphere_datastore}] iso/windows-10-1809-17763.107.101029-1455.rs5_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso",
@@ -84,9 +84,10 @@ source "vsphere-iso" "windows-10-1809-amd64" {
   folder              = var.vsphere_folder
   vm_name             = "windows-10-1809-amd64-vsphere"
   shutdown_command    = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
-  winrm_password      = "vagrant"
-  winrm_username      = "vagrant"
-  winrm_timeout       = "4h"
+  communicator        = "ssh"
+  ssh_password        = "vagrant"
+  ssh_username        = "vagrant"
+  ssh_timeout         = "4h"
 }
 
 build {
@@ -116,13 +117,6 @@ build {
 
   provisioner "powershell" {
     script = "enable-remote-desktop.ps1"
-  }
-
-  provisioner "powershell" {
-    script = "provision-openssh.ps1"
-  }
-
-  provisioner "windows-restart" {
   }
 
   provisioner "powershell" {

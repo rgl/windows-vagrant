@@ -42,6 +42,7 @@ source "qemu" "windows-2019-uefi-amd64" {
   floppy_files = [
     "windows-2019-uefi/autounattend.xml",
     "winrm.ps1",
+    "provision-openssh.ps1",
     "drivers/vioserial/2k19/amd64/*.cat",
     "drivers/vioserial/2k19/amd64/*.inf",
     "drivers/vioserial/2k19/amd64/*.sys",
@@ -61,10 +62,10 @@ source "qemu" "windows-2019-uefi-amd64" {
   iso_url          = var.iso_url
   iso_checksum     = var.iso_checksum
   shutdown_command = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
-  communicator     = "winrm"
-  winrm_username   = "vagrant"
-  winrm_password   = "vagrant"
-  winrm_timeout    = "4h"
+  communicator     = "ssh"
+  ssh_username     = "vagrant"
+  ssh_password     = "vagrant"
+  ssh_timeout      = "4h"
 }
 
 source "virtualbox-iso" "windows-2019-uefi-amd64" {
@@ -74,6 +75,7 @@ source "virtualbox-iso" "windows-2019-uefi-amd64" {
   cd_files = [
     "windows-2019-uefi/autounattend.xml",
     "winrm.ps1",
+    "provision-openssh.ps1",
   ]
   guest_additions_interface = "sata"
   guest_additions_mode      = "attach"
@@ -101,10 +103,10 @@ source "virtualbox-iso" "windows-2019-uefi-amd64" {
   ]
   boot_wait      = "3s"
   boot_command   = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
-  communicator   = "winrm"
-  winrm_username = "vagrant"
-  winrm_password = "vagrant"
-  winrm_timeout  = "4h"
+  communicator   = "ssh"
+  ssh_username   = "vagrant"
+  ssh_password   = "vagrant"
+  ssh_timeout    = "4h"
 }
 
 build {
@@ -143,13 +145,6 @@ build {
 
   provisioner "powershell" {
     script = "enable-remote-desktop.ps1"
-  }
-
-  provisioner "powershell" {
-    script = "provision-openssh.ps1"
-  }
-
-  provisioner "windows-restart" {
   }
 
   provisioner "powershell" {

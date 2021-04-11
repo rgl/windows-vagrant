@@ -122,6 +122,10 @@
                     <Order>4</Order>
                     <CommandLine>PowerShell -File a:\winrm.ps1</CommandLine>
                 </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>5</Order>
+                    <CommandLine>PowerShell -File a:\provision-openssh.ps1</CommandLine>
+                </SynchronousCommand>
             </FirstLogonCommands>
         </component>
     </settings>

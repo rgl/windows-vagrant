@@ -49,6 +49,7 @@ source "qemu" "windows-2012-r2-amd64" {
   floppy_files = [
     "windows-2012-r2/autounattend.xml",
     "winrm.ps1",
+    "provision-openssh.ps1",
     "drivers/viostor/2k12R2/amd64/*.cat",
     "drivers/viostor/2k12R2/amd64/*.inf",
     "drivers/viostor/2k12R2/amd64/*.sys",
@@ -65,10 +66,10 @@ source "qemu" "windows-2012-r2-amd64" {
   iso_url          = var.iso_url
   iso_checksum     = var.iso_checksum
   shutdown_command = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
-  communicator     = "winrm"
-  winrm_username   = "vagrant"
-  winrm_password   = "vagrant"
-  winrm_timeout    = "4h"
+  communicator     = "ssh"
+  ssh_username     = "vagrant"
+  ssh_password     = "vagrant"
+  ssh_timeout      = "4h"
 }
 
 source "virtualbox-iso" "windows-2012-r2-amd64" {
@@ -78,6 +79,7 @@ source "virtualbox-iso" "windows-2012-r2-amd64" {
   floppy_files = [
     "windows-2012-r2/autounattend.xml",
     "winrm.ps1",
+    "provision-openssh.ps1",
   ]
   guest_additions_interface = "sata"
   guest_additions_mode      = "attach"
@@ -102,10 +104,10 @@ source "virtualbox-iso" "windows-2012-r2-amd64" {
     ["modifyvm", "{{ .Name }}", "--nictype3", "82540EM"],
     ["modifyvm", "{{ .Name }}", "--nictype4", "82540EM"],
   ]
-  communicator   = "winrm"
-  winrm_username = "vagrant"
-  winrm_password = "vagrant"
-  winrm_timeout  = "4h"
+  communicator = "ssh"
+  ssh_username = "vagrant"
+  ssh_password = "vagrant"
+  ssh_timeout  = "4h"
 }
 
 source "hyperv-iso" "windows-2012-r2-amd64" {
@@ -118,6 +120,7 @@ source "hyperv-iso" "windows-2012-r2-amd64" {
   cd_files = [
     "windows-2012-r2-uefi/autounattend.xml",
     "winrm.ps1",
+    "provision-openssh.ps1",
   ]
   disk_size         = var.disk_size
   first_boot_device = "DVD"
@@ -128,10 +131,10 @@ source "hyperv-iso" "windows-2012-r2-amd64" {
   temp_path         = "tmp"
   vlan_id           = var.hyperv_vlan_id
   shutdown_command  = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
-  communicator      = "winrm"
-  winrm_username    = "vagrant"
-  winrm_password    = "vagrant"
-  winrm_timeout     = "4h"
+  communicator      = "ssh"
+  ssh_username      = "vagrant"
+  ssh_password      = "vagrant"
+  ssh_timeout       = "4h"
 }
 
 build {
@@ -186,13 +189,6 @@ build {
 
   provisioner "powershell" {
     script = "enable-remote-desktop.ps1"
-  }
-
-  provisioner "powershell" {
-    script = "provision-openssh.ps1"
-  }
-
-  provisioner "windows-restart" {
   }
 
   provisioner "powershell" {
