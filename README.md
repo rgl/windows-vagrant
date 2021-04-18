@@ -3,11 +3,11 @@ This builds Windows 2012R2/10/2016/2019 base Vagrant boxes using [Packer](https:
 
 # Usage
 
-Install [VirtualBox](https://www.virtualbox.org/) (or [libvirt](https://libvirt.org/) on Linux based systems), [packer 1.7.0+](https://www.packer.io/), [packer-provisioner-windows-update plugin](https://github.com/rgl/packer-provisioner-windows-update) and [vagrant](https://www.vagrantup.com/).
+Install [VirtualBox](https://www.virtualbox.org/) (or [libvirt](https://libvirt.org/) on Linux based systems), [packer 1.7.0+](https://www.packer.io/) and [vagrant](https://www.vagrantup.com/).
 If you are using Windows and [Chocolatey](https://chocolatey.org/), you can install everything from an administrative PowerShell session with:
 
 ```powershell
-choco install -y virtualbox packer packer-provisioner-windows-update vagrant msys2
+choco install -y virtualbox packer vagrant msys2
 
 # configure the msys2 launcher to let the shell inherith the PATH.
 $msys2BasePath = 'C:\tools\msys64'
