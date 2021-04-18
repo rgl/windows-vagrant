@@ -1,3 +1,12 @@
+packer {
+  required_plugins {
+    windows-update = {
+      version = "0.12.0"
+      source = "github.com/rgl/windows-update"
+    }
+  }
+}
+
 variable "vsphere_disk_size" {
   type    = string
   default = "61440"
