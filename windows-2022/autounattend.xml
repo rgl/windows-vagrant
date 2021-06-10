@@ -48,7 +48,7 @@
             </ImageInstall>
             <UserData>
                 <ProductKey>
-                    <Key>MFY9F-XBN2F-TYFMP-CCV49-RMYVH</Key>
+                    <!-- <Key>MFY9F-XBN2F-TYFMP-CCV49-RMYVH</Key> -->
                     <WillShowUI>OnError</WillShowUI>
                 </ProductKey>
                 <AcceptEula>true</AcceptEula>

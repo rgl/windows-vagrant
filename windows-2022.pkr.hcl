@@ -14,12 +14,12 @@ variable "disk_size" {
 
 variable "iso_url" {
   type    = string
-  default = "windows-2022-Windows_InsiderPreview_Server_vNext_en-us_20334.iso"
+  default = "https://software-download.microsoft.com/download/sg/20348.1.210507-1500.fe_release_SERVER_EVAL_x64FRE_en-us.iso"
 }
 
 variable "iso_checksum" {
   type    = string
-  default = "sha256:c196b08ca19ec2e399be22f8e23bf5094298bd26e7e29c61a2a625159e502376"
+  default = "sha256:2ee3a0325f7230b1ff68bd8db2695f4102eae4ff32118382b1ab2e2b98a71aaa"
 }
 
 variable "hyperv_switch_name" {
