@@ -128,6 +128,10 @@ build {
   }
 
   provisioner "windows-update" {
+    filters = [
+      "exclude:$_.Title -like '*VMware*'",
+      "include:$true"
+    ]
   }
 
   provisioner "powershell" {
