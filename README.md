@@ -198,6 +198,15 @@ export VSPHERE_TEMPLATE_IPATH="//$GOVC_DATACENTER/vm/$VSPHERE_TEMPLATE_NAME"
 export VSPHERE_VM_FOLDER='test'
 export VSPHERE_VM_NAME='windows-2019-vagrant-example'
 export VSPHERE_VLAN='packer'
+# set the credentials that the guest will use
+# to connect to this host smb share.
+# NB you should create a new local user named _vagrant_share
+#    and use that one here instead of your user credentials.
+# NB it would be nice for this user to have its credentials
+#    automatically rotated, if you implement that feature,
+#    let me known!
+export VAGRANT_SMB_USERNAME='_vagrant_share'
+export VAGRANT_SMB_PASSWORD=''
 EOF
 source secrets.sh
 # see https://github.com/vmware/govmomi/blob/master/govc/USAGE.md
