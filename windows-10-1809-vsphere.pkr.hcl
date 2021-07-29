@@ -70,7 +70,7 @@ source "vsphere-iso" "windows-10-1809-amd64" {
   ]
   iso_paths = [
     "[${var.vsphere_datastore}] iso/windows-10-1809-17763.107.101029-1455.rs5_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso",
-    "[${var.vsphere_datastore}] iso/VMware-tools-windows-11.2.5-17337674.iso",
+    "[${var.vsphere_datastore}] iso/VMware-tools-windows-11.3.0-18090558.iso",
   ]
   network_adapters {
     network      = var.vsphere_network
