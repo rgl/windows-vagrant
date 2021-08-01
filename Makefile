@@ -11,7 +11,7 @@ IMAGES+= windows-2019
 IMAGES+= windows-2019-uefi
 IMAGES+= windows-2022
 IMAGES+= windows-10-1809
-IMAGES+= windows-10-20h2
+IMAGES+= windows-10-21h1
 
 # Images supporting Hyper-V
 HYPERV_IMAGES+= windows-2012-r2
@@ -19,7 +19,7 @@ HYPERV_IMAGES+= windows-2016
 HYPERV_IMAGES+= windows-2019
 HYPERV_IMAGES+= windows-2022
 HYPERV_IMAGES+= windows-10-1809
-HYPERV_IMAGES+= windows-10-20h2
+HYPERV_IMAGES+= windows-10-21h1
 
 # Images supporting vSphere
 VSPHERE_IMAGES+= windows-2016
@@ -174,7 +174,7 @@ tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 # This allows the use of pattern rules by satisfying the prerequisite
 .PHONY: \
 	windows-10-1809/autounattend.xml \
-	windows-10-20h2/autounattend.xml
+	windows-10-21h1/autounattend.xml
 
 drivers:
 	rm -rf drivers.tmp
