@@ -43,7 +43,8 @@ source "qemu" "windows-10-1809-amd64" {
   qemuargs = [
     ["-cpu", "host"],
     ["-soundhw", "hda"],
-    ["-usbdevice", "tablet"],
+    ["-device", "piix3-usb-uhci"],
+    ["-device", "usb-tablet"],
     ["-device", "virtio-net,netdev=user.0"],
     ["-vga", "qxl"],
     ["-device", "virtio-serial-pci"],
