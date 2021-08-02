@@ -14,12 +14,12 @@ variable "disk_size" {
 
 variable "iso_url" {
   type    = string
-  default = "https://software-download.microsoft.com/download/sg/19043.928.210409-1212.21h1_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso"
+  default = "https://software-download.microsoft.com/download/pr/19042.508.200927-1902.20h2_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso"
 }
 
 variable "iso_checksum" {
   type    = string
-  default = "sha256:026607e7aa7ff80441045d8830556bf8899062ca9b3c543702f112dd6ffe6078"
+  default = "sha256:574f00380ead9e4b53921c33bf348b5a2fa976ffad1d5fa20466ddf7f0258964"
 }
 
 variable "hyperv_switch_name" {
@@ -36,7 +36,7 @@ variable "vagrant_box" {
   type = string
 }
 
-source "qemu" "windows-10-21h1-amd64" {
+source "qemu" "windows-10-20h2-amd64" {
   accelerator = "kvm"
   cpus        = 2
   memory      = 4096
@@ -85,7 +85,7 @@ source "qemu" "windows-10-21h1-amd64" {
   ssh_timeout      = "4h"
 }
 
-source "virtualbox-iso" "windows-10-21h1-amd64" {
+source "virtualbox-iso" "windows-10-20h2-amd64" {
   cpus      = 2
   memory    = 4096
   disk_size = var.disk_size
@@ -123,7 +123,7 @@ source "virtualbox-iso" "windows-10-21h1-amd64" {
   ssh_timeout  = "4h"
 }
 
-source "hyperv-iso" "windows-10-21h1-amd64" {
+source "hyperv-iso" "windows-10-20h2-amd64" {
   cpus         = 2
   memory       = 4096
   generation   = 2
@@ -152,9 +152,9 @@ source "hyperv-iso" "windows-10-21h1-amd64" {
 
 build {
   sources = [
-    "source.qemu.windows-10-21h1-amd64",
-    "source.virtualbox-iso.windows-10-21h1-amd64",
-    "source.hyperv-iso.windows-10-21h1-amd64",
+    "source.qemu.windows-10-20h2-amd64",
+    "source.virtualbox-iso.windows-10-20h2-amd64",
+    "source.hyperv-iso.windows-10-20h2-amd64",
   ]
 
   provisioner "powershell" {
@@ -174,12 +174,12 @@ build {
   }
 
   provisioner "powershell" {
-    only   = ["virtualbox-iso.windows-10-21h1-amd64"]
+    only   = ["virtualbox-iso.windows-10-20h2-amd64"]
     script = "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
   }
 
   provisioner "powershell" {
-    only   = ["qemu.windows-10-21h1-amd64"]
+    only   = ["qemu.windows-10-20h2-amd64"]
     script = "provision-guest-tools-qemu-kvm.ps1"
   }
 
@@ -187,7 +187,7 @@ build {
   }
 
   provisioner "powershell" {
-    only   = ["qemu.windows-10-21h1-amd64"]
+    only   = ["qemu.windows-10-20h2-amd64"]
     script = "libvirt-fix-cpu-driver.ps1"
   }
 

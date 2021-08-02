@@ -37,3 +37,11 @@ New-ItemProperty `
 #    remove with Remove-WindowsPackage.
 Get-Process OneDrive -ErrorAction SilentlyContinue | Stop-Process -Force
 &$oneDriveSetup /uninstall | Out-String -Stream
+
+# ignore uninstall error.
+# NB because it fails in windows 20H2, and not having OneDrive is just a
+#    nice to have.
+if ($LASTEXITCODE) {
+    Write-Output "WARN Failed to uninstall OneDrive with exit code $LASTEXITCODE."
+    Exit 0
+}

@@ -18,12 +18,18 @@ mkdir -Force 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent' | Set-Item
     -Value 1
 
 # remove all the provisioned appx packages.
+# NB some packages fail to be removed and thats OK.
 Get-AppXProvisionedPackage -Online | ForEach-Object {
     Write-Host "Removing the $($_.PackageName) provisioned appx package..."
-    $_ | Remove-AppxProvisionedPackage -Online | Out-Null
+    try {
+        $_ | Remove-AppxProvisionedPackage -Online | Out-Null
+    } catch {
+        Write-Output "WARN Failed to remove appx: $_"
+    }
 }
 
 # remove appx packages.
+# NB some packages fail to be removed and thats OK.
 # see https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10
 @(
     'Microsoft.BingWeather'
@@ -65,6 +71,10 @@ Get-AppXProvisionedPackage -Online | ForEach-Object {
     $appx = Get-AppxPackage -AllUsers $_
     if ($appx) {
         Write-Host "Removing the $($appx.Name) appx package..."
-        $appx | Remove-AppxPackage -AllUsers
+        try {
+            $appx | Remove-AppxPackage -AllUsers
+        } catch {
+            Write-Output "WARN Failed to remove appx: $_"
+        }
     }
 }
