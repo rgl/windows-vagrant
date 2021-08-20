@@ -10,9 +10,13 @@ Vagrant.configure(2) do |config|
     lv.cpu_mode = 'host-passthrough'
     lv.keymap = 'pt'
     lv.nested = true
-    # replace the default synced_folder with something that works in the base box.
-    # NB for some reason, this does not work when placed in the base box Vagrantfile.
-    config.vm.synced_folder '.', '/vagrant', type: 'rsync', rsync__exclude: [
+    config.vm.synced_folder '.', '/vagrant',
+      type: 'smb',
+      smb_username: ENV['VAGRANT_SMB_USERNAME'] || ENV['USER'],
+      smb_password: ENV['VAGRANT_SMB_PASSWORD']
+    # example rsync synced folder.
+    # this is used for testing whether rsync is working correctly.
+    config.vm.synced_folder '.', '/vagrant-rsync', type: 'rsync', rsync__exclude: [
       '.vagrant/',
       '.git/',
       '*.box']
