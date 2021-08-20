@@ -14,12 +14,12 @@ variable "disk_size" {
 
 variable "iso_url" {
   type    = string
-  default = "https://software-download.microsoft.com/download/sg/20348.1.210507-1500.fe_release_SERVER_EVAL_x64FRE_en-us.iso"
+  default = "https://software-download.microsoft.com/download/sg/20348.169.210806-2348.fe_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso"
 }
 
 variable "iso_checksum" {
   type    = string
-  default = "sha256:2ee3a0325f7230b1ff68bd8db2695f4102eae4ff32118382b1ab2e2b98a71aaa"
+  default = "sha256:4f1457c4fe14ce48c9b2324924f33ca4f0470475e6da851b39ccbf98f44e7852"
 }
 
 variable "hyperv_switch_name" {
