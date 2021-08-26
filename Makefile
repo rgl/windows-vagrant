@@ -24,6 +24,7 @@ HYPERV_IMAGES+= windows-10-20h2
 # Images supporting vSphere
 VSPHERE_IMAGES+= windows-2016
 VSPHERE_IMAGES+= windows-2019
+VSPHERE_IMAGES+= windows-2022
 VSPHERE_IMAGES+= windows-10-1809
 
 # Generate build-* targets
