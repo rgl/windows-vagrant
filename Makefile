@@ -10,6 +10,7 @@ IMAGES+= windows-2016
 IMAGES+= windows-2019
 IMAGES+= windows-2019-uefi
 IMAGES+= windows-2022
+IMAGES+= windows-2022-uefi
 IMAGES+= windows-10-1809
 IMAGES+= windows-10-20h2
 
