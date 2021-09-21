@@ -47,8 +47,8 @@ source "qemu" "windows-2019-uefi-amd64" {
     ["-device", "virtserialport,chardev=spicechannel0,name=com.redhat.spice.0"],
     ["-spice", "unix,addr=/tmp/{{ .Name }}-spice.socket,disable-ticketing"],
   ]
-  boot_wait      = "5s"
-  boot_command   = ["<enter>"]
+  boot_wait      = "3s"
+  boot_command   = ["<up><wait><up><wait><up><wait><up><wait><up><wait>"]
   disk_interface = "virtio-scsi"
   disk_cache     = "unsafe"
   disk_discard   = "unmap"
