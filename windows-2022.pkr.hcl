@@ -45,6 +45,8 @@ source "qemu" "windows-2022-amd64" {
     ["-soundhw", "hda"],
     ["-device", "piix3-usb-uhci"],
     ["-device", "usb-tablet"],
+    ["-device", "virtio-scsi-pci,id=scsi0"],
+    ["-device", "scsi-hd,bus=scsi0.0,drive=drive0"],
     ["-device", "virtio-net,netdev=user.0"],
     ["-vga", "qxl"],
     ["-device", "virtio-serial-pci"],
@@ -54,7 +56,9 @@ source "qemu" "windows-2022-amd64" {
     ["-device", "virtserialport,chardev=spicechannel0,name=com.redhat.spice.0"],
     ["-spice", "unix,addr=/tmp/{{ .Name }}-spice.socket,disable-ticketing"],
   ]
-  disk_interface = "virtio"
+  disk_interface = "virtio-scsi"
+  disk_cache     = "unsafe"
+  disk_discard   = "unmap"
   disk_size      = var.disk_size
   floppy_files = [
     "windows-2022/autounattend.xml",
@@ -66,6 +70,9 @@ source "qemu" "windows-2022-amd64" {
     "drivers/viostor/2k19/amd64/*.cat",
     "drivers/viostor/2k19/amd64/*.inf",
     "drivers/viostor/2k19/amd64/*.sys",
+    "drivers/vioscsi/2k19/amd64/*.cat",
+    "drivers/vioscsi/2k19/amd64/*.inf",
+    "drivers/vioscsi/2k19/amd64/*.sys",
     "drivers/NetKVM/2k19/amd64/*.cat",
     "drivers/NetKVM/2k19/amd64/*.inf",
     "drivers/NetKVM/2k19/amd64/*.sys",

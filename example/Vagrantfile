@@ -1,5 +1,12 @@
+# enable typed triggers.
+# NB this is needed to modify the libvirt domain scsi controller model to virtio-scsi.
+ENV['VAGRANT_EXPERIMENTAL'] = 'typed_triggers'
+
+require 'open3'
+
 Vagrant.configure(2) do |config|
   config.vm.box = 'windows-2022-amd64'
+  #config.vm.box = 'windows-2022-uefi-amd64'
 
   config.vm.hostname = 'example'
 
@@ -10,6 +17,23 @@ Vagrant.configure(2) do |config|
     lv.cpu_mode = 'host-passthrough'
     lv.keymap = 'pt'
     lv.nested = true
+    lv.disk_bus = 'scsi'
+    lv.disk_device = 'sda'
+    lv.disk_driver :discard => 'unmap', :cache => 'unsafe'
+    config.trigger.before :'VagrantPlugins::ProviderLibvirt::Action::StartDomain', type: :action do |trigger|
+      trigger.ruby do |env, machine|
+        # modify the scsi controller model to virtio-scsi.
+        # see https://github.com/vagrant-libvirt/vagrant-libvirt/pull/692
+        # see https://github.com/vagrant-libvirt/vagrant-libvirt/issues/999
+        stdout, stderr, status = Open3.capture3(
+          'virt-xml', machine.id,
+          '--edit', 'type=scsi',
+          '--controller', 'model=virtio-scsi')
+        if status.exitstatus != 0
+          raise "failed to run virt-xml to modify the scsi controller model. status=#{status.exitstatus} stdout=#{stdout} stderr=#{stderr}"
+        end
+      end
+    end
     config.vm.synced_folder '.', '/vagrant',
       type: 'smb',
       smb_username: ENV['VAGRANT_SMB_USERNAME'] || ENV['USER'],

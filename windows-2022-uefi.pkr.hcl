@@ -36,6 +36,8 @@ source "qemu" "windows-2022-uefi-amd64" {
     ["-soundhw", "hda"],
     ["-device", "piix3-usb-uhci"],
     ["-device", "usb-tablet"],
+    ["-device", "virtio-scsi-pci,id=scsi0"],
+    ["-device", "scsi-hd,bus=scsi0.0,drive=drive0"],
     ["-device", "virtio-net,netdev=user.0"],
     ["-vga", "qxl"],
     ["-device", "virtio-serial-pci"],
@@ -47,7 +49,9 @@ source "qemu" "windows-2022-uefi-amd64" {
   ]
   boot_wait      = "5s"
   boot_command   = ["<enter>"]
-  disk_interface = "virtio"
+  disk_interface = "virtio-scsi"
+  disk_cache     = "unsafe"
+  disk_discard   = "unmap"
   disk_size      = var.disk_size
   floppy_files = [
     "windows-2022-uefi/autounattend.xml",
@@ -59,6 +63,9 @@ source "qemu" "windows-2022-uefi-amd64" {
     "drivers/viostor/2k19/amd64/*.cat",
     "drivers/viostor/2k19/amd64/*.inf",
     "drivers/viostor/2k19/amd64/*.sys",
+    "drivers/vioscsi/2k19/amd64/*.cat",
+    "drivers/vioscsi/2k19/amd64/*.inf",
+    "drivers/vioscsi/2k19/amd64/*.sys",
     "drivers/NetKVM/2k19/amd64/*.cat",
     "drivers/NetKVM/2k19/amd64/*.inf",
     "drivers/NetKVM/2k19/amd64/*.sys",

@@ -45,6 +45,8 @@ source "qemu" "windows-10-20h2-amd64" {
     ["-soundhw", "hda"],
     ["-device", "piix3-usb-uhci"],
     ["-device", "usb-tablet"],
+    ["-device", "virtio-scsi-pci,id=scsi0"],
+    ["-device", "scsi-hd,bus=scsi0.0,drive=drive0"],
     ["-device", "virtio-net,netdev=user.0"],
     ["-vga", "qxl"],
     ["-device", "virtio-serial-pci"],
@@ -54,7 +56,9 @@ source "qemu" "windows-10-20h2-amd64" {
     ["-device", "virtserialport,chardev=spicechannel0,name=com.redhat.spice.0"],
     ["-spice", "unix,addr=/tmp/{{ .Name }}-spice.socket,disable-ticketing"],
   ]
-  disk_interface = "virtio"
+  disk_interface = "virtio-scsi"
+  disk_cache     = "unsafe"
+  disk_discard   = "unmap"
   disk_size      = var.disk_size
   floppy_files = [
     "windows-10/autounattend.xml",
@@ -66,6 +70,9 @@ source "qemu" "windows-10-20h2-amd64" {
     "drivers/viostor/w10/amd64/*.cat",
     "drivers/viostor/w10/amd64/*.inf",
     "drivers/viostor/w10/amd64/*.sys",
+    "drivers/vioscsi/w10/amd64/*.cat",
+    "drivers/vioscsi/w10/amd64/*.inf",
+    "drivers/vioscsi/w10/amd64/*.sys",
     "drivers/NetKVM/w10/amd64/*.cat",
     "drivers/NetKVM/w10/amd64/*.inf",
     "drivers/NetKVM/w10/amd64/*.sys",
