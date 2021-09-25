@@ -1,4 +1,6 @@
-$artifactUrl = 'https://download.microsoft.com/download/0/1/C/01CC78AA-B53B-4884-B7EA-74F2878AA79F/adk/adksetup.exe' # v1809
+# Windows 11 Assessment and Deployment Kit (ADK) 10.1.22000.1.
+# see https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-install
+$artifactUrl = 'https://download.microsoft.com/download/1/f/d/1fd2291e-c0e9-4ae0-beae-fbbe0fe41a5a/adk/adksetup.exe'
 $artifactPath = "$env:TEMP\$(Split-Path -Leaf $artifactUrl)"
 
 Write-Host 'Downloading the Windows Assessment and Deployment Kit (ADK) setup...'
