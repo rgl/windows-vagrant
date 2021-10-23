@@ -42,29 +42,29 @@ Bash 'pacman --noconfirm -Sy make zip unzip tar p7zip dos2unix xorriso'
 Open a bash shell by starting `C:\tools\msys64\mingw64.exe` and execute the
 remaining commands inside it.
 
-To build the base box based on the [Windows Server 2019 Evaluation](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2019) ISO run:
+To build the base box based on the [Windows Server 2022 Evaluation](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022) ISO run:
 
 ```bash
-make build-windows-2019-libvirt # or make build-windows-2019-virtualbox
+make build-windows-2022-libvirt # or make build-windows-2022-virtualbox
 ```
 
 If you want to use your own ISO, you need to manually run the `packer` command, e.g.:
 
 ```bash
-packer build -var iso_url=<ISO_URL> -var iso_checksum=<ISO_SHA256_CHECKSUM> -only=windows-2019-amd64-virtualbox windows-2019.json
+packer build -var iso_url=<ISO_URL> -var iso_checksum=<ISO_SHA256_CHECKSUM> -only=windows-2022-amd64-virtualbox windows-2022.json
 ```
 
-**NB** if the build fails with something like `Post-processor failed: write /tmp/packer073329394/packer-windows-2019-amd64-virtualbox-1505050546-disk001.vmdk: no space left on device` you need to increase your temporary partition size or change its location [as described in the packer TMPDIR/TMP environment variable documentation](https://www.packer.io/docs/other/environment-variables.html#tmpdir).
+**NB** if the build fails with something like `Post-processor failed: write /tmp/packer073329394/packer-windows-2022-amd64-virtualbox-1505050546-disk001.vmdk: no space left on device` you need to increase your temporary partition size or change its location [as described in the packer TMPDIR/TMP environment variable documentation](https://www.packer.io/docs/other/environment-variables.html#tmpdir).
 
 **NB** if you are having trouble building the base box due to floppy drive removal errors try adding, as a
-workaround, `"post_shutdown_delay": "30s",` to the `windows-2019.json` file.
+workaround, `"post_shutdown_delay": "30s",` to the `windows-2022.json` file.
 
-**NB** the packer logs are saved inside a `*-packer.log` file (e.g. `windows-2019-amd64-libvirt-packer.log`).
+**NB** the packer logs are saved inside a `*-packer.log` file (e.g. `windows-2022-amd64-libvirt-packer.log`).
 
 You can then add the base box to your local vagrant installation with:
 
 ```bash
-vagrant box add -f windows-2019-amd64 windows-2019-amd64-virtualbox.box
+vagrant box add -f windows-2022-amd64 windows-2022-amd64-virtualbox.box
 ```
 
 And test this base box by launching an example Vagrant environment:
@@ -91,13 +91,13 @@ vagrant up --no-destroy-on-error --provider=virtualbox # or --provider=libvirt
 Build the base box for the [vagrant-libvirt provider](https://github.com/vagrant-libvirt/vagrant-libvirt) with:
 
 ```bash
-make build-windows-2019-libvirt
+make build-windows-2022-libvirt
 ```
 
 If you want to access the UI run:
 
 ```bash
-spicy --uri 'spice+unix:///tmp/packer-windows-2019-amd64-libvirt-spice.socket'
+spicy --uri 'spice+unix:///tmp/packer-windows-2022-amd64-libvirt-spice.socket'
 ```
 
 **NB** the packer template file defines `qemuargs` (which overrides the default packer qemu arguments), if you modify it, verify if you also need include the default packer qemu arguments (see [builder/qemu/step_run.go](https://github.com/hashicorp/packer/blob/master/builder/qemu/step_run.go) or start packer without `qemuargs` defined to see how it starts qemu).
@@ -144,7 +144,7 @@ export VAGRANT_SMB_PASSWORD=''
 PowerShell -Command 'Set-NetFirewallProfile -DisabledInterfaceAliases (Get-NetAdapter -name "vEthernet*" | Where-Object {$_.ifIndex}).InterfaceAlias'
 EOF
 source secrets.sh
-time make build-windows-2019-hyperv
+time make build-windows-2022-hyperv
 ```
 
 Try the example guest:
@@ -168,9 +168,9 @@ vagrant destroy -f
 
 ## VMware vSphere
 
-Download the Windows Evaluation ISO (you can find the full iso URL in the [windows-2019-vsphere.json](windows-2019-vsphere.json) file) and place it inside the datastore as defined by the `vsphere_iso_url` user variable that is inside the [packer template](windows-2019-vsphere.json).
+Download the Windows Evaluation ISO (you can find the full iso URL in the [windows-2022-vsphere.json](windows-2022-vsphere.json) file) and place it inside the datastore as defined by the `vsphere_iso_url` user variable that is inside the [packer template](windows-2022-vsphere.json).
 
-Download the [VMware Tools VMware-tools-windows-&lt;SAME_VERSION_AS_IN_PACKER_TEMPLATE&gt;.iso](https://packages.vmware.com/tools/releases/index.html) file into the datastore defined by the `vsphere_tools_iso_url` user variable that is inside the [packer template](windows-2019-vsphere.json).
+Download the [VMware Tools VMware-tools-windows-&lt;SAME_VERSION_AS_IN_PACKER_TEMPLATE&gt;.iso](https://packages.vmware.com/tools/releases/index.html) file into the datastore defined by the `vsphere_tools_iso_url` user variable that is inside the [packer template](windows-2022-vsphere.json).
 
 Download [govc](https://github.com/vmware/govmomi/releases/latest) and place it inside your `/usr/local/bin` directory.
 
@@ -193,10 +193,10 @@ export VSPHERE_ESXI_HOST='esxi.local'
 export VSPHERE_TEMPLATE_FOLDER='test/templates'
 # NB the VSPHERE_TEMPLATE_NAME last segment MUST match the
 #    builders.vm_name property inside the packer tamplate.
-export VSPHERE_TEMPLATE_NAME="$VSPHERE_TEMPLATE_FOLDER/windows-2019-amd64-vsphere"
+export VSPHERE_TEMPLATE_NAME="$VSPHERE_TEMPLATE_FOLDER/windows-2022-amd64-vsphere"
 export VSPHERE_TEMPLATE_IPATH="//$GOVC_DATACENTER/vm/$VSPHERE_TEMPLATE_NAME"
 export VSPHERE_VM_FOLDER='test'
-export VSPHERE_VM_NAME='windows-2019-vagrant-example'
+export VSPHERE_VM_NAME='windows-2022-vagrant-example'
 export VSPHERE_VLAN='packer'
 # set the credentials that the guest will use
 # to connect to this host smb share.
@@ -219,7 +219,7 @@ govc find # find all managed objects
 Build the base box with:
 
 ```bash
-make build-windows-2019-vsphere
+make build-windows-2022-vsphere
 ```
 
 Try the example guest:
