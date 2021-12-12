@@ -4,6 +4,10 @@ packer {
       version = "0.14.0"
       source = "github.com/rgl/windows-update"
     }
+    ansible = {
+      version = "1.0.0"
+      source  = "github.com/hashicorp/ansible"
+    }
   }
 }
 
@@ -86,10 +90,10 @@ source "qemu" "windows-2022-amd64" {
   iso_url          = var.iso_url
   iso_checksum     = var.iso_checksum
   shutdown_command = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
-  communicator     = "ssh"
-  ssh_username     = "vagrant"
-  ssh_password     = "vagrant"
-  ssh_timeout      = "4h"
+  communicator     = "winrm"
+  winrm_username   = "vagrant"
+  winrm_password   = "vagrant"
+  winrm_timeout    = "4h"
 }
 
 source "virtualbox-iso" "windows-2022-amd64" {
@@ -189,7 +193,18 @@ build {
     script = "provision.ps1"
   }
 
-  provisioner "windows-update" {
+  provisioner "ansible" {
+    use_proxy = false
+    user = "vagrant"
+    command = "./ansible-playbook.sh"
+    extra_arguments = [
+      "-v",
+      "-e", "ansible_connection=psrp",
+      "-e", "ansible_psrp_protocol=http",
+      "-e", "ansible_psrp_message_encryption=never",
+      "-e", "ansible_psrp_auth=credssp",
+    ]
+    playbook_file = "playbook.yml"
   }
 
   provisioner "powershell" {

@@ -1,0 +1,19 @@
+# see https://docs.ansible.com/ansible-core/2.12/user_guide/windows_usage.html
+# see https://docs.ansible.com/ansible-core/2.12/user_guide/windows_faq.html#can-i-run-python-modules-on-windows-hosts
+# see https://github.com/ansible-collections/ansible.windows
+# see https://github.com/ansible-collections/community.windows
+
+- hosts: default
+  gather_facts: no
+  tasks:
+    # see https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_updates_module.html
+    - name: Install Windows Updates
+      ansible.windows.win_updates:
+        reboot: yes
+        skip_optional: yes
+        category_names:
+          - CriticalUpdates
+          - DefinitionUpdates
+          - SecurityUpdates
+          - UpdateRollups
+          - Updates
