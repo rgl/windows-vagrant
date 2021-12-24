@@ -66,6 +66,7 @@ source "vsphere-iso" "windows-2019-amd64" {
     "tmp/windows-2019-vsphere/autounattend.xml",
     "vmtools.ps1",
     "winrm.ps1",
+    "provision-powershell.ps1",
     "provision-openssh.ps1",
   ]
   iso_paths = [

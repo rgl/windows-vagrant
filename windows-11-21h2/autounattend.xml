@@ -146,6 +146,10 @@
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <Order>5</Order>
+                    <CommandLine>PowerShell -File a:\provision-powershell.ps1</CommandLine>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>6</Order>
                     <CommandLine>PowerShell -File a:\provision-openssh.ps1</CommandLine>
                 </SynchronousCommand>
             </FirstLogonCommands>

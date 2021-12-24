@@ -56,6 +56,7 @@ source "qemu" "windows-2022-uefi-amd64" {
   floppy_files = [
     "windows-2022-uefi/autounattend.xml",
     "winrm.ps1",
+    "provision-powershell.ps1",
     "provision-openssh.ps1",
     "drivers/vioserial/2k19/amd64/*.cat",
     "drivers/vioserial/2k19/amd64/*.inf",
@@ -92,6 +93,7 @@ source "virtualbox-iso" "windows-2022-uefi-amd64" {
   cd_files = [
     "windows-2022-uefi/autounattend.xml",
     "winrm.ps1",
+    "provision-powershell.ps1",
     "provision-openssh.ps1",
   ]
   guest_additions_interface = "sata"

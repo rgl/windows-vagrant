@@ -63,6 +63,7 @@ source "qemu" "windows-11-21h2-amd64" {
   floppy_files = [
     "windows-11-21h2/autounattend.xml",
     "winrm.ps1",
+    "provision-powershell.ps1",
     "provision-openssh.ps1",
     "drivers/vioserial/w10/amd64/*.cat",
     "drivers/vioserial/w10/amd64/*.inf",
@@ -99,6 +100,7 @@ source "virtualbox-iso" "windows-11-21h2-amd64" {
   floppy_files = [
     "windows-11-21h2/autounattend.xml",
     "winrm.ps1",
+    "provision-powershell.ps1",
     "provision-openssh.ps1",
   ]
   guest_additions_interface = "sata"
@@ -140,6 +142,7 @@ source "hyperv-iso" "windows-11-21h2-amd64" {
   cd_files = [
     "windows-11-21h2-uefi/autounattend.xml",
     "winrm.ps1",
+    "provision-powershell.ps1",
     "provision-openssh.ps1",
   ]
   disk_size         = var.disk_size
