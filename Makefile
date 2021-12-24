@@ -5,7 +5,6 @@ MAKEFLAGS+= --no-builtin-rules
 MAKEFLAGS+= --no-builtin-variables
 
 # Normal (libvirt and VirtualBox) images
-IMAGES+= windows-2012-r2
 IMAGES+= windows-2016
 IMAGES+= windows-2019
 IMAGES+= windows-2019-uefi
@@ -17,7 +16,6 @@ IMAGES+= windows-11-21h2
 IMAGES+= windows-11-21h2-uefi
 
 # Images supporting Hyper-V
-HYPERV_IMAGES+= windows-2012-r2
 HYPERV_IMAGES+= windows-2016
 HYPERV_IMAGES+= windows-2019
 HYPERV_IMAGES+= windows-2022
