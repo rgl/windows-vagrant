@@ -75,6 +75,10 @@ $originalSshdConfig = Get-Content -Raw "$openSshHome\sshd_config_default"
 $sshdConfig = $originalSshdConfig `
     -replace '(?m)^(Match Group administrators.*)','#$1' `
     -replace '(?m)^(\s*AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys.*)','#$1'
+# Configure the powershell ssh subsystem (for powershell remoting over ssh).
+# see https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/ssh-remoting-in-powershell-core?view=powershell-7.2
+$sshdConfig = $sshdConfig `
+    -replace '(?m)^(Subsystem\s+sftp\s+.+)',"`$1`nSubsystem`tpowershell`tC:/Progra~1/PowerShell/7/pwsh.exe -nol -sshs"
 Set-Content -Encoding ascii "$openSshConfigHome\sshd_config" $sshdConfig
 &"$openSshHome\install-sshd.ps1"
 

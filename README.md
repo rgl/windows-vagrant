@@ -305,6 +305,19 @@ system.
 **NB** this is why the default vagrant box communicator is `winrm`.
 
 
+### PowerShell Remoting over SSH
+
+You can connect to this machine through PowerShell Remoting over SSH. In a
+PowerShell 7 session execute, e.g.:
+
+```powershell
+Enter-PSSession -HostName vagrant@localhost:2222
+$PSVersionTable
+whoami /all
+exit
+```
+
+
 ## WinRM access
 
 You can connect to this machine through WinRM to run a remote command, e.g.:
