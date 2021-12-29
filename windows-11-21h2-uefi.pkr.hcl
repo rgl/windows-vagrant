@@ -57,6 +57,7 @@ source "qemu" "windows-11-21h2-uefi-amd64" {
     "windows-11-21h2-uefi/autounattend.xml",
     "winrm.ps1",
     "provision-powershell.ps1",
+    "provision-psremoting.ps1",
     "provision-openssh.ps1",
     "drivers/vioserial/w10/amd64/*.cat",
     "drivers/vioserial/w10/amd64/*.inf",
@@ -94,6 +95,7 @@ source "virtualbox-iso" "windows-11-21h2-uefi-amd64" {
     "windows-11-21h2-uefi/autounattend.xml",
     "winrm.ps1",
     "provision-powershell.ps1",
+    "provision-psremoting.ps1",
     "provision-openssh.ps1",
   ]
   guest_additions_interface = "sata"

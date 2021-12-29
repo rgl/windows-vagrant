@@ -129,6 +129,10 @@
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <Order>6</Order>
+                    <CommandLine>PowerShell -File a:\provision-psremoting.ps1</CommandLine>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>7</Order>
                     <CommandLine>PowerShell -File a:\provision-openssh.ps1</CommandLine>
                 </SynchronousCommand>
             </FirstLogonCommands>

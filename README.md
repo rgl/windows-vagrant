@@ -308,7 +308,7 @@ system.
 ### PowerShell Remoting over SSH
 
 You can connect to this machine through PowerShell Remoting over SSH. In a
-PowerShell 7 session execute, e.g.:
+Linux (or Windows) PowerShell 7 session execute, e.g.:
 
 ```powershell
 Enter-PSSession -HostName vagrant@localhost:2222
@@ -320,7 +320,8 @@ exit
 
 ## WinRM access
 
-You can connect to this machine through WinRM to run a remote command, e.g.:
+You can connect to this machine through WinRM to run a remote command. In a
+Windows Command Prompt session execute, e.g.:
 
 ```batch
 winrs -r:localhost:55985 -u:vagrant -p:vagrant "whoami /all"
@@ -331,6 +332,28 @@ winrs -r:localhost:55985 -u:vagrant -p:vagrant "whoami /all"
 ```plain
 ==> default: Forwarding ports...
     default: 5985 (guest) => 55985 (host) (adapter 1)
+```
+
+
+### PowerShell Remoting over WinRM
+
+You can connect to this machine through PowerShell Remoting over WinRM. In a
+Windows PowerShell 7 session execute, e.g.:
+
+```powershell
+# Configure this machine WinRM client to trust all remote servers.
+# NB Since this local client machine is not in the AD nor its using HTTPS to
+#    access the server, we must configure it to trust the server, or in this
+#    case, trust all servers.
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value '*' -Force
+
+# Open a session and execute commands remotely.
+# NB To open a PowerShell 5 session, remove the -ConfigurationName argument.
+Enter-PSSession -ConfigurationName PowerShell.7 -ComputerName localhost -Port 55985 -Credential vagrant
+Get-PSSessionConfiguration  # show the availble configurations.
+$PSVersionTable             # show the powershell version.
+whoami /all                 # show the user permissions.
+exit                        # exit the session.
 ```
 
 
