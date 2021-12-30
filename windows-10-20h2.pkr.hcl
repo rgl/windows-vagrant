@@ -175,7 +175,7 @@ build {
   }
 
   provisioner "powershell" {
-    inline = ["<# disable Windows Defender #> Set-MpPreference -DisableRealtimeMonitoring $true; Set-ItemProperty -Path 'HKLM:/SOFTWARE/Policies/Microsoft/Windows Defender' -Name DisableAntiSpyware -Value 1"]
+    script = "disable-windows-defender.ps1"
   }
 
   provisioner "powershell" {

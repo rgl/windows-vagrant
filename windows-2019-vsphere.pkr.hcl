@@ -109,7 +109,7 @@ build {
   }
 
   provisioner "powershell" {
-    inline = ["Uninstall-WindowsFeature Windows-Defender"]
+    script = "disable-windows-defender.ps1"
   }
 
   provisioner "windows-restart" {

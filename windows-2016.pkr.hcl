@@ -175,7 +175,7 @@ build {
   }
 
   provisioner "powershell" {
-    inline = ["Uninstall-WindowsFeature Windows-Defender-Features"]
+    script = "disable-windows-defender.ps1"
   }
 
   provisioner "powershell" {
