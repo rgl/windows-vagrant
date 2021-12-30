@@ -14,12 +14,12 @@ variable "disk_size" {
 
 variable "iso_url" {
   type    = string
-  default = "https://software-download.microsoft.com/download/sg/22000.194.210913-1444.co_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso"
+  default = "https://software-download.microsoft.com/download/sg/888969d5-f34g-4e03-ac9d-1f9786c66749/22000.318.211104-1236.co_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso"
 }
 
 variable "iso_checksum" {
   type    = string
-  default = "sha256:e8b1d2a1a85a09b4bf6154084a8be8e3c814894a15a7bcf3e8e63fcfa9a528cb"
+  default = "sha256:684bc16adbd792ef2f7810158a3f387f23bf95e1aee5f16270c5b7f56db753b6"
 }
 
 variable "vagrant_box" {
