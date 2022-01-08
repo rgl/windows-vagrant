@@ -106,14 +106,37 @@ spicy --uri 'spice+unix:///tmp/packer-windows-2022-amd64-libvirt-spice.socket'
 
 ## Hyper-V usage
 
-Install [Hyper-V](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v)
-and also install the `Windows Sandbox` feature (for some reason,
-installing this makes DHCP work properly in the vEthernet Default Switch).
+Install [Hyper-V](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v).
 
 Make sure your user is in the `Hyper-V Administrators` group
 or you run with Administrative privileges.
 
-Make sure your Virtual Switch (its vEthernet network adapter) is excluded
+Hyper-V automatically creates the `Default Switch` VM Switch and the `vEthernet (Default Switch)` network adapter/interface. It provides DHCP, DNS forwarding, and NAT internet access. But it cannot be configured, and it changes the assigned IP addresses at every boot; this makes it unusable for me. Instead you should run your own DHCP service and [NAT virtual network](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/user-guide/setup-nat-network#create-a-nat-virtual-network).
+
+Create the `Vagrant` vSwitch and NAT network in a PowerShell with Administrative privileges:
+
+```powershell
+$name = 'Vagrant'
+$ipAddress = '192.168.192.1'
+$ipAddressPrefix = '24'
+
+# create the vSwitch.
+$vmSwitch = New-VMSwitch -SwitchName $name -SwitchType Internal
+
+# reconfigure the vSwitch IP configuration to use a known IP and network and disable IPv6.
+$netAdapterName = "vEthernet ($name)"
+$netAdapter = Get-NetAdapter -Name $netAdapterName
+$netAdapter | Disable-NetAdapterBinding -ComponentID ms_tcpip6
+$netAdapter | Remove-NetIPAddress -Confirm:$false
+$netAdapter | New-NetIPAddress -IPAddress $ipAddress -PrefixLength $ipAddressPrefix
+
+# create the NAT network.
+New-NetNat -Name $name -InternalIPInterfaceAddressPrefix "$ipAddress/$ipAddressPrefix"
+```
+
+Then, [install and start the WinDHCP DHCP service](https://github.com/rgl/WinDHCP#service-installation).
+
+Make sure the Virtual Switch (its vEthernet network adapter) is excluded
 from the Windows Firewall protected network connections by executing the
 following commands in a bash shell with Administrative privileges:
 
@@ -127,9 +150,11 @@ Create the base image in a bash shell with Administrative privileges:
 ```bash
 cat >secrets.sh <<'EOF'
 # set this value when you need to set the VM Switch Name.
-export HYPERV_SWITCH_NAME='Default Switch'
+export HYPERV_SWITCH_NAME='Vagrant'
+
 # set this value when you need to set the VM VLAN ID.
 export HYPERV_VLAN_ID=''
+
 # set the credentials that the guest will use
 # to connect to this host smb share.
 # NB you should create a new local user named _vagrant_share
@@ -139,6 +164,7 @@ export HYPERV_VLAN_ID=''
 #    let me known!
 export VAGRANT_SMB_USERNAME='_vagrant_share'
 export VAGRANT_SMB_PASSWORD=''
+
 # remove the virtual switch from the windows firewall.
 # NB execute if the VM fails to obtain an IP address from DHCP.
 PowerShell -Command 'Set-NetFirewallProfile -DisabledInterfaceAliases (Get-NetAdapter -name "vEthernet*" | Where-Object {$_.ifIndex}).InterfaceAlias'
