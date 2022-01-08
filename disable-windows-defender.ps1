@@ -14,10 +14,7 @@ trap {
 
 if (Get-Command -ErrorAction SilentlyContinue Uninstall-WindowsFeature) {
     # for Windows Server.
-    @(
-        'Windows-Defender-Features'
-        'Windows-Defender'
-    ) | Uninstall-WindowsFeature
+    Get-WindowsFeature 'Windows-Defender*' | Uninstall-WindowsFeature
 } else {
     # for Windows Client.
     Set-MpPreference `
