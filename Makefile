@@ -27,6 +27,7 @@ HYPERV_IMAGES+= windows-11-21h2
 VSPHERE_IMAGES+= windows-2016
 VSPHERE_IMAGES+= windows-2019
 VSPHERE_IMAGES+= windows-2022
+VSPHERE_IMAGES+= windows-2022-uefi
 VSPHERE_IMAGES+= windows-10-1809
 
 # Generate build-* targets
@@ -172,6 +173,33 @@ tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-amd64 $@
+
+%-uefi-amd64-vsphere.box: %-uefi-vsphere.pkr.hcl tmp/%-uefi-vsphere/autounattend.xml Vagrantfile-uefi.template *.ps1
+	rm -f $@
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-vsphere-packer-init.log \
+		packer init $*.pkr.hcl
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-vsphere-packer.log PKR_VAR_vagrant_box=$@ \
+		packer build -only=vsphere-iso.$*-uefi-amd64 -on-error=abort $*-uefi-vsphere.pkr.hcl
+	./get-windows-updates-from-packer-log.sh \
+		$*-uefi-amd64-vsphere-packer.log \
+		>$*-uefi-amd64-vsphere-windows-updates.log
+	@echo 'Removing all cd-roms (except the first)...'
+	govc device.ls "-vm.ipath=$$VSPHERE_TEMPLATE_IPATH" \
+		| grep ^cdrom- \
+		| tail -n+2 \
+		| awk '{print $$1}' \
+		| xargs -L1 govc device.remove "-vm.ipath=$$VSPHERE_TEMPLATE_IPATH"
+	@echo 'Converting to template...'
+	govc vm.markastemplate "$$VSPHERE_TEMPLATE_IPATH"
+	@echo 'Creating the local box file...'
+	rm -rf tmp/$@-contents
+	mkdir -p tmp/$@-contents
+	echo '{"provider":"vsphere"}' >tmp/$@-contents/metadata.json
+	cp Vagrantfile.template tmp/$@-contents/Vagrantfile
+	tar cvf $@ -C tmp/$@-contents .
+	@echo BOX successfully built!
+	@echo to add to local vagrant install do:
+	@echo vagrant box add -f $*-uefi-amd64 $@
 
 # All the Windows 10 versions depend on the same autounattend.xml
 # This allows the use of pattern rules by satisfying the prerequisite
