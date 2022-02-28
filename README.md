@@ -51,13 +51,13 @@ make build-windows-2022-libvirt # or make build-windows-2022-virtualbox
 If you want to use your own ISO, you need to manually run the `packer` command, e.g.:
 
 ```bash
-packer build -var iso_url=<ISO_URL> -var iso_checksum=<ISO_SHA256_CHECKSUM> -only=windows-2022-amd64-virtualbox windows-2022.json
+packer build -var iso_url=<ISO_URL> -var iso_checksum=<ISO_SHA256_CHECKSUM> -only=windows-2022-amd64-virtualbox windows-2022.pkr.hcl
 ```
 
 **NB** if the build fails with something like `Post-processor failed: write /tmp/packer073329394/packer-windows-2022-amd64-virtualbox-1505050546-disk001.vmdk: no space left on device` you need to increase your temporary partition size or change its location [as described in the packer TMPDIR/TMP environment variable documentation](https://www.packer.io/docs/other/environment-variables.html#tmpdir).
 
 **NB** if you are having trouble building the base box due to floppy drive removal errors try adding, as a
-workaround, `"post_shutdown_delay": "30s",` to the `windows-2022.json` file.
+workaround, `"post_shutdown_delay": "30s",` to the `windows-2022.pkr.hcl` file.
 
 **NB** the packer logs are saved inside a `*-packer.log` file (e.g. `windows-2022-amd64-libvirt-packer.log`).
 
@@ -194,9 +194,9 @@ vagrant destroy -f
 
 ## VMware vSphere
 
-Download the Windows Evaluation ISO (you can find the full iso URL in the [windows-2022-vsphere.json](windows-2022-vsphere.json) file) and place it inside the datastore as defined by the `vsphere_iso_url` user variable that is inside the [packer template](windows-2022-vsphere.json).
+Download the Windows Evaluation ISO (you can find the full iso URL in the [windows-2022-vsphere.pkr.hcl](windows-2022-vsphere.pkr.hcl) file) and place it inside the datastore as defined by the `vsphere_iso_url` user variable that is inside the [packer template](windows-2022-vsphere.pkr.hcl).
 
-Download the [VMware Tools VMware-tools-windows-&lt;SAME_VERSION_AS_IN_PACKER_TEMPLATE&gt;.iso](https://packages.vmware.com/tools/releases/index.html) file into the datastore defined by the `vsphere_tools_iso_url` user variable that is inside the [packer template](windows-2022-vsphere.json).
+Download the [VMware Tools VMware-tools-windows-&lt;SAME_VERSION_AS_IN_PACKER_TEMPLATE&gt;.iso](https://packages.vmware.com/tools/releases/index.html) file into the datastore defined by the `vsphere_tools_iso_url` user variable that is inside the [packer template](windows-2022-vsphere.pkr.hcl).
 
 Download [govc](https://github.com/vmware/govmomi/releases/latest) and place it inside your `/usr/local/bin` directory.
 
