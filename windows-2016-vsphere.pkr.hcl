@@ -72,7 +72,7 @@ source "vsphere-iso" "windows-2016-amd64" {
   ]
   iso_paths = [
     "[${var.vsphere_datastore}] iso/windows-2016-Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
-    "[${var.vsphere_datastore}] iso/VMware-tools-windows-11.3.0-18090558.iso",
+    "[${var.vsphere_datastore}] iso/VMware-tools-windows-11.3.5-18557794.iso",
   ]
   network_adapters {
     network      = var.vsphere_network
