@@ -68,6 +68,7 @@ Write-Host 'Installing rsync...'
 Install-Rsync
 Write-Host 'Installing the PowerShell/Win32-OpenSSH service...'
 Install-OpenSshBinaries
+&"$openSshHome\install-sshd.ps1"
 mkdir -Force $openSshConfigHome | Out-Null
 $originalSshdConfig = Get-Content -Raw "$openSshHome\sshd_config_default"
 # Configure the Administrators group to also use the ~/.ssh/authorized_keys file.
@@ -80,7 +81,6 @@ $sshdConfig = $originalSshdConfig `
 $sshdConfig = $sshdConfig `
     -replace '(?m)^(Subsystem\s+sftp\s+.+)',"`$1`nSubsystem`tpowershell`tC:/Progra~1/PowerShell/7/pwsh.exe -nol -sshs"
 Set-Content -Encoding ascii "$openSshConfigHome\sshd_config" $sshdConfig
-&"$openSshHome\install-sshd.ps1"
 
 Write-Host 'Generating the host SSH keys...'
 &"$openSshHome\ssh-keygen.exe" -A
