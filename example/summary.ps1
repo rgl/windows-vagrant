@@ -151,19 +151,27 @@ Write-Title 'Installed Windows Features'
 if (Get-Command -ErrorAction SilentlyContinue Get-WindowsFeature) {
     # for Windows Server.
     Get-WindowsFeature `
-        | Where Installed `
+        | Where-Object Installed `
         | Format-Table -AutoSize `
         | Out-String -Stream -Width ([int]::MaxValue) `
         | ForEach-Object {$_.TrimEnd()}
 } else {
     # for Windows Client.
     Get-WindowsOptionalFeature -Online `
-        | Where-Object {$_.State -eq 'Enabled'} `
+        | Where-Object State -eq Enabled `
         | Sort-Object -Property FeatureName `
-        | Format-Table -AutoSize `
+        | Format-Table -AutoSize -Property FeatureName `
         | Out-String -Stream -Width ([int]::MaxValue) `
         | ForEach-Object {$_.TrimEnd()}
 }
+
+Write-Title 'Installed Windows Capabilities'
+Get-WindowsCapability -Online `
+    | Where-Object State -eq Installed `
+    | Sort-Object -Property Name `
+    | Format-Table -AutoSize -Property Name `
+    | Out-String -Stream -Width ([int]::MaxValue) `
+    | ForEach-Object {$_.TrimEnd()}
 
 # see https://gist.github.com/IISResetMe/36ef331484a770e23a81
 function Get-MachineSID {
