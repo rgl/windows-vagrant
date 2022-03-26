@@ -66,9 +66,20 @@ function Install-OpenSshBinaries {
 }
 Write-Host 'Installing rsync...'
 Install-Rsync
+# uninstall the Windows provided OpenSSH binaries.
+$windowsOpenSshCapabilities = Get-WindowsCapability -Online -Name 'OpenSSH.*' | Where-Object {$_.State -ne 'NotPresent'}
+if ($windowsOpenSshCapabilities) {
+    Write-Host 'Uninstalling the Windows OpenSSH Capabilities...'
+    $windowsOpenSshCapabilities | Remove-WindowsCapability -Online | Out-Null
+}
 Write-Host 'Installing the PowerShell/Win32-OpenSSH service...'
 Install-OpenSshBinaries
 &"$openSshHome\install-sshd.ps1"
+# add the OpenSSH binaries to the system PATH.
+[Environment]::SetEnvironmentVariable(
+    'PATH',
+    "$([Environment]::GetEnvironmentVariable('PATH', 'Machine'));$openSshHome",
+    'Machine')
 mkdir -Force $openSshConfigHome | Out-Null
 $originalSshdConfig = Get-Content -Raw "$openSshHome\sshd_config_default"
 # Configure the Administrators group to also use the ~/.ssh/authorized_keys file.
