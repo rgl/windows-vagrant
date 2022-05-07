@@ -1,4 +1,4 @@
-This builds Windows 10/11/2016/2019/2022 base Vagrant boxes using [Packer](https://www.packer.io/) and VirtualBox/Hyper-V/libvirt/qemu.
+This builds Windows 10/11/2019/2022 base Vagrant boxes using [Packer](https://www.packer.io/) and VirtualBox/Hyper-V/libvirt/qemu.
 
 
 # Usage

@@ -5,7 +5,6 @@ MAKEFLAGS+= --no-builtin-rules
 MAKEFLAGS+= --no-builtin-variables
 
 # Normal (libvirt and VirtualBox) images
-IMAGES+= windows-2016
 IMAGES+= windows-2019
 IMAGES+= windows-2019-uefi
 IMAGES+= windows-2022
@@ -16,7 +15,6 @@ IMAGES+= windows-11-21h2
 IMAGES+= windows-11-21h2-uefi
 
 # Images supporting Hyper-V
-HYPERV_IMAGES+= windows-2016
 HYPERV_IMAGES+= windows-2019
 HYPERV_IMAGES+= windows-2022
 HYPERV_IMAGES+= windows-10-1809
@@ -24,7 +22,6 @@ HYPERV_IMAGES+= windows-10-20h2
 HYPERV_IMAGES+= windows-11-21h2
 
 # Images supporting vSphere
-VSPHERE_IMAGES+= windows-2016
 VSPHERE_IMAGES+= windows-2019
 VSPHERE_IMAGES+= windows-2019-uefi
 VSPHERE_IMAGES+= windows-2022
@@ -129,7 +126,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 tmp/windows-10-%-vsphere/autounattend.xml: windows-10/autounattend.xml
 	mkdir -p "$$(dirname $@)"
 	@# add the vmware tools iso to the drivers search path.
-	@# NB we cannot have this in the main autounattend.xml because windows 2016
+	@# NB we cannot have this in the main autounattend.xml because windows
 	@#    will fail to install when the virtualbox guest additions iso is in E:
 	@#    with the error message:
 	@#        Windows Setup could not install one or more boot-critical drivers.
@@ -140,7 +137,7 @@ tmp/windows-10-%-vsphere/autounattend.xml: windows-10/autounattend.xml
 tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 	mkdir -p "$$(dirname $@)"
 	@# add the vmware tools iso to the drivers search path.
-	@# NB we cannot have this in the main autounattend.xml because windows 2016
+	@# NB we cannot have this in the main autounattend.xml because windows
 	@#    will fail to install when the virtualbox guest additions iso is in E:
 	@#    with the error message:
 	@#        Windows Setup could not install one or more boot-critical drivers.
