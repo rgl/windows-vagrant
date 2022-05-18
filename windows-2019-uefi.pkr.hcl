@@ -27,14 +27,15 @@ variable "vagrant_box" {
 }
 
 source "qemu" "windows-2019-uefi-amd64" {
-  accelerator = "kvm"
-  cpus        = 2
-  memory      = 4096
+  accelerator  = "kvm"
+  machine_type = "q35"
+  cpus         = 2
+  memory       = 4096
   qemuargs = [
     ["-bios", "/usr/share/ovmf/OVMF.fd"],
     ["-cpu", "host"],
     ["-soundhw", "hda"],
-    ["-device", "piix3-usb-uhci"],
+    ["-device", "qemu-xhci"],
     ["-device", "usb-tablet"],
     ["-device", "virtio-scsi-pci,id=scsi0"],
     ["-device", "scsi-hd,bus=scsi0.0,drive=drive0"],
@@ -77,6 +78,7 @@ source "qemu" "windows-2019-uefi-amd64" {
   ]
   format           = "qcow2"
   headless         = true
+  net_device       = "virtio-net"
   http_directory   = "."
   iso_url          = var.iso_url
   iso_checksum     = var.iso_checksum

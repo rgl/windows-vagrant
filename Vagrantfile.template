@@ -4,7 +4,8 @@ Vagrant.configure("2") do |config|
   config.winrm.username = "vagrant"
   config.winrm.password = "vagrant"
   config.vm.provider "libvirt" do |lv|
-    lv.cpu_mode = 'host-passthrough'
+    lv.machine_type = "q35"
+    lv.cpu_mode = "host-passthrough"
     lv.input :type => "tablet", :bus => "usb"
     lv.graphics_type = "spice"
     lv.video_type = "qxl"
