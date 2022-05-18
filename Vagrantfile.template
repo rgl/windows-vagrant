@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "libvirt" do |lv|
     lv.machine_type = "q35"
     lv.cpu_mode = "host-passthrough"
-    lv.input :type => "tablet", :bus => "usb"
+    lv.input :type => "tablet", :bus => "virtio"
     lv.graphics_type = "spice"
     lv.video_type = "qxl"
     lv.channel :type => "unix", :target_name => "org.qemu.guest_agent.0", :target_type => "virtio"

@@ -45,7 +45,7 @@ source "qemu" "windows-11-21h2-amd64" {
     ["-cpu", "host"],
     ["-soundhw", "hda"],
     ["-device", "qemu-xhci"],
-    ["-device", "usb-tablet"],
+    ["-device", "virtio-tablet"],
     ["-device", "virtio-scsi-pci,id=scsi0"],
     ["-device", "scsi-hd,bus=scsi0.0,drive=drive0"],
     ["-device", "virtio-net,netdev=user.0"],
