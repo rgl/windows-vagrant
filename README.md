@@ -386,7 +386,7 @@ exit                        # exit the session.
 # WinRM and UAC (aka LUA)
 
 This base image uses WinRM. WinRM [poses several limitations on remote administration](http://www.hurryupandwait.io/blog/safely-running-windows-automation-operations-that-typically-fail-over-winrm-or-powershell-remoting),
-those were worked around by disabling User Account Control (UAC) (aka [Limited User Account (LUA)](https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-lua-settings-enablelua)) in `autounattend.xml`
+those were worked around by [disabling User Account Control (UAC)](https://docs.microsoft.com/en-us/troubleshoot/windows-server/windows-security/disable-user-account-control) (aka [Limited User Account (LUA)](https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-lua-settings-enablelua)) in `autounattend.xml`
 and [UAC remote restrictions](https://support.microsoft.com/en-us/help/951016/description-of-user-account-control-and-remote-restrictions-in-windows)
  in `winrm.ps1`.
 
