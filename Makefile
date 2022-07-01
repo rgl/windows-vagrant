@@ -9,7 +9,6 @@ IMAGES+= windows-2019
 IMAGES+= windows-2019-uefi
 IMAGES+= windows-2022
 IMAGES+= windows-2022-uefi
-IMAGES+= windows-10-1809
 IMAGES+= windows-10-20h2
 IMAGES+= windows-11-21h2
 IMAGES+= windows-11-21h2-uefi
@@ -17,7 +16,6 @@ IMAGES+= windows-11-21h2-uefi
 # Images supporting Hyper-V
 HYPERV_IMAGES+= windows-2019
 HYPERV_IMAGES+= windows-2022
-HYPERV_IMAGES+= windows-10-1809
 HYPERV_IMAGES+= windows-10-20h2
 HYPERV_IMAGES+= windows-11-21h2
 
@@ -26,7 +24,6 @@ VSPHERE_IMAGES+= windows-2019
 VSPHERE_IMAGES+= windows-2019-uefi
 VSPHERE_IMAGES+= windows-2022
 VSPHERE_IMAGES+= windows-2022-uefi
-VSPHERE_IMAGES+= windows-10-1809
 
 # Generate build-* targets
 VIRTUALBOX_BUILDS= $(addsuffix -virtualbox,$(addprefix build-,$(IMAGES)))
@@ -202,7 +199,6 @@ tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 # All the Windows 10 versions depend on the same autounattend.xml
 # This allows the use of pattern rules by satisfying the prerequisite
 .PHONY: \
-	windows-10-1809/autounattend.xml \
 	windows-10-20h2/autounattend.xml
 
 drivers:
