@@ -103,7 +103,7 @@ Write-Host 'Disabling the Windows Boot Manager menu...'
 #    NB with a timeout of 2 you can still press F8 to show the boot manager menu.
 bcdedit /set '{bootmgr}' displaybootmenu no
 
-# remove temporary files.
+Write-Host 'Removing temporary files...'
 # NB we ignore the packer generated files so it won't complain in the output.
 'C:\tmp','C:\Windows\Temp',$env:TEMP | ForEach-Object {
     Get-ChildItem $_ -Exclude 'packer-*' -Recurse | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
