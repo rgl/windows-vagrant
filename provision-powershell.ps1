@@ -18,8 +18,8 @@ trap {
 
 # install powershell lts.
 # see https://github.com/PowerShell/PowerShell/releases
-$archiveUrl = 'https://github.com/PowerShell/PowerShell/releases/download/v7.2.4/PowerShell-7.2.4-win-x64.msi'
-$archiveHash = '06b93c2263fbd6d975ac59e09ab2390635aff0455ad2504ffd60f0a5e0e61103'
+$archiveUrl = 'https://github.com/PowerShell/PowerShell/releases/download/v7.2.5/PowerShell-7.2.5-win-x64.msi'
+$archiveHash = '632a69ea46f966a03a1ee0aa1647c5970df7b5936bdf27df3cf18e6c63c21198'
 $archiveName = Split-Path -Leaf $archiveUrl
 $archivePath = "$env:TEMP\$archiveName"
 
