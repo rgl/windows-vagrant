@@ -54,7 +54,7 @@ If you want to use your own ISO, you need to manually run the `packer` command, 
 packer build -var iso_url=<ISO_URL> -var iso_checksum=<ISO_SHA256_CHECKSUM> -only=windows-2022-amd64-virtualbox windows-2022.pkr.hcl
 ```
 
-**NB** if the build fails with something like `Post-processor failed: write /tmp/packer073329394/packer-windows-2022-amd64-virtualbox-1505050546-disk001.vmdk: no space left on device` you need to increase your temporary partition size or change its location [as described in the packer TMPDIR/TMP environment variable documentation](https://www.packer.io/docs/other/environment-variables.html#tmpdir).
+**NB** if the build fails with something like `Post-processor failed: write /tmp/packer073329394/packer-windows-2022-amd64-virtualbox-1505050546-disk001.vmdk: no space left on device` you need to increase your temporary partition size or change its location [as described in the packer TMPDIR/TMP environment variable documentation](https://www.packer.io/docs/configure#tmpdir).
 
 **NB** if you are having trouble building the base box due to floppy drive removal errors try adding, as a
 workaround, `"post_shutdown_delay": "30s",` to the `windows-2022.pkr.hcl` file.
