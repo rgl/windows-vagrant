@@ -59,7 +59,7 @@ Write-Host 'Installing cloudbase-init...'
 # see https://github.com/cloudbase/cloudbase-init-installer
 msiexec /i $artifactPath /qn /l*v $artifactLogPath | Out-String -Stream
 if ($LASTEXITCODE) {
-    throw "Failed with Exit Code $LASTEXITCODE"
+    throw "Failed with Exit Code $LASTEXITCODE. See the logs at $artifactLogPath."
 }
 
 Write-Host 'Replacing the configuration...'
