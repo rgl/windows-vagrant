@@ -60,21 +60,21 @@ source "qemu" "windows-11-21h2-uefi-amd64" {
     "provision-powershell.ps1",
     "provision-psremoting.ps1",
     "provision-openssh.ps1",
-    "drivers/vioserial/w10/amd64/*.cat",
-    "drivers/vioserial/w10/amd64/*.inf",
-    "drivers/vioserial/w10/amd64/*.sys",
-    "drivers/viostor/w10/amd64/*.cat",
-    "drivers/viostor/w10/amd64/*.inf",
-    "drivers/viostor/w10/amd64/*.sys",
-    "drivers/vioscsi/w10/amd64/*.cat",
-    "drivers/vioscsi/w10/amd64/*.inf",
-    "drivers/vioscsi/w10/amd64/*.sys",
-    "drivers/NetKVM/w10/amd64/*.cat",
-    "drivers/NetKVM/w10/amd64/*.inf",
-    "drivers/NetKVM/w10/amd64/*.sys",
-    "drivers/qxldod/w10/amd64/*.cat",
-    "drivers/qxldod/w10/amd64/*.inf",
-    "drivers/qxldod/w10/amd64/*.sys",
+    "drivers/vioserial/w11/amd64/*.cat",
+    "drivers/vioserial/w11/amd64/*.inf",
+    "drivers/vioserial/w11/amd64/*.sys",
+    "drivers/viostor/w11/amd64/*.cat",
+    "drivers/viostor/w11/amd64/*.inf",
+    "drivers/viostor/w11/amd64/*.sys",
+    "drivers/vioscsi/w11/amd64/*.cat",
+    "drivers/vioscsi/w11/amd64/*.inf",
+    "drivers/vioscsi/w11/amd64/*.sys",
+    "drivers/NetKVM/w11/amd64/*.cat",
+    "drivers/NetKVM/w11/amd64/*.inf",
+    "drivers/NetKVM/w11/amd64/*.sys",
+    "drivers/qxldod/w11/amd64/*.cat",
+    "drivers/qxldod/w11/amd64/*.inf",
+    "drivers/qxldod/w11/amd64/*.sys",
   ]
   format           = "qcow2"
   headless         = true
@@ -165,11 +165,6 @@ build {
   }
 
   provisioner "windows-restart" {
-  }
-
-  provisioner "powershell" {
-    only   = ["qemu.windows-11-21h2-uefi-amd64"]
-    script = "libvirt-fix-cpu-driver.ps1"
   }
 
   provisioner "powershell" {

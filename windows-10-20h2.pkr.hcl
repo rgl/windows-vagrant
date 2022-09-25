@@ -202,11 +202,6 @@ build {
   }
 
   provisioner "powershell" {
-    only   = ["qemu.windows-10-20h2-amd64"]
-    script = "libvirt-fix-cpu-driver.ps1"
-  }
-
-  provisioner "powershell" {
     script = "provision.ps1"
   }
 

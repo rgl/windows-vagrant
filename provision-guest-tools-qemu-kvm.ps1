@@ -12,17 +12,6 @@ trap {
     Exit 1
 }
 
-# trust the qemu driver publisher certificate.
-# NB this is needed for the qemu-gt silent installation to succeed.
-# NB qemu-gt is bundled in virtio-win-guest-tools.exe.
-$catPath = 'A:\netkvm.cat'
-$cerPath = "$env:TEMP\$(Split-Path -Leaf $catPath)" -replace '\.cat$','.cer'
-Write-Host "Getting the qemu driver publisher certificate from $catPath..."
-$certificate = (Get-AuthenticodeSignature $catPath).SignerCertificate
-Write-Host "Trusting the qemu $($certificate.Subject) driver publisher certificate..."
-[System.IO.File]::WriteAllBytes($cerPath, $certificate.Export('Cert'))
-Import-Certificate -CertStoreLocation Cert:\LocalMachine\TrustedPublisher $cerPath | Out-Null
-
 $guestToolsUrl = "http://$env:PACKER_HTTP_ADDR/drivers/virtio-win-guest-tools.exe"
 $guestTools = "$env:TEMP\$(Split-Path -Leaf $guestToolsUrl)"
 $guestToolsLog = "$guestTools.log"
