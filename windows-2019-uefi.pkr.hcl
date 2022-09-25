@@ -34,7 +34,7 @@ source "qemu" "windows-2019-uefi-amd64" {
   qemuargs = [
     ["-bios", "/usr/share/ovmf/OVMF.fd"],
     ["-cpu", "host"],
-    ["-soundhw", "hda"],
+    ["-audiodev", "id=pa,driver=pa"],
     ["-device", "qemu-xhci"],
     ["-device", "virtio-tablet"],
     ["-device", "virtio-scsi-pci,id=scsi0"],

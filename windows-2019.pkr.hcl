@@ -43,7 +43,7 @@ source "qemu" "windows-2019-amd64" {
   memory       = 4096
   qemuargs = [
     ["-cpu", "host"],
-    ["-soundhw", "hda"],
+    ["-audiodev", "id=pa,driver=pa"],
     ["-device", "qemu-xhci"],
     ["-device", "virtio-tablet"],
     ["-device", "virtio-scsi-pci,id=scsi0"],
