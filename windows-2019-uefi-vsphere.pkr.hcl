@@ -95,8 +95,8 @@ source "vsphere-iso" "windows-2019-uefi-amd64" {
   datastore           = var.vsphere_datastore
   folder              = var.vsphere_folder
   vm_name             = "windows-2019-uefi-amd64-vsphere"
-  boot_wait           = "3s"
-  boot_command        = ["<up><wait><up><wait><up><wait><up><wait><up><wait>"]
+  boot_wait           = "1s"
+  boot_command        = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
   shutdown_command    = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
   communicator        = "ssh"
   ssh_password        = "vagrant"

@@ -48,8 +48,8 @@ source "qemu" "windows-2022-uefi-amd64" {
     ["-device", "virtserialport,chardev=spicechannel0,name=com.redhat.spice.0"],
     ["-spice", "unix,addr=/tmp/{{ .Name }}-spice.socket,disable-ticketing"],
   ]
-  boot_wait      = "5s"
-  boot_command   = ["<enter>"]
+  boot_wait      = "1s"
+  boot_command   = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
   disk_interface = "virtio-scsi"
   disk_cache     = "unsafe"
   disk_discard   = "unmap"
@@ -124,7 +124,7 @@ source "virtualbox-iso" "windows-2022-uefi-amd64" {
     ["modifyvm", "{{ .Name }}", "--nictype3", "82540EM"],
     ["modifyvm", "{{ .Name }}", "--nictype4", "82540EM"],
   ]
-  boot_wait      = "3s"
+  boot_wait      = "1s"
   boot_command   = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
   communicator   = "ssh"
   ssh_username   = "vagrant"

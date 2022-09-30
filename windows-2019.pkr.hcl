@@ -140,9 +140,9 @@ source "hyperv-iso" "windows-2019-amd64" {
   cpus         = 2
   memory       = 4096
   generation   = 2
-  boot_command = ["<up><wait><up><wait><up><wait><up><wait><up><wait>"]
-  boot_order   = ["SCSI:0:0"]
   boot_wait    = "1s"
+  boot_command = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
+  boot_order   = ["SCSI:0:0"]
   cd_files = [
     "windows-2019-uefi/autounattend.xml",
     "winrm.ps1",
