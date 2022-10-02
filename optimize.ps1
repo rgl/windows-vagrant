@@ -127,8 +127,12 @@ Stop-ServiceForReal BITS               # Background Intelligent Transfer Service
     "$env:windir\SoftwareDistribution\Download"
 ) | Where-Object {Test-Path $_} | ForEach-Object {
     Write-Host "Removing temporary files $_..."
-    takeown.exe /D Y /R /F $_ | Out-Null
-    icacls.exe $_ /grant:r Administrators:F /T /C /Q 2>&1 | Out-Null
+    try {
+        takeown.exe /D Y /R /F $_ | Out-Null
+        icacls.exe $_ /grant:r Administrators:F /T /C /Q 2>&1 | Out-Null
+    } catch {
+        Write-Host "Ignoring taking ownership of temporary files error: $_"
+    }
     Remove-Item $_ -Exclude 'packer-*' -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
 }
 
