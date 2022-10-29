@@ -2,8 +2,9 @@
 # NB this is needed to modify the libvirt domain scsi controller model to virtio-scsi.
 ENV['VAGRANT_EXPERIMENTAL'] = 'typed_triggers'
 
-VM_MEMORY_MB = 4*1024
 VM_CPUS = 4
+VM_MEMORY_MB = 4*1024
+VM_OS_DISK_GB = 200
 
 require 'open3'
 
@@ -25,6 +26,7 @@ Vagrant.configure(2) do |config|
     lv.disk_bus = 'scsi'
     lv.disk_device = 'sda'
     lv.disk_driver :discard => 'unmap', :cache => 'unsafe'
+    lv.machine_virtual_size = VM_OS_DISK_GB
     config.trigger.before :'VagrantPlugins::ProviderLibvirt::Action::StartDomain', type: :action do |trigger|
       trigger.ruby do |env, machine|
         # modify the scsi controller model to virtio-scsi.
@@ -107,6 +109,7 @@ Vagrant.configure(2) do |config|
   end
 
   #config.vm.provision "windows-sysprep" # NB the windows-sysprep plugin does not work with hyperv.
+  config.vm.provision "shell", path: "ps.ps1", args: "expand-os-partition.ps1"
   config.vm.provision "shell", path: "ps.ps1", args: "provision-chocolatey.ps1"
   config.vm.provision "shell", path: "ps.ps1", args: "provision-adk.ps1"
   config.vm.provision "shell", path: "ps.ps1", args: "mount-system-partition.ps1"
