@@ -15,6 +15,14 @@ trap {
     Exit 1
 }
 
+# disable autologon.
+Write-Host 'Disabling auto logon...'
+$autoLogonKeyPath = 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
+Set-ItemProperty -Path $autoLogonKeyPath -Name AutoAdminLogon -Value 0
+@('DefaultDomainName', 'DefaultUserName', 'DefaultPassword') | ForEach-Object {
+    Remove-ItemProperty -Path $autoLogonKeyPath -Name $_ -ErrorAction SilentlyContinue
+}
+
 # install pwsh.
 $p = Join-Path $PSScriptRoot provision-pwsh.ps1
 Write-Host "Executing $p..."

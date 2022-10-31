@@ -73,13 +73,6 @@ $account = [ADSI]'WinNT://./Administrator'
 $account.Userflags = $AdsNormalAccount -bor $AdsDontExpirePassword -bor $AdsAccountDisable
 $account.SetInfo()
 
-Write-Host 'Disabling auto logon...'
-$autoLogonKeyPath = 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
-Set-ItemProperty -Path $autoLogonKeyPath -Name AutoAdminLogon -Value 0
-@('DefaultDomainName', 'DefaultUserName', 'DefaultPassword') | ForEach-Object {
-    Remove-ItemProperty -Path $autoLogonKeyPath -Name $_ -ErrorAction SilentlyContinue
-}
-
 Write-Host 'Disabling Automatic Private IP Addressing (APIPA)...'
 Set-ItemProperty `
     -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' `
