@@ -43,3 +43,6 @@ $env:PATH += ";$(Split-Path -Parent (Resolve-Path 'C:\Program Files\PowerShell\*
         throw "$p failed with exit code $LASTEXITCODE"
     }
 }
+
+# logoff from the current autologon session.
+logoff
