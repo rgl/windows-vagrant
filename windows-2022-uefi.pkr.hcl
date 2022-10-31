@@ -2,7 +2,7 @@ packer {
   required_plugins {
     windows-update = {
       version = "0.14.1"
-      source = "github.com/rgl/windows-update"
+      source  = "github.com/rgl/windows-update"
     }
   }
 }
@@ -54,26 +54,28 @@ source "qemu" "windows-2022-uefi-amd64" {
   disk_discard   = "unmap"
   disk_size      = var.disk_size
   floppy_files = [
-    "windows-2022-uefi/autounattend.xml",
-    "winrm.ps1",
-    "provision-powershell.ps1",
-    "provision-psremoting.ps1",
-    "provision-openssh.ps1",
-    "drivers/vioserial/2k22/amd64/*.cat",
-    "drivers/vioserial/2k22/amd64/*.inf",
-    "drivers/vioserial/2k22/amd64/*.sys",
-    "drivers/viostor/2k22/amd64/*.cat",
-    "drivers/viostor/2k22/amd64/*.inf",
-    "drivers/viostor/2k22/amd64/*.sys",
-    "drivers/vioscsi/2k22/amd64/*.cat",
-    "drivers/vioscsi/2k22/amd64/*.inf",
-    "drivers/vioscsi/2k22/amd64/*.sys",
     "drivers/NetKVM/2k22/amd64/*.cat",
     "drivers/NetKVM/2k22/amd64/*.inf",
     "drivers/NetKVM/2k22/amd64/*.sys",
     "drivers/qxldod/2k22/amd64/*.cat",
     "drivers/qxldod/2k22/amd64/*.inf",
     "drivers/qxldod/2k22/amd64/*.sys",
+    "drivers/vioscsi/2k22/amd64/*.cat",
+    "drivers/vioscsi/2k22/amd64/*.inf",
+    "drivers/vioscsi/2k22/amd64/*.sys",
+    "drivers/vioserial/2k22/amd64/*.cat",
+    "drivers/vioserial/2k22/amd64/*.inf",
+    "drivers/vioserial/2k22/amd64/*.sys",
+    "drivers/viostor/2k22/amd64/*.cat",
+    "drivers/viostor/2k22/amd64/*.inf",
+    "drivers/viostor/2k22/amd64/*.sys",
+    "provision-autounattend.ps1",
+    "provision-openssh.ps1",
+    "provision-psremoting.ps1",
+    "provision-pwsh.ps1",
+    "provision-vmtools.ps1",
+    "provision-winrm.ps1",
+    "windows-2022-uefi/autounattend.xml",
   ]
   format           = "qcow2"
   headless         = true
@@ -93,11 +95,13 @@ source "virtualbox-iso" "windows-2022-uefi-amd64" {
   memory    = 4096
   disk_size = var.disk_size
   cd_files = [
-    "windows-2022-uefi/autounattend.xml",
-    "winrm.ps1",
-    "provision-powershell.ps1",
-    "provision-psremoting.ps1",
+    "provision-autounattend.ps1",
     "provision-openssh.ps1",
+    "provision-psremoting.ps1",
+    "provision-pwsh.ps1",
+    "provision-vmtools.ps1",
+    "provision-winrm.ps1",
+    "windows-2022-uefi/autounattend.xml",
   ]
   guest_additions_interface = "sata"
   guest_additions_mode      = "attach"
@@ -123,12 +127,12 @@ source "virtualbox-iso" "windows-2022-uefi-amd64" {
     ["modifyvm", "{{ .Name }}", "--nictype3", "82540EM"],
     ["modifyvm", "{{ .Name }}", "--nictype4", "82540EM"],
   ]
-  boot_wait      = "1s"
-  boot_command   = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
-  communicator   = "ssh"
-  ssh_username   = "vagrant"
-  ssh_password   = "vagrant"
-  ssh_timeout    = "4h"
+  boot_wait    = "1s"
+  boot_command = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
+  communicator = "ssh"
+  ssh_username = "vagrant"
+  ssh_password = "vagrant"
+  ssh_timeout  = "4h"
 }
 
 build {
@@ -138,47 +142,56 @@ build {
   ]
 
   provisioner "powershell" {
-    script = "disable-windows-updates.ps1"
+    use_pwsh = true
+    script   = "disable-windows-updates.ps1"
   }
 
   provisioner "powershell" {
-    script = "disable-windows-defender.ps1"
+    use_pwsh = true
+    script   = "disable-windows-defender.ps1"
   }
 
   provisioner "powershell" {
-    only   = ["virtualbox-iso.windows-2022-uefi-amd64"]
-    script = "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
+    use_pwsh = true
+    only     = ["virtualbox-iso.windows-2022-uefi-amd64"]
+    script   = "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
   }
 
   provisioner "powershell" {
-    only   = ["qemu.windows-2022-uefi-amd64"]
-    script = "provision-guest-tools-qemu-kvm.ps1"
+    use_pwsh = true
+    only     = ["qemu.windows-2022-uefi-amd64"]
+    script   = "provision-guest-tools-qemu-kvm.ps1"
   }
 
   provisioner "windows-restart" {
   }
 
   provisioner "powershell" {
-    script = "provision.ps1"
+    use_pwsh = true
+    script   = "provision.ps1"
   }
 
   provisioner "windows-update" {
   }
 
   provisioner "powershell" {
-    script = "enable-remote-desktop.ps1"
+    use_pwsh = true
+    script   = "enable-remote-desktop.ps1"
   }
 
   provisioner "powershell" {
-    script = "provision-cloudbase-init.ps1"
+    use_pwsh = true
+    script   = "provision-cloudbase-init.ps1"
   }
 
   provisioner "powershell" {
-    script = "eject-media.ps1"
+    use_pwsh = true
+    script   = "eject-media.ps1"
   }
 
   provisioner "powershell" {
-    script = "optimize.ps1"
+    use_pwsh = true
+    script   = "optimize.ps1"
   }
 
   post-processor "vagrant" {

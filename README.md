@@ -3,7 +3,7 @@ This builds Windows 10/11/2019/2022 base Vagrant boxes using [Packer](https://ww
 
 # Usage
 
-Install [VirtualBox](https://www.virtualbox.org/) (or [libvirt](https://libvirt.org/) on Linux based systems), [packer 1.7.0+](https://www.packer.io/) and [vagrant](https://www.vagrantup.com/).
+Install [VirtualBox](https://www.virtualbox.org/) (or [libvirt](https://libvirt.org/) on Linux based systems), [packer 1.8.4+](https://www.packer.io/) and [vagrant](https://www.vagrantup.com/).
 If you are using Windows and [Chocolatey](https://chocolatey.org/), you can install everything from an administrative PowerShell session with:
 
 ```powershell
@@ -388,7 +388,7 @@ exit                        # exit the session.
 This base image uses WinRM. WinRM [poses several limitations on remote administration](http://www.hurryupandwait.io/blog/safely-running-windows-automation-operations-that-typically-fail-over-winrm-or-powershell-remoting),
 those were worked around by [disabling User Account Control (UAC)](https://docs.microsoft.com/en-us/troubleshoot/windows-server/windows-security/disable-user-account-control) (aka [Limited User Account (LUA)](https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-lua-settings-enablelua)) in `autounattend.xml`
 and [UAC remote restrictions](https://support.microsoft.com/en-us/help/951016/description-of-user-account-control-and-remote-restrictions-in-windows)
- in `winrm.ps1`.
+ in `provision-winrm.ps1`.
 
 If needed, you can later enable them with:
 

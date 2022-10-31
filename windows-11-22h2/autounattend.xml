@@ -138,23 +138,7 @@
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <Order>3</Order>
-                    <CommandLine>PowerShell -File a:\vmtools.ps1</CommandLine>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <Order>4</Order>
-                    <CommandLine>PowerShell -File a:\winrm.ps1</CommandLine>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <Order>5</Order>
-                    <CommandLine>PowerShell -File a:\provision-powershell.ps1</CommandLine>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <Order>6</Order>
-                    <CommandLine>PowerShell -File a:\provision-psremoting.ps1</CommandLine>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <Order>7</Order>
-                    <CommandLine>PowerShell -File a:\provision-openssh.ps1</CommandLine>
+                    <CommandLine>PowerShell -WindowStyle Maximized -Command "Get-PSDrive -PSProvider FileSystem | ForEach-Object {$p = Join-Path $_.Root provision-autounattend.ps1; if (Test-Path $p) {&amp;$p}}"</CommandLine>
                 </SynchronousCommand>
             </FirstLogonCommands>
         </component>

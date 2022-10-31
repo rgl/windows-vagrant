@@ -17,6 +17,14 @@ mkdir -Force 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent' | Set-Item
     -Name DisableWindowsConsumerFeatures `
     -Value 1
 
+# when running on pwsh and windows 10, explicitly import the appx module.
+# see https://github.com/PowerShell/PowerShell/issues/13138
+$currentVersionKey = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+$build = [int]$currentVersionKey.CurrentBuildNumber
+if (($PSVersionTable.PSEdition -ne 'Desktop') -and ($build -lt 22000)) {
+    Import-Module Appx -UseWindowsPowerShell
+}
+
 # remove all the provisioned appx packages.
 # NB some packages fail to be removed and thats OK.
 Get-AppXProvisionedPackage -Online | ForEach-Object {

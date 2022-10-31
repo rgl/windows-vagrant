@@ -1,4 +1,4 @@
-if ('VirtualBox' -ne (Get-WmiObject WIN32_BIOS -Property SMBIOSBIOSVersion).SMBIOSBIOSVersion) {
+if ('VirtualBox' -ne (Get-CimInstance -ClassName WIN32_BIOS -Property SMBIOSBIOSVersion).SMBIOSBIOSVersion) {
     Exit 0
 }
 

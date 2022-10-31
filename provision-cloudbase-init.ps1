@@ -23,7 +23,7 @@ $artifactUrl = 'https://github.com/cloudbase/cloudbase-init/releases/download/1.
 $artifactPath = "$env:TEMP\$(Split-Path -Leaf $artifactUrl)"
 $artifactLogPath = "$artifactPath.log"
 
-$systemVendor = (Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor
+$systemVendor = (Get-CimInstance -ClassName Win32_ComputerSystemProduct -Property Vendor).Vendor
 if ($systemVendor -eq 'QEMU') {
     # qemu-kvm.
     $metadataServices = 'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'

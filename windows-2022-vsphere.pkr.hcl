@@ -2,7 +2,7 @@ packer {
   required_plugins {
     windows-update = {
       version = "0.14.1"
-      source = "github.com/rgl/windows-update"
+      source  = "github.com/rgl/windows-update"
     }
   }
 }
@@ -63,12 +63,13 @@ source "vsphere-iso" "windows-2022-amd64" {
   RAM           = 4096
   guest_os_type = "windows9Server64Guest"
   floppy_files = [
-    "tmp/windows-2022-vsphere/autounattend.xml",
-    "vmtools.ps1",
-    "winrm.ps1",
-    "provision-powershell.ps1",
-    "provision-psremoting.ps1",
+    "provision-autounattend.ps1",
     "provision-openssh.ps1",
+    "provision-psremoting.ps1",
+    "provision-pwsh.ps1",
+    "provision-vmtools.ps1",
+    "provision-winrm.ps1",
+    "tmp/windows-2022-vsphere/autounattend.xml",
   ]
   iso_paths = [
     "[${var.vsphere_datastore}] iso/windows-2022-SERVER_EVAL_x64FRE_en-us.iso",
@@ -105,18 +106,21 @@ build {
   sources = ["source.vsphere-iso.windows-2022-amd64"]
 
   provisioner "powershell" {
-    script = "disable-windows-updates.ps1"
+    use_pwsh = true
+    script   = "disable-windows-updates.ps1"
   }
 
   provisioner "powershell" {
-    script = "disable-windows-defender.ps1"
+    use_pwsh = true
+    script   = "disable-windows-defender.ps1"
   }
 
   provisioner "windows-restart" {
   }
 
   provisioner "powershell" {
-    script = "provision.ps1"
+    use_pwsh = true
+    script   = "provision.ps1"
   }
 
   provisioner "windows-update" {
@@ -127,18 +131,22 @@ build {
   }
 
   provisioner "powershell" {
-    script = "enable-remote-desktop.ps1"
+    use_pwsh = true
+    script   = "enable-remote-desktop.ps1"
   }
 
   provisioner "powershell" {
-    script = "provision-cloudbase-init.ps1"
+    use_pwsh = true
+    script   = "provision-cloudbase-init.ps1"
   }
 
   provisioner "powershell" {
-    script = "eject-media.ps1"
+    use_pwsh = true
+    script   = "eject-media.ps1"
   }
 
   provisioner "powershell" {
-    script = "optimize.ps1"
+    use_pwsh = true
+    script   = "optimize.ps1"
   }
 }

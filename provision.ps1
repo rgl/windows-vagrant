@@ -35,7 +35,7 @@ if (!(New-Object System.Security.Principal.WindowsPrincipal(
 Add-Type -A System.IO.Compression.FileSystem
 
 # install Guest Additions.
-$systemVendor = (Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor
+$systemVendor = (Get-CimInstance -ClassName Win32_ComputerSystemProduct -Property Vendor).Vendor
 if ($systemVendor -eq 'QEMU') {
     # do nothing. this was installed in provision-guest-tools-qemu-kvm.ps1.
 } elseif ($systemVendor -eq 'innotek GmbH') {
@@ -53,7 +53,7 @@ if ($systemVendor -eq 'QEMU') {
 } elseif ($systemVendor -eq 'Microsoft Corporation') {
     # do nothing. Hyper-V enlightments are already bundled with Windows.
 } elseif ($systemVendor -eq 'VMware, Inc.') {
-    # do nothing. VMware Tools were already installed by vmtools.ps1 (executed from autounattend.xml).
+    # do nothing. VMware Tools were already installed by provision-vmtools.ps1 (executed from autounattend.xml).
 } else {
     throw "Cannot install Guest Additions: Unsupported system ($systemVendor)."
 }

@@ -10,7 +10,7 @@ trap {
     Exit 1
 }
 
-$systemVendor = (Get-WmiObject Win32_ComputerSystemProduct Vendor).Vendor
+$systemVendor = (Get-CimInstance -ClassName Win32_ComputerSystemProduct -Property Vendor).Vendor
 if ($systemVendor -eq 'VMware, Inc.') {
     Write-Output 'Installing VMware Tools...'
     # silent install without rebooting.

@@ -16,7 +16,7 @@ trap {
 }
 
 # NB this fix only applies to qemu.
-if ('SeaBIOS' -ne (Get-WmiObject WIN32_BIOS -Property Manufacturer).Manufacturer) {
+if ('SeaBIOS' -ne (Get-CimInstance -ClassName WIN32_BIOS -Property Manufacturer).Manufacturer) {
     Exit 0
 }
 
