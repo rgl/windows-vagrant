@@ -38,7 +38,10 @@ $env:PATH += ";$(Split-Path -Parent (Resolve-Path 'C:\Program Files\PowerShell\*
 ) | ForEach-Object {
     $p = Join-Path $PSScriptRoot "$_.ps1"
     Write-Host "Executing $p..."
-    pwsh -File $p
+    # NB for some unknown reason, when the host hypervisor is hyper-v, we cannot
+    #    run scripts from the E: drive due to the default RemoteSigned policy.
+    #    so, we have to explicitly bypass the execution policy.
+    pwsh -ExecutionPolicy Bypass -File $p
     if ($LASTEXITCODE) {
         throw "$p failed with exit code $LASTEXITCODE"
     }
