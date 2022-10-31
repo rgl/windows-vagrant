@@ -10,8 +10,6 @@ IMAGES+= windows-2019-uefi
 IMAGES+= windows-2022
 IMAGES+= windows-2022-uefi
 IMAGES+= windows-10-20h2
-IMAGES+= windows-11-21h2
-IMAGES+= windows-11-21h2-uefi
 IMAGES+= windows-11-22h2
 IMAGES+= windows-11-22h2-uefi
 
@@ -19,7 +17,6 @@ IMAGES+= windows-11-22h2-uefi
 HYPERV_IMAGES+= windows-2019
 HYPERV_IMAGES+= windows-2022
 HYPERV_IMAGES+= windows-10-20h2
-HYPERV_IMAGES+= windows-11-21h2
 HYPERV_IMAGES+= windows-11-22h2
 
 # Images supporting vSphere
