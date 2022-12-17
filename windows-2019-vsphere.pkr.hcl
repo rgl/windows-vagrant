@@ -84,22 +84,23 @@ source "vsphere-iso" "windows-2019-amd64" {
     disk_size             = var.vsphere_disk_size
     disk_thin_provisioned = true
   }
-  convert_to_template = false
-  insecure_connection = true
-  vcenter_server      = var.vsphere_host
-  username            = var.vsphere_username
-  password            = var.vsphere_password
-  host                = var.vsphere_esxi_host
-  datacenter          = var.vsphere_datacenter
-  cluster             = var.vsphere_cluster
-  datastore           = var.vsphere_datastore
-  folder              = var.vsphere_folder
-  vm_name             = "windows-2019-amd64-vsphere"
-  shutdown_command    = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
-  communicator        = "ssh"
-  ssh_password        = "vagrant"
-  ssh_username        = "vagrant"
-  ssh_timeout         = "4h"
+  convert_to_template      = false
+  insecure_connection      = true
+  vcenter_server           = var.vsphere_host
+  username                 = var.vsphere_username
+  password                 = var.vsphere_password
+  host                     = var.vsphere_esxi_host
+  datacenter               = var.vsphere_datacenter
+  cluster                  = var.vsphere_cluster
+  datastore                = var.vsphere_datastore
+  folder                   = var.vsphere_folder
+  vm_name                  = "windows-2019-amd64-vsphere"
+  shutdown_command         = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
+  communicator             = "ssh"
+  ssh_password             = "vagrant"
+  ssh_username             = "vagrant"
+  ssh_timeout              = "4h"
+  ssh_file_transfer_method = "sftp"
 }
 
 build {

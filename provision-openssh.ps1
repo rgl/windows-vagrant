@@ -56,8 +56,8 @@ function Install-OpenSshBinaries {
     Install-ZippedApplication `
         $openSshHome `
         OpenSSH `
-        https://github.com/PowerShell/Win32-OpenSSH/releases/download/v8.9.1.0p1-Beta/OpenSSH-Win64.zip `
-        b3d31939acb93c34236f420a6f1396e7cf2eead7069ef67742857a5a0befb9fc
+        https://github.com/PowerShell/Win32-OpenSSH/releases/download/v9.1.0.0p1-Beta/OpenSSH-Win64.zip `
+        a17c2ba5dacb21936e2f927faad4e849f798f44ed1f656fc1e00bbd8e0966140
     Push-Location $openSshHome
     Move-Item OpenSSH-Win64\* .
     Remove-Item OpenSSH-Win64
@@ -74,39 +74,35 @@ if ($windowsOpenSshCapabilities) {
 }
 Write-Host 'Installing the PowerShell/Win32-OpenSSH service...'
 Install-OpenSshBinaries
-&"$openSshHome\install-sshd.ps1"
 # add the OpenSSH binaries to the system PATH.
 [Environment]::SetEnvironmentVariable(
     'PATH',
     "$([Environment]::GetEnvironmentVariable('PATH', 'Machine'));$openSshHome",
     'Machine')
-mkdir -Force $openSshConfigHome | Out-Null
-$originalSshdConfig = Get-Content -Raw "$openSshHome\sshd_config_default"
+# remove any existing configuration.
+if (Test-Path $openSshConfigHome) {
+    Remove-Item -Recurse -Force $openSshConfigHome
+}
+# install the service.
+&"$openSshHome\install-sshd.ps1" -Confirm:$false
+# start the service (it will create the default configuration and host keys).
+Start-Service sshd
+Stop-Service sshd
+# modify the configuration.
+$sshdConfig = Get-Content -Raw "$openSshHome\sshd_config_default"
 # Configure the Administrators group to also use the ~/.ssh/authorized_keys file.
 # see https://github.com/PowerShell/Win32-OpenSSH/issues/1324
-$sshdConfig = $originalSshdConfig `
+$sshdConfig = $sshdConfig `
     -replace '(?m)^(Match Group administrators.*)','#$1' `
     -replace '(?m)^(\s*AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys.*)','#$1'
+# Disable UseDNS.
+$sshdConfig = $sshdConfig `
+    -replace '(?m)^#?\s*UseDNS .+','UseDNS no'
 # Configure the powershell ssh subsystem (for powershell remoting over ssh).
 # see https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/ssh-remoting-in-powershell-core?view=powershell-7.2
 $sshdConfig = $sshdConfig `
     -replace '(?m)^(Subsystem\s+sftp\s+.+)',"`$1`nSubsystem`tpowershell`tC:/Progra~1/PowerShell/7/pwsh.exe -nol -sshs"
 Set-Content -Encoding ascii "$openSshConfigHome\sshd_config" $sshdConfig
-
-Write-Host 'Generating the host SSH keys...'
-&"$openSshHome\ssh-keygen.exe" -A
-if ($LASTEXITCODE) {
-    throw "Failed to run ssh-keygen with exit code $LASTEXITCODE"
-}
-
-Write-Host 'Configuring sshd...'
-Set-Content `
-    -Encoding Ascii `
-    "$openSshConfigHome\sshd_config" `
-    ( `
-        (Get-Content "$openSshConfigHome\sshd_config") `
-            -replace '#?\s*UseDNS .+','UseDNS no' `
-    )
 
 Write-Host 'Setting the host file permissions...'
 &"$openSshHome\FixHostFilePermissions.ps1" -Confirm:$false
@@ -128,8 +124,6 @@ if ($result -ne '[SC] ChangeServiceConfig2 SUCCESS') {
     throw "sc.exe failure ssh-agent failed with $result"
 }
 
-New-NetFirewallRule -Protocol TCP -LocalPort 22 -Direction Inbound -Action Allow -DisplayName SSH | Out-Null
-
 Write-Host 'Installing the default vagrant insecure public key...'
 $authorizedKeysPath = "$env:USERPROFILE\.ssh\authorized_keys"
 mkdir -Force "$env:USERPROFILE\.ssh" | Out-Null
@@ -139,3 +133,6 @@ mkdir -Force "$env:USERPROFILE\.ssh" | Out-Null
 
 Write-Host 'Starting the sshd service...'
 Start-Service sshd
+
+Write-Host 'Allow firewall access to the sshd service port...'
+New-NetFirewallRule -Protocol TCP -LocalPort 22 -Direction Inbound -Action Allow -DisplayName SSH | Out-Null

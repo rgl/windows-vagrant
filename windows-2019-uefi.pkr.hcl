@@ -77,17 +77,18 @@ source "qemu" "windows-2019-uefi-amd64" {
     "provision-winrm.ps1",
     "windows-2019-uefi/autounattend.xml",
   ]
-  format           = "qcow2"
-  headless         = true
-  net_device       = "virtio-net"
-  http_directory   = "."
-  iso_url          = var.iso_url
-  iso_checksum     = var.iso_checksum
-  shutdown_command = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
-  communicator     = "ssh"
-  ssh_username     = "vagrant"
-  ssh_password     = "vagrant"
-  ssh_timeout      = "4h"
+  format                   = "qcow2"
+  headless                 = true
+  net_device               = "virtio-net"
+  http_directory           = "."
+  iso_url                  = var.iso_url
+  iso_checksum             = var.iso_checksum
+  shutdown_command         = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
+  communicator             = "ssh"
+  ssh_username             = "vagrant"
+  ssh_password             = "vagrant"
+  ssh_timeout              = "4h"
+  ssh_file_transfer_method = "sftp"
 }
 
 source "virtualbox-iso" "windows-2019-uefi-amd64" {
@@ -127,12 +128,13 @@ source "virtualbox-iso" "windows-2019-uefi-amd64" {
     ["modifyvm", "{{ .Name }}", "--nictype3", "82540EM"],
     ["modifyvm", "{{ .Name }}", "--nictype4", "82540EM"],
   ]
-  boot_wait    = "1s"
-  boot_command = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
-  communicator = "ssh"
-  ssh_username = "vagrant"
-  ssh_password = "vagrant"
-  ssh_timeout  = "4h"
+  boot_wait                = "1s"
+  boot_command             = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
+  communicator             = "ssh"
+  ssh_username             = "vagrant"
+  ssh_password             = "vagrant"
+  ssh_timeout              = "4h"
+  ssh_file_transfer_method = "sftp"
 }
 
 build {

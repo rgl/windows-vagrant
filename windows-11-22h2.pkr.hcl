@@ -84,17 +84,18 @@ source "qemu" "windows-11-22h2-amd64" {
     "provision-winrm.ps1",
     "windows-11-22h2/autounattend.xml",
   ]
-  format           = "qcow2"
-  headless         = true
-  net_device       = "virtio-net"
-  http_directory   = "."
-  iso_url          = var.iso_url
-  iso_checksum     = var.iso_checksum
-  shutdown_command = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
-  communicator     = "ssh"
-  ssh_username     = "vagrant"
-  ssh_password     = "vagrant"
-  ssh_timeout      = "4h"
+  format                   = "qcow2"
+  headless                 = true
+  net_device               = "virtio-net"
+  http_directory           = "."
+  iso_url                  = var.iso_url
+  iso_checksum             = var.iso_checksum
+  shutdown_command         = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
+  communicator             = "ssh"
+  ssh_username             = "vagrant"
+  ssh_password             = "vagrant"
+  ssh_timeout              = "4h"
+  ssh_file_transfer_method = "sftp"
 }
 
 source "virtualbox-iso" "windows-11-22h2-amd64" {
@@ -133,10 +134,11 @@ source "virtualbox-iso" "windows-11-22h2-amd64" {
     ["modifyvm", "{{ .Name }}", "--nictype3", "82540EM"],
     ["modifyvm", "{{ .Name }}", "--nictype4", "82540EM"],
   ]
-  communicator = "ssh"
-  ssh_username = "vagrant"
-  ssh_password = "vagrant"
-  ssh_timeout  = "4h"
+  communicator             = "ssh"
+  ssh_username             = "vagrant"
+  ssh_password             = "vagrant"
+  ssh_timeout              = "4h"
+  ssh_file_transfer_method = "sftp"
 }
 
 source "hyperv-iso" "windows-11-22h2-amd64" {
@@ -155,19 +157,20 @@ source "hyperv-iso" "windows-11-22h2-amd64" {
     "provision-winrm.ps1",
     "windows-11-22h2-uefi/autounattend.xml",
   ]
-  disk_size         = var.disk_size
-  first_boot_device = "DVD"
-  headless          = true
-  iso_url           = var.iso_url
-  iso_checksum      = var.iso_checksum
-  switch_name       = var.hyperv_switch_name
-  temp_path         = "tmp"
-  vlan_id           = var.hyperv_vlan_id
-  shutdown_command  = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
-  communicator      = "ssh"
-  ssh_username      = "vagrant"
-  ssh_password      = "vagrant"
-  ssh_timeout       = "4h"
+  disk_size                = var.disk_size
+  first_boot_device        = "DVD"
+  headless                 = true
+  iso_url                  = var.iso_url
+  iso_checksum             = var.iso_checksum
+  switch_name              = var.hyperv_switch_name
+  temp_path                = "tmp"
+  vlan_id                  = var.hyperv_vlan_id
+  shutdown_command         = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
+  communicator             = "ssh"
+  ssh_username             = "vagrant"
+  ssh_password             = "vagrant"
+  ssh_timeout              = "4h"
+  ssh_file_transfer_method = "sftp"
 }
 
 build {
