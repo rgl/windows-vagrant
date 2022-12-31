@@ -16,6 +16,14 @@ trap {
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol `
     -bor [Net.SecurityProtocolType]::Tls12
 
+# disable update notifications.
+# see https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_update_notifications?view=powershell-7.2
+$env:POWERSHELL_UPDATECHECK = 'Off'
+[Environment]::SetEnvironmentVariable(
+    'POWERSHELL_UPDATECHECK',
+    $env:POWERSHELL_UPDATECHECK,
+    'Machine')
+
 # install powershell lts.
 # see https://github.com/PowerShell/PowerShell/releases
 $archiveUrl = 'https://github.com/PowerShell/PowerShell/releases/download/v7.2.8/PowerShell-7.2.8-win-x64.msi'
