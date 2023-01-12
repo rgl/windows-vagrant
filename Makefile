@@ -63,9 +63,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	./get-windows-updates-from-packer-log.sh \
 		$*-amd64-virtualbox-packer.log \
 		>$*-amd64-virtualbox-windows-updates.log
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f $*-amd64 $@
+	@./box-metadata.sh virtualbox $*-amd64 $@
 
 %-amd64-libvirt.box: %.pkr.hcl %/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
@@ -76,9 +74,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	./get-windows-updates-from-packer-log.sh \
 		$*-amd64-libvirt-packer.log \
 		>$*-amd64-libvirt-windows-updates.log
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f $*-amd64 $@
+	@./box-metadata.sh libvirt $*-amd64 $@
 
 %-amd64-hyperv.box: %.pkr.hcl Vagrantfile.template *.ps1
 	rm -f $@
@@ -90,9 +86,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	./get-windows-updates-from-packer-log.sh \
 		$*-amd64-hyperv-packer.log \
 		>$*-amd64-hyperv-windows-updates.log
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f $*-amd64 $@
+	@./box-metadata.sh hyperv $*-amd64 $@
 
 %-uefi-amd64-virtualbox.box: %-uefi.pkr.hcl %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
 	rm -f $@
@@ -103,9 +97,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	./get-windows-updates-from-packer-log.sh \
 		$*-uefi-amd64-virtualbox-packer.log \
 		>$*-uefi-amd64-virtualbox-windows-updates.log
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f $*-uefi-amd64 $@
+	@./box-metadata.sh virtualbox $*-uefi-amd64 $@
 
 %-uefi-amd64-libvirt.box: %-uefi.pkr.hcl %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
 	rm -f $@
@@ -116,9 +108,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	./get-windows-updates-from-packer-log.sh \
 		$*-uefi-amd64-libvirt-packer.log \
 		>$*-uefi-amd64-libvirt-windows-updates.log
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f $*-uefi-amd64 $@
+	@./box-metadata.sh libvirt $*-uefi-amd64 $@
 
 tmp/windows-10-%-vsphere/autounattend.xml: windows-10/autounattend.xml
 	mkdir -p "$$(dirname $@)"

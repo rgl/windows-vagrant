@@ -1,4 +1,5 @@
 *.box
+*.box.json
 output*/
 .vagrant/
 packer_cache/
