@@ -19,7 +19,7 @@ trap {
 $cloudbaseInitHome = 'C:\Program Files\Cloudbase Solutions\Cloudbase-Init'
 $cloudbaseInitConfPath = "$cloudbaseInitHome\conf\cloudbase-init.conf"
 
-$artifactUrl = 'https://github.com/cloudbase/cloudbase-init/releases/download/1.1.2/CloudbaseInitSetup_1_1_2_x64.msi'
+$artifactUrl = 'https://github.com/cloudbase/cloudbase-init/releases/download/1.1.4/CloudbaseInitSetup_1_1_4_x64.msi'
 $artifactPath = "$env:TEMP\$(Split-Path -Leaf $artifactUrl)"
 $artifactLogPath = "$artifactPath.log"
 
@@ -75,13 +75,14 @@ Write-Host 'Replacing the configuration...'
 #   mtools_path=C:\Program Files\Cloudbase Solutions\Cloudbase-Init\bin\
 #   verbose=true
 #   debug=true
-#   logdir=C:\Program Files\Cloudbase Solutions\Cloudbase-Init\log\
-#   logfile=cloudbase-init.log
+#   log_dir=C:\Program Files\Cloudbase Solutions\Cloudbase-Init\log\
+#   log_file=cloudbase-init.log
 #   default_log_levels=comtypes=INFO,suds=INFO,iso8601=WARN,requests=WARN
 #   logging_serial_port_settings=
 #   mtu_use_dhcp_config=true
 #   ntp_use_dhcp_config=true
 #   local_scripts_path=C:\Program Files\Cloudbase Solutions\Cloudbase-Init\LocalScripts\
+#   check_latest_version=true
 # see https://cloudbase-init.readthedocs.io/en/latest/tutorial.html#configuration-file
 # see https://cloudbase-init.readthedocs.io/en/latest/config.html#config-list
 Move-Item $cloudbaseInitConfPath "$cloudbaseInitConfPath.orig"
@@ -91,7 +92,7 @@ username=Administrator
 groups=Administrators
 first_logon_behaviour=no
 debug=true
-log_dir=$cloudbaseInitHome\log
+log_dir=$cloudbaseInitHome\log\
 log_file=cloudbase-init.log
 bsdtar_path=$cloudbaseInitHome\bin\bsdtar.exe
 mtools_path=$cloudbaseInitHome\bin\
