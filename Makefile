@@ -16,6 +16,8 @@ IMAGES+= windows-11-22h2-uefi
 # Images supporting proxmox
 PROXMOX_IMAGES+= windows-2022
 PROXMOX_IMAGES+= windows-2022-uefi
+PROXMOX_IMAGES+= windows-11-22h2
+PROXMOX_IMAGES+= windows-11-22h2-uefi
 
 # Images supporting Hyper-V
 HYPERV_IMAGES+= windows-2019
