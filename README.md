@@ -1,4 +1,4 @@
-This builds Windows 10/11/2019/2022 base Vagrant boxes using [Packer](https://www.packer.io/) and VirtualBox/Hyper-V/libvirt/qemu.
+This builds Windows 10/11/2019/2022 base Vagrant boxes using [Packer](https://www.packer.io/) and VirtualBox/Hyper-V/libvirt/QEMU/Proxmox VE/VMware vSphere.
 
 
 # Usage
@@ -102,6 +102,32 @@ spicy --uri 'spice+unix:///tmp/packer-windows-2022-amd64-libvirt-spice.socket'
 
 **NB** the packer template file defines `qemuargs` (which overrides the default packer qemu arguments), if you modify it, verify if you also need include the default packer qemu arguments (see [builder/qemu/step_run.go](https://github.com/hashicorp/packer/blob/master/builder/qemu/step_run.go) or start packer without `qemuargs` defined to see how it starts qemu).
 
+
+## Proxmox VE usage
+
+Install [Proxmox VE](https://www.proxmox.com/en/proxmox-ve).
+
+**NB** This assumes Proxmox VE was installed alike [rgl/proxmox-ve](https://github.com/rgl/proxmox-ve).
+
+Set your Proxmox VE details:
+
+```bash
+cat >secrets-proxmox.sh <<EOF
+export PROXMOX_URL='https://192.168.1.21:8006/api2/json'
+export PROXMOX_USERNAME='root@pam'
+export PROXMOX_PASSWORD='vagrant'
+export PROXMOX_NODE='pve'
+EOF
+source secrets-proxmox.sh
+```
+
+Create the template:
+
+```bash
+make build-windows-2022-proxmox
+```
+
+**NB** There is no way to use the created template with vagrant (the [vagrant-proxmox plugin](https://github.com/telcat/vagrant-proxmox) is no longer compatible with recent vagrant versions). Instead, use packer or terraform.
 
 
 ## Hyper-V usage
@@ -376,7 +402,7 @@ Set-Item WSMan:\localhost\Client\TrustedHosts -Value '*' -Force
 # Open a session and execute commands remotely.
 # NB To open a PowerShell 5 session, remove the -ConfigurationName argument.
 Enter-PSSession -ConfigurationName PowerShell.7 -ComputerName localhost -Port 55985 -Credential vagrant
-Get-PSSessionConfiguration  # show the availble configurations.
+Get-PSSessionConfiguration  # show the available configurations.
 $PSVersionTable             # show the powershell version.
 whoami /all                 # show the user permissions.
 exit                        # exit the session.

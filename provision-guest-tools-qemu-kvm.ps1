@@ -12,12 +12,25 @@ trap {
     Exit 1
 }
 
-$guestToolsUrl = "http://$env:PACKER_HTTP_ADDR/drivers/virtio-win-guest-tools.exe"
-$guestTools = "$env:TEMP\$(Split-Path -Leaf $guestToolsUrl)"
-$guestToolsLog = "$guestTools.log"
-Write-Host "Downloading the guest tools from $guestToolsUrl..."
-Invoke-WebRequest $guestToolsUrl -OutFile $guestTools
+# try to find it in a drive.
+$guestToolsFilename = 'virtio-win-guest-tools.exe'
+$guestTools = Get-PSDrive -PSProvider FileSystem | ForEach-Object {
+    $p = Join-Path $_.Root $guestToolsFilename
+    if (Test-Path $p) {
+        $p
+    }
+} | Select-Object -First 1
+
+# otherwise, download it from the packer http server.
+if (!$guestTools) {
+    $guestToolsUrl = "http://$env:PACKER_HTTP_ADDR/drivers/$guestToolsFilename"
+    $guestTools = "$env:TEMP\$guestToolsFilename"
+    Write-Host "Downloading the guest tools from $guestToolsUrl..."
+    Invoke-WebRequest $guestToolsUrl -OutFile $guestTools
+}
+
 Write-Host 'Installing the guest tools...'
+$guestToolsLog = "$env:TEMP\$guestToolsFilename.log"
 &$guestTools /install /norestart /quiet /log $guestToolsLog | Out-String -Stream
 if ($LASTEXITCODE) {
     throw "failed to install guest tools with exit code $LASTEXITCODE"

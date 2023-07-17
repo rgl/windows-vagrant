@@ -22,6 +22,11 @@ variable "iso_checksum" {
   default = "sha256:3e4fa6d8507b554856fc9ca6079cc402df11a8b79344871669f0251535255325"
 }
 
+variable "proxmox_node" {
+  type    = string
+  default = env("PROXMOX_NODE")
+}
+
 variable "hyperv_switch_name" {
   type    = string
   default = env("HYPERV_SWITCH_NAME")
@@ -80,7 +85,6 @@ source "qemu" "windows-2022-amd64" {
     "provision-openssh.ps1",
     "provision-psremoting.ps1",
     "provision-pwsh.ps1",
-    "provision-vmtools.ps1",
     "provision-winrm.ps1",
     "windows-2022/autounattend.xml",
   ]
@@ -98,6 +102,72 @@ source "qemu" "windows-2022-amd64" {
   ssh_file_transfer_method = "sftp"
 }
 
+source "proxmox-iso" "windows-2022-amd64" {
+  template_name            = "template-windows-2022"
+  template_description     = "See https://github.com/rgl/windows-vagrant"
+  insecure_skip_tls_verify = true
+  node                     = var.proxmox_node
+  machine                  = "q35"
+  cpu_type                 = "host"
+  cores                    = 2
+  memory                   = 4096
+  vga {
+    type   = "qxl"
+    memory = 32
+  }
+  network_adapters {
+    model  = "virtio"
+    bridge = "vmbr0"
+  }
+  scsi_controller = "virtio-scsi-pci"
+  disks {
+    type         = "scsi"
+    disk_size    = "${var.disk_size}M"
+    storage_pool = "local-lvm"
+  }
+  iso_storage_pool = "local"
+  iso_url          = var.iso_url
+  iso_checksum     = var.iso_checksum
+  unmount_iso      = true
+  additional_iso_files {
+    device           = "ide0"
+    unmount          = true
+    iso_storage_pool = "local"
+    cd_label         = "PROVISION"
+    cd_files = [
+      "drivers/NetKVM/2k22/amd64/*.cat",
+      "drivers/NetKVM/2k22/amd64/*.inf",
+      "drivers/NetKVM/2k22/amd64/*.sys",
+      "drivers/qxldod/2k22/amd64/*.cat",
+      "drivers/qxldod/2k22/amd64/*.inf",
+      "drivers/qxldod/2k22/amd64/*.sys",
+      "drivers/vioscsi/2k22/amd64/*.cat",
+      "drivers/vioscsi/2k22/amd64/*.inf",
+      "drivers/vioscsi/2k22/amd64/*.sys",
+      "drivers/vioserial/2k22/amd64/*.cat",
+      "drivers/vioserial/2k22/amd64/*.inf",
+      "drivers/vioserial/2k22/amd64/*.sys",
+      "drivers/viostor/2k22/amd64/*.cat",
+      "drivers/viostor/2k22/amd64/*.inf",
+      "drivers/viostor/2k22/amd64/*.sys",
+      "drivers/virtio-win-guest-tools.exe",
+      "provision-autounattend.ps1",
+      "provision-guest-tools-qemu-kvm.ps1",
+      "provision-openssh.ps1",
+      "provision-psremoting.ps1",
+      "provision-pwsh.ps1",
+      "provision-winrm.ps1",
+      "windows-2022/autounattend.xml",
+    ]
+  }
+  os             = "win10"
+  ssh_username   = "vagrant"
+  ssh_password   = "vagrant"
+  ssh_timeout    = "60m"
+  http_directory = "."
+  boot_wait      = "30s"
+}
+
 source "virtualbox-iso" "windows-2022-amd64" {
   cpus      = 2
   memory    = 4096
@@ -107,7 +177,6 @@ source "virtualbox-iso" "windows-2022-amd64" {
     "provision-openssh.ps1",
     "provision-psremoting.ps1",
     "provision-pwsh.ps1",
-    "provision-vmtools.ps1",
     "provision-winrm.ps1",
     "windows-2022/autounattend.xml",
   ]
@@ -153,7 +222,6 @@ source "hyperv-iso" "windows-2022-amd64" {
     "provision-openssh.ps1",
     "provision-psremoting.ps1",
     "provision-pwsh.ps1",
-    "provision-vmtools.ps1",
     "provision-winrm.ps1",
     "windows-2022-uefi/autounattend.xml",
   ]
@@ -176,6 +244,7 @@ source "hyperv-iso" "windows-2022-amd64" {
 build {
   sources = [
     "source.qemu.windows-2022-amd64",
+    "source.proxmox-iso.windows-2022-amd64",
     "source.virtualbox-iso.windows-2022-amd64",
     "source.hyperv-iso.windows-2022-amd64",
   ]
@@ -234,6 +303,7 @@ build {
   }
 
   post-processor "vagrant" {
+    except               = ["proxmox-iso.windows-2022-amd64"]
     output               = var.vagrant_box
     vagrantfile_template = "Vagrantfile.template"
   }

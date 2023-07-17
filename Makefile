@@ -13,6 +13,10 @@ IMAGES+= windows-10-20h2
 IMAGES+= windows-11-22h2
 IMAGES+= windows-11-22h2-uefi
 
+# Images supporting proxmox
+PROXMOX_IMAGES+= windows-2022
+PROXMOX_IMAGES+= windows-2022-uefi
+
 # Images supporting Hyper-V
 HYPERV_IMAGES+= windows-2019
 HYPERV_IMAGES+= windows-2022
@@ -28,10 +32,11 @@ VSPHERE_IMAGES+= windows-2022-uefi
 # Generate build-* targets
 VIRTUALBOX_BUILDS= $(addsuffix -virtualbox,$(addprefix build-,$(IMAGES)))
 LIBVIRT_BUILDS= $(addsuffix -libvirt,$(addprefix build-,$(IMAGES)))
+PROXMOX_BUILDS= $(addsuffix -proxmox,$(addprefix build-,$(PROXMOX_IMAGES)))
 HYPERV_BUILDS= $(addsuffix -hyperv,$(addprefix build-,$(HYPERV_IMAGES)))
 VSPHERE_BUILDS= $(addsuffix -vsphere,$(addprefix build-,$(VSPHERE_IMAGES)))
 
-.PHONY: help $(VIRTUALBOX_BUILDS) $(LIBVIRT_BUILDS) $(VSPHERE_BUILDS)
+.PHONY: help $(VIRTUALBOX_BUILDS) $(LIBVIRT_BUILDS) $(PROXMOX_BUILDS) $(VSPHERE_BUILDS)
 
 help:
 	@echo Type one of the following commands to build a specific windows box.
@@ -42,6 +47,9 @@ help:
 	@echo libvirt Targets:
 	@$(addprefix echo make ,$(addsuffix ;,$(LIBVIRT_BUILDS)))
 	@echo
+	@echo proxmox Targets:
+	@$(addprefix echo make ,$(addsuffix ;,$(PROXMOX_BUILDS)))
+	@echo
 	@echo Hyper-V Targets:
 	@$(addprefix echo make ,$(addsuffix ;,$(HYPERV_BUILDS)))
 	@echo
@@ -51,6 +59,7 @@ help:
 # Target specific pattern rules for build-* targets
 $(VIRTUALBOX_BUILDS): build-%-virtualbox: %-amd64-virtualbox.box
 $(LIBVIRT_BUILDS): build-%-libvirt: %-amd64-libvirt.box
+$(PROXMOX_BUILDS): build-%-proxmox: %-amd64-proxmox.box
 $(HYPERV_BUILDS): build-%-hyperv: %-amd64-hyperv.box
 $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 
@@ -75,6 +84,16 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 		$*-amd64-libvirt-packer.log \
 		>$*-amd64-libvirt-windows-updates.log
 	@./box-metadata.sh libvirt $*-amd64 $@
+
+%-amd64-proxmox.box: %.pkr.hcl %/autounattend.xml Vagrantfile.template *.ps1 drivers
+	rm -f $@
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-proxmox-packer-init.log \
+		packer init $*.pkr.hcl
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-proxmox-packer.log PKR_VAR_vagrant_box=$@ \
+		packer build -only=proxmox-iso.$*-amd64 -on-error=abort $*.pkr.hcl
+	./get-windows-updates-from-packer-log.sh \
+		$*-amd64-proxmox-packer.log \
+		>$*-amd64-proxmox-windows-updates.log
 
 %-amd64-hyperv.box: %.pkr.hcl Vagrantfile.template *.ps1
 	rm -f $@
@@ -109,6 +128,16 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 		$*-uefi-amd64-libvirt-packer.log \
 		>$*-uefi-amd64-libvirt-windows-updates.log
 	@./box-metadata.sh libvirt $*-uefi-amd64 $@
+
+%-uefi-amd64-proxmox.box: %-uefi.pkr.hcl %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
+	rm -f $@
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-proxmox-packer-init.log \
+		packer init $*.pkr.hcl
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-proxmox-packer.log PKR_VAR_vagrant_box=$@ \
+		packer build -only=proxmox-iso.$*-uefi-amd64 -on-error=abort $*-uefi.pkr.hcl
+	./get-windows-updates-from-packer-log.sh \
+		$*-uefi-amd64-proxmox-packer.log \
+		>$*-uefi-amd64-proxmox-windows-updates.log
 
 tmp/windows-10-%-vsphere/autounattend.xml: windows-10/autounattend.xml
 	mkdir -p "$$(dirname $@)"

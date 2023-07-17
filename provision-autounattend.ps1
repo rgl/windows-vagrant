@@ -30,20 +30,25 @@ Write-Host "Executing $p..."
 $env:PATH += ";$(Split-Path -Parent (Resolve-Path 'C:\Program Files\PowerShell\*\pwsh.exe'))"
 
 # install the remaining steps using pwsh.
+$systemVendor = (Get-CimInstance -ClassName Win32_ComputerSystemProduct -Property Vendor).Vendor
 @(
-    'provision-vmtools'
+    if ($systemVendor -eq 'QEMU') { 'provision-guest-tools-qemu-kvm' }
+    if ($systemVendor -eq 'VMware, Inc.') { 'provision-vmtools' }
     'provision-winrm'
     'provision-psremoting'
     'provision-openssh'
 ) | ForEach-Object {
-    $p = Join-Path $PSScriptRoot "$_.ps1"
-    Write-Host "Executing $p..."
+    Join-Path $PSScriptRoot "$_.ps1"
+} | Where-Object {
+    Test-Path $_
+} | ForEach-Object {
+    Write-Host "Executing $_..."
     # NB for some unknown reason, when the host hypervisor is hyper-v, we cannot
     #    run scripts from the E: drive due to the default RemoteSigned policy.
     #    so, we have to explicitly bypass the execution policy.
-    pwsh -ExecutionPolicy Bypass -File $p
+    pwsh -ExecutionPolicy Bypass -File $_
     if ($LASTEXITCODE) {
-        throw "$p failed with exit code $LASTEXITCODE"
+        throw "$_ failed with exit code $LASTEXITCODE"
     }
 }
 
