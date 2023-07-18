@@ -1,5 +1,13 @@
 packer {
   required_plugins {
+    proxmox = {
+      version = "1.1.3"
+      source  = "github.com/hashicorp/proxmox"
+    }
+    hyperv = {
+      version = "1.1.1"
+      source  = "github.com/hashicorp/hyperv"
+    }
     windows-update = {
       version = "0.14.3"
       source  = "github.com/rgl/windows-update"
