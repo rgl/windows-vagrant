@@ -168,7 +168,7 @@ source "proxmox-iso" "windows-2022-amd64" {
       "windows-2022/autounattend.xml",
     ]
   }
-  os             = "win10"
+  os             = "win11"
   ssh_username   = "vagrant"
   ssh_password   = "vagrant"
   ssh_timeout    = "60m"
