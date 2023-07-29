@@ -4,6 +4,16 @@
 MAKEFLAGS+= --no-builtin-rules
 MAKEFLAGS+= --no-builtin-variables
 
+SHELL=bash
+.SHELLFLAGS=-euo pipefail -c
+UNAME_S:=$(shell uname -s)
+
+ifeq ($(UNAME_S),Darwin)
+QEMU_ACCELERATOR?=hvf
+else
+QEMU_ACCELERATOR?=kvm
+endif
+
 # Normal (libvirt and VirtualBox) images
 IMAGES+= windows-2019
 IMAGES+= windows-2019-uefi
@@ -37,6 +47,12 @@ LIBVIRT_BUILDS= $(addsuffix -libvirt,$(addprefix build-,$(IMAGES)))
 PROXMOX_BUILDS= $(addsuffix -proxmox,$(addprefix build-,$(PROXMOX_IMAGES)))
 HYPERV_BUILDS= $(addsuffix -hyperv,$(addprefix build-,$(HYPERV_IMAGES)))
 VSPHERE_BUILDS= $(addsuffix -vsphere,$(addprefix build-,$(VSPHERE_IMAGES)))
+
+ifneq ($(wildcard 7zz),"")
+7zz=7zz
+else
+7zz=7z
+endif
 
 .PHONY: help $(VIRTUALBOX_BUILDS) $(LIBVIRT_BUILDS) $(PROXMOX_BUILDS) $(VSPHERE_BUILDS)
 
@@ -80,7 +96,9 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-libvirt-packer-init.log \
 		packer init $*.pkr.hcl
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-libvirt-packer.log PKR_VAR_vagrant_box=$@ \
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-libvirt-packer.log \
+	PKR_VAR_qemu_accelerator=${QEMU_ACCELERATOR} \
+	PKR_VAR_vagrant_box=$@ \
 		packer build -only=qemu.$*-amd64 -on-error=abort $*.pkr.hcl
 	./get-windows-updates-from-packer-log.sh \
 		$*-amd64-libvirt-packer.log \
@@ -124,7 +142,9 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-libvirt-packer-init.log \
 		packer init $*.pkr.hcl
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-libvirt-packer.log PKR_VAR_vagrant_box=$@ \
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-libvirt-packer.log \
+	PKR_VAR_qemu_accelerator=${QEMU_ACCELERATOR} \
+	PKR_VAR_vagrant_box=$@ \
 		packer build -only=qemu.$*-uefi-amd64 -on-error=abort $*-uefi.pkr.hcl
 	./get-windows-updates-from-packer-log.sh \
 		$*-uefi-amd64-libvirt-packer.log \
@@ -229,7 +249,7 @@ drivers:
 	@# see https://github.com/virtio-win/virtio-win-guest-tools-installer
 	@# see https://github.com/virtio-win/virtio-win-pkg-scripts
 	wget -P drivers.tmp https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.229-1/virtio-win-0.1.229.iso
-	7z x -odrivers.tmp drivers.tmp/virtio-win-*.iso
+	${7zz} x -odrivers.tmp drivers.tmp/virtio-win-*.iso
 	mv drivers.tmp drivers
 
 clean:

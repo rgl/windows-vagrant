@@ -53,6 +53,41 @@ Vagrant.configure(2) do |config|
       '*.box']
   end
 
+  # XXX for some reason, windows crashes on boot, stating "inaccessible boot device".
+  # TODO set the disk size.
+  # NB this only works in a macos host.
+  config.vm.provider 'qemu' do |qe, config|
+    qe.qemu_dir = '/usr/local/bin'
+    qe.arch = 'x86_64'
+    qe.machine = 'q35,accel=hvf'
+    #qe.cpu = 'host-passthrough'
+    #qe.smp = "cpus=#{VM_CPUS},sockets=1,cores=#{VM_CPUS},threads=1"
+    #qe.memory = VM_MEMORY_MB
+    qe.net_device = 'virtio-net-pci'
+    # XXX this is required to prevent the bug described at https://github.com/ppggff/vagrant-qemu/issues/39
+    #     see https://github.com/ppggff/vagrant-qemu/blob/v0.3.4/lib/vagrant-qemu/action/start_instance.rb#L48-L52
+    #     see https://github.com/hashicorp/vagrant/blob/v2.3.7/plugins/kernel_v2/config/vm.rb#L575-L593
+    # NB "disabled: true" is used by the vagrant-qemu plugin, but will be
+    #    ignored by vagrant itself, which means that network will still be
+    #    used by the vagrant winrm communicator.
+    # TODO remove this after https://github.com/ppggff/vagrant-qemu/pull/49 is addressed.
+    #config.vm.network 'forwarded_port', id: 'winrm', host_ip: '127.0.0.1', host: 55985, guest: 5985, auto_correct: true, disabled: true
+    #config.vm.network 'forwarded_port', id: 'winrm-ssl', host_ip: '127.0.0.1', host: 55986, guest: 5986, auto_correct: true, disabled: true
+    #qe.extra_netdev_args = 'hostfwd=tcp:127.0.0.1:55985-:5985'
+    qe.no_daemonize = true # NB this is required for the vm display.
+    qe.extra_qemu_args = %w(-vga virtio -display cocoa,show-cursor=on)
+    config.vm.synced_folder '.', '/vagrant',
+      type: 'smb',
+      smb_username: ENV['VAGRANT_SMB_USERNAME'] || ENV['USER'],
+      smb_password: ENV['VAGRANT_SMB_PASSWORD']
+    # example rsync synced folder.
+    # this is used for testing whether rsync is working correctly.
+    config.vm.synced_folder '.', '/vagrant-rsync', type: 'rsync', rsync__exclude: [
+      '.vagrant/',
+      '.git/',
+      '*.box']
+  end
+
   config.vm.provider 'virtualbox' do |vb, config|
     vb.linked_clone = true
     vb.memory = VM_MEMORY_MB
