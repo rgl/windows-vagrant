@@ -1,13 +1,16 @@
 packer {
   required_plugins {
+    # see https://github.com/hashicorp/packer-plugin-proxmox
     proxmox = {
       version = "1.1.3"
       source  = "github.com/hashicorp/proxmox"
     }
+    # see https://github.com/hashicorp/packer-plugin-hyperv
     hyperv = {
       version = "1.1.1"
       source  = "github.com/hashicorp/hyperv"
     }
+    # see https://github.com/rgl/packer-plugin-windows-update
     windows-update = {
       version = "0.14.3"
       source  = "github.com/rgl/windows-update"
