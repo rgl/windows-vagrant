@@ -20,12 +20,12 @@ variable "disk_size" {
 
 variable "iso_url" {
   type    = string
-  default = "https://software-static.download.prss.microsoft.com/dbazure/988969d5-f34g-4e03-ac9d-1f9786c66751/22621.525.220925-0207.ni_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso"
+  default = "https://software-static.download.prss.microsoft.com/dbazure/888969d5-f34g-4e03-ac9d-1f9786c66749/22631.2428.231001-0608.23H2_NI_RELEASE_SVC_REFRESH_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso"
 }
 
 variable "iso_checksum" {
   type    = string
-  default = "sha256:ebbc79106715f44f5020f77bd90721b17c5a877cbc15a3535b99155493a1bb3f"
+  default = "sha256:c8dbc96b61d04c8b01faf6ce0794fdf33965c7b350eaa3eb1e6697019902945c"
 }
 
 variable "proxmox_node" {
@@ -37,7 +37,7 @@ variable "vagrant_box" {
   type = string
 }
 
-source "qemu" "windows-11-22h2-uefi-amd64" {
+source "qemu" "windows-11-23h2-uefi-amd64" {
   accelerator  = "kvm"
   machine_type = "q35"
   cpus         = 2
@@ -85,7 +85,7 @@ source "qemu" "windows-11-22h2-uefi-amd64" {
     "provision-psremoting.ps1",
     "provision-pwsh.ps1",
     "provision-winrm.ps1",
-    "windows-11-22h2-uefi/autounattend.xml",
+    "windows-11-23h2-uefi/autounattend.xml",
   ]
   format                   = "qcow2"
   headless                 = true
@@ -101,8 +101,8 @@ source "qemu" "windows-11-22h2-uefi-amd64" {
   ssh_file_transfer_method = "sftp"
 }
 
-source "proxmox-iso" "windows-11-22h2-uefi-amd64" {
-  template_name            = "template-windows-11-22h2-uefi"
+source "proxmox-iso" "windows-11-23h2-uefi-amd64" {
+  template_name            = "template-windows-11-23h2-uefi"
   template_description     = "See https://github.com/rgl/windows-vagrant"
   insecure_skip_tls_verify = true
   node                     = var.proxmox_node
@@ -160,7 +160,7 @@ source "proxmox-iso" "windows-11-22h2-uefi-amd64" {
       "provision-psremoting.ps1",
       "provision-pwsh.ps1",
       "provision-winrm.ps1",
-      "windows-11-22h2-uefi/autounattend.xml",
+      "windows-11-23h2-uefi/autounattend.xml",
     ]
   }
   boot_wait      = "1s"
@@ -172,7 +172,7 @@ source "proxmox-iso" "windows-11-22h2-uefi-amd64" {
   http_directory = "."
 }
 
-source "virtualbox-iso" "windows-11-22h2-uefi-amd64" {
+source "virtualbox-iso" "windows-11-23h2-uefi-amd64" {
   cpus      = 2
   memory    = 4096
   disk_size = var.disk_size
@@ -182,7 +182,7 @@ source "virtualbox-iso" "windows-11-22h2-uefi-amd64" {
     "provision-psremoting.ps1",
     "provision-pwsh.ps1",
     "provision-winrm.ps1",
-    "windows-11-22h2-uefi/autounattend.xml",
+    "windows-11-23h2-uefi/autounattend.xml",
   ]
   guest_additions_interface = "sata"
   guest_additions_mode      = "attach"
@@ -219,9 +219,9 @@ source "virtualbox-iso" "windows-11-22h2-uefi-amd64" {
 
 build {
   sources = [
-    "source.qemu.windows-11-22h2-uefi-amd64",
-    "source.proxmox-iso.windows-11-22h2-uefi-amd64",
-    "source.virtualbox-iso.windows-11-22h2-uefi-amd64"
+    "source.qemu.windows-11-23h2-uefi-amd64",
+    "source.proxmox-iso.windows-11-23h2-uefi-amd64",
+    "source.virtualbox-iso.windows-11-23h2-uefi-amd64"
   ]
 
   provisioner "powershell" {
@@ -246,13 +246,13 @@ build {
 
   provisioner "powershell" {
     use_pwsh = true
-    only     = ["virtualbox-iso.windows-11-22h2-uefi-amd64"]
+    only     = ["virtualbox-iso.windows-11-23h2-uefi-amd64"]
     script   = "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
   }
 
   provisioner "powershell" {
     use_pwsh = true
-    only     = ["qemu.windows-11-22h2-uefi-amd64"]
+    only     = ["qemu.windows-11-23h2-uefi-amd64"]
     script   = "provision-guest-tools-qemu-kvm.ps1"
   }
 
@@ -288,7 +288,7 @@ build {
   }
 
   post-processor "vagrant" {
-    except               = ["proxmox-iso.windows-11-22h2-uefi-amd64"]
+    except               = ["proxmox-iso.windows-11-23h2-uefi-amd64"]
     output               = var.vagrant_box
     vagrantfile_template = "Vagrantfile-uefi.template"
   }

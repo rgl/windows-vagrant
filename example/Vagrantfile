@@ -11,8 +11,8 @@ require 'open3'
 Vagrant.configure(2) do |config|
   config.vm.box = 'windows-2022-amd64'
   #config.vm.box = 'windows-2022-uefi-amd64'
-  #config.vm.box = 'windows-11-22h2-amd64'
-  #config.vm.box = 'windows-11-22h2-uefi-amd64'
+  #config.vm.box = 'windows-11-23h2-amd64'
+  #config.vm.box = 'windows-11-23h2-uefi-amd64'
 
   config.vm.hostname = 'example'
 
