@@ -70,7 +70,11 @@
             </ImageInstall>
             <UserData>
                 <ProductKey>
-                    <!-- <Key>VTNMT-2FMYP-QCY43-QR9VK-WTVCK</Key> -->
+                    <!--
+                        Generic Volume License Keys (GVLK) for Key Management Services (KMS) client activation
+                        https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys
+                    -->
+                    <!--<Key>NPPR9-FWDCX-D2C8J-H872K-2YT43</Key>-->
                     <WillShowUI>OnError</WillShowUI>
                 </ProductKey>
                 <AcceptEula>true</AcceptEula>
