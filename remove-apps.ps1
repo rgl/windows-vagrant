@@ -38,7 +38,7 @@ Get-AppXProvisionedPackage -Online | ForEach-Object {
 
 # remove appx packages.
 # NB some packages fail to be removed and thats OK.
-# see https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10
+# see https://learn.microsoft.com/en-us/windows/application-management/overview-windows-apps
 @(
     'Microsoft.BingWeather'
     'Microsoft.GetHelp'

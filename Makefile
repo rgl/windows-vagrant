@@ -9,7 +9,6 @@ IMAGES+= windows-2019
 IMAGES+= windows-2019-uefi
 IMAGES+= windows-2022
 IMAGES+= windows-2022-uefi
-IMAGES+= windows-10-20h2
 IMAGES+= windows-11-23h2
 IMAGES+= windows-11-23h2-uefi
 
@@ -22,7 +21,6 @@ PROXMOX_IMAGES+= windows-11-23h2-uefi
 # Images supporting Hyper-V
 HYPERV_IMAGES+= windows-2019
 HYPERV_IMAGES+= windows-2022
-HYPERV_IMAGES+= windows-10-20h2
 HYPERV_IMAGES+= windows-11-23h2
 
 # Images supporting vSphere
@@ -141,17 +139,6 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 		$*-uefi-amd64-proxmox-packer.log \
 		>$*-uefi-amd64-proxmox-windows-updates.log
 
-tmp/windows-10-%-vsphere/autounattend.xml: windows-10/autounattend.xml
-	mkdir -p "$$(dirname $@)"
-	@# add the vmware tools iso to the drivers search path.
-	@# NB we cannot have this in the main autounattend.xml because windows
-	@#    will fail to install when the virtualbox guest additions iso is in E:
-	@#    with the error message:
-	@#        Windows Setup could not install one or more boot-critical drivers.
-	@#        To install Windows, make sure that the drivers are valid, and
-	@#        restart the installation.
-	sed -E 's,(.+)</DriverPaths>,\1    <PathAndCredentials wcm:action="add" wcm:keyValue="2"><Path>E:\\</Path></PathAndCredentials>\n\0,g' $< >$@
-
 tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 	mkdir -p "$$(dirname $@)"
 	@# add the vmware tools iso to the drivers search path.
@@ -216,11 +203,6 @@ tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:
 	@echo vagrant box add -f $*-uefi-amd64 $@
-
-# All the Windows 10 versions depend on the same autounattend.xml
-# This allows the use of pattern rules by satisfying the prerequisite
-.PHONY: \
-	windows-10-20h2/autounattend.xml
 
 drivers:
 	rm -rf drivers.tmp
