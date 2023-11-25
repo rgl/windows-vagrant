@@ -26,16 +26,36 @@ $artifactLogPath = "$artifactPath.log"
 $systemVendor = (Get-CimInstance -ClassName Win32_ComputerSystemProduct -Property Vendor).Vendor
 if ($systemVendor -eq 'QEMU') {
     # qemu-kvm.
-    $metadataServices = 'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'
+    $metadataServices = @(
+        # NoCloudConfigDriveService for use in libvirt.
+        # see https://cloudbase-init.readthedocs.io/en/latest/services.html#nocloud-configuration-drive
+        'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'
+        # ConfigDriveService for use in Proxmox.
+        # see https://cloudbase-init.readthedocs.io/en/latest/services.html#openstack-configuration-drive
+        # see https://pve.proxmox.com/wiki/Cloud-Init_Support
+        'cloudbaseinit.metadata.services.configdrive.ConfigDriveService'
+    )
 } elseif ($systemVendor -eq 'Microsoft Corporation') {
     # Hyper-V.
-    $metadataServices = 'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'
+    $metadataServices = @(
+        # NoCloudConfigDriveService for use in Hyper-V.
+        # see https://cloudbase-init.readthedocs.io/en/latest/services.html#nocloud-configuration-drive
+        'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'
+    )
 } elseif ($systemVendor -eq 'innotek GmbH') {
     # VirtualBox.
-    $metadataServices = 'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'
+    $metadataServices = @(
+        # NoCloudConfigDriveService for use in VirtualBox.
+        # see https://cloudbase-init.readthedocs.io/en/latest/services.html#nocloud-configuration-drive
+        'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'
+    )
 } elseif ($systemVendor -eq 'VMware, Inc.') {
     # VMware ESXi.
-    $metadataServices = 'cloudbaseinit.metadata.services.vmwareguestinfoservice.VMwareGuestInfoService'
+    $metadataServices = @(
+        # VMwareGuestInfoService for use in VMware ESXi.
+        # see https://cloudbase-init.readthedocs.io/en/latest/services.html#vmware-guestinfo-service
+        'cloudbaseinit.metadata.services.vmwareguestinfoservice.VMwareGuestInfoService'
+    )
 } else {
     Write-Host "WARNING: cloudbase-init is not supported on your system vendor $systemVendor"
     Exit 0
@@ -96,7 +116,7 @@ log_dir=$cloudbaseInitHome\log\
 log_file=cloudbase-init.log
 bsdtar_path=$cloudbaseInitHome\bin\bsdtar.exe
 mtools_path=$cloudbaseInitHome\bin\
-metadata_services=$metadataServices
+metadata_services=$($metadataServices -join ",`n                  ")
 
 [config_drive]
 locations=cdrom
