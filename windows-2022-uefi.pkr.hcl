@@ -123,9 +123,12 @@ source "proxmox-iso" "windows-2022-uefi-amd64" {
     model  = "virtio"
     bridge = "vmbr0"
   }
-  scsi_controller = "virtio-scsi-pci"
+  scsi_controller = "virtio-scsi-single"
   disks {
     type         = "scsi"
+    io_thread    = true
+    ssd          = true
+    discard      = true
     disk_size    = "${var.disk_size}M"
     storage_pool = "local-lvm"
   }
