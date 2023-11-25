@@ -127,7 +127,7 @@ Create the template:
 make build-windows-2022-proxmox
 ```
 
-**NB** There is no way to use the created template with vagrant (the [vagrant-proxmox plugin](https://github.com/telcat/vagrant-proxmox) is no longer compatible with recent vagrant versions). Instead, use packer or terraform.
+**NB** There is no way to use the created template with vagrant (the [vagrant-proxmox plugin](https://github.com/telcat/vagrant-proxmox) is no longer compatible with recent vagrant versions). Instead, use packer (e.g. like in this repository) or terraform (e.g. see [rgl/terraform-proxmox-windows-example](https://github.com/rgl/terraform-proxmox-windows-example)).
 
 
 ## Hyper-V usage

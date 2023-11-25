@@ -2,7 +2,7 @@ packer {
   required_plugins {
     # see https://github.com/hashicorp/packer-plugin-proxmox
     proxmox = {
-      version = "1.1.3"
+      version = "1.1.6"
       source  = "github.com/hashicorp/proxmox"
     }
     # see https://github.com/rgl/packer-plugin-windows-update
@@ -104,6 +104,7 @@ source "qemu" "windows-11-23h2-uefi-amd64" {
 source "proxmox-iso" "windows-11-23h2-uefi-amd64" {
   template_name            = "template-windows-11-23h2-uefi"
   template_description     = "See https://github.com/rgl/windows-vagrant"
+  tags                     = "windows-11-23h2-uefi;template"
   insecure_skip_tls_verify = true
   node                     = var.proxmox_node
   machine                  = "q35"

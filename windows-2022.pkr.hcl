@@ -2,7 +2,7 @@ packer {
   required_plugins {
     # see https://github.com/hashicorp/packer-plugin-proxmox
     proxmox = {
-      version = "1.1.3"
+      version = "1.1.6"
       source  = "github.com/hashicorp/proxmox"
     }
     # see https://github.com/hashicorp/packer-plugin-hyperv
@@ -116,6 +116,7 @@ source "qemu" "windows-2022-amd64" {
 source "proxmox-iso" "windows-2022-amd64" {
   template_name            = "template-windows-2022"
   template_description     = "See https://github.com/rgl/windows-vagrant"
+  tags                     = "windows-2022;template"
   insecure_skip_tls_verify = true
   node                     = var.proxmox_node
   machine                  = "q35"
