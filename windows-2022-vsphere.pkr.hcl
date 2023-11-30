@@ -67,7 +67,7 @@ variable "vsphere_network" {
 source "vsphere-iso" "windows-2022-amd64" {
   CPUs          = 4
   RAM           = 4096
-  guest_os_type = "windows9Server64Guest"
+  guest_os_type = "windows2019srvNext_64Guest"
   floppy_files = [
     "provision-autounattend.ps1",
     "provision-openssh.ps1",
