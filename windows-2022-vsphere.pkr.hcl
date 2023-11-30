@@ -79,7 +79,7 @@ source "vsphere-iso" "windows-2022-amd64" {
   ]
   iso_paths = [
     "[${var.vsphere_datastore}] iso/windows-2022-SERVER_EVAL_x64FRE_en-us.iso",
-    "[${var.vsphere_datastore}] iso/VMware-tools-windows-12.0.0-19345655.iso",
+    "[${var.vsphere_datastore}] iso/VMware-tools-windows-12.3.5-22544099.iso",
   ]
   network_adapters {
     network      = var.vsphere_network
