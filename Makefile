@@ -143,7 +143,7 @@ tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 	@#        Windows Setup could not install one or more boot-critical drivers.
 	@#        To install Windows, make sure that the drivers are valid, and
 	@#        restart the installation.
-	sed -E 's,(.+)</DriverPaths>,\1    <PathAndCredentials wcm:action="add" wcm:keyValue="2"><Path>E:\\</Path></PathAndCredentials>\n\0,g' $< >$@
+	sed -E 's,(.+)</DriverPaths>,\1    <PathAndCredentials wcm:action="add" wcm:keyValue="3"><Path>E:\\</Path></PathAndCredentials>\n\0,g' $< >$@
 
 %-amd64-vsphere.box: %-vsphere.pkr.hcl tmp/%-vsphere/autounattend.xml Vagrantfile.template *.ps1
 	rm -f $@
