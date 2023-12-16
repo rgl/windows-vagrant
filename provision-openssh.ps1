@@ -99,7 +99,7 @@ $sshdConfig = $sshdConfig `
 $sshdConfig = $sshdConfig `
     -replace '(?m)^#?\s*UseDNS .+','UseDNS no'
 # Configure the powershell ssh subsystem (for powershell remoting over ssh).
-# see https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/ssh-remoting-in-powershell-core?view=powershell-7.2
+# see https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/ssh-remoting-in-powershell-core?view=powershell-7.4
 $sshdConfig = $sshdConfig `
     -replace '(?m)^(Subsystem\s+sftp\s+.+)',"`$1`nSubsystem`tpowershell`tC:/Progra~1/PowerShell/7/pwsh.exe -nol -sshs"
 Set-Content -Encoding ascii "$openSshConfigHome\sshd_config" $sshdConfig

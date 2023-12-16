@@ -17,7 +17,7 @@ trap {
     -bor [Net.SecurityProtocolType]::Tls12
 
 # disable update notifications.
-# see https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_update_notifications?view=powershell-7.2
+# see https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_update_notifications?view=powershell-7.4
 $env:POWERSHELL_UPDATECHECK = 'Off'
 [Environment]::SetEnvironmentVariable(
     'POWERSHELL_UPDATECHECK',
@@ -26,8 +26,8 @@ $env:POWERSHELL_UPDATECHECK = 'Off'
 
 # install powershell lts.
 # see https://github.com/PowerShell/PowerShell/releases
-$archiveUrl = 'https://github.com/PowerShell/PowerShell/releases/download/v7.2.17/PowerShell-7.2.17-win-x64.msi'
-$archiveHash = 'a6f86d833acb37a76b33ccba38271c5957cc133c4ee71171a235bde91d5691a3'
+$archiveUrl = 'https://github.com/PowerShell/PowerShell/releases/download/v7.4.0/PowerShell-7.4.0-win-x64.msi'
+$archiveHash = 'a9c8c5eefa63289332cd1e4d1b1a904d332082847aa7d5055d662eede7c67b13'
 $archiveName = Split-Path -Leaf $archiveUrl
 $archivePath = "$env:TEMP\$archiveName"
 
