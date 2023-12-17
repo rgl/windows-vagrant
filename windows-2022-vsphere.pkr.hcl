@@ -2,7 +2,7 @@ packer {
   required_plugins {
     # see https://github.com/rgl/packer-plugin-windows-update
     windows-update = {
-      version = "0.14.3"
+      version = "0.15.0"
       source  = "github.com/rgl/windows-update"
     }
     # see https://github.com/hashicorp/packer-plugin-vsphere
