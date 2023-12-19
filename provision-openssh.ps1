@@ -44,8 +44,8 @@ function Install-Rsync {
     Install-ZippedApplication `
         $rsyncHome `
         rsync `
-        https://github.com/rgl/rsync-vagrant/releases/download/v3.2.7-20230305/rsync-vagrant-3.2.7-20230305.zip `
-        c0e5a5e48c0cc32c137b1dca8845cc780b570fdeca1e266cf79d1a7f4a0cf793
+        https://github.com/rgl/rsync-vagrant/releases/download/v3.2.7-20231219/rsync-vagrant-3.2.7-20231219.zip `
+        ad3cda174ff96cf19f48ed2ee2228a7a01ad124d22b680b390028f587e8c5dd7
     [Environment]::SetEnvironmentVariable(
         'PATH',
         "$([Environment]::GetEnvironmentVariable('PATH', 'Machine'));$rsyncHome",
