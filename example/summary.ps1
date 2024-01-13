@@ -119,12 +119,21 @@ if ([int]$currentVersionKey.CurrentBuildNumber -gt 10000) {
 Write-Title '.NET Framework version'
 Get-DotNetVersion
 
-Write-Title 'PowerShell version'
+Write-Title 'Windows PowerShell version'
 $PSVersionTable.GetEnumerator() `
     | Sort-Object Name `
     | Format-Table -AutoSize `
     | Out-String -Stream -Width ([int]::MaxValue) `
     | ForEach-Object {$_.TrimEnd()}
+
+Write-Title 'PowerShell (pwsh) version'
+pwsh -Command @'
+$PSVersionTable.GetEnumerator() `
+    | Sort-Object Name `
+    | Format-Table -AutoSize `
+    | Out-String -Stream -Width ([int]::MaxValue) `
+    | ForEach-Object {$_.TrimEnd()}
+'@
 
 Write-Title 'Network Interfaces'
 Get-NetAdapter `
@@ -240,7 +249,7 @@ namespace WinProdKeyFind
         }
 
         /// <summary>
-        /// Decodes Windows Product Key from the DigitalProductId. 
+        /// Decodes Windows Product Key from the DigitalProductId.
         /// This method applies to DigitalProductId from Windows 8 or newer versions of Windows.
         /// </summary>
         /// <param name="digitalProductId">DigitalProductId to decode</param>
