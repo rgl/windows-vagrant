@@ -1,13 +1,13 @@
-This builds Windows 11/2022 base Vagrant boxes using [Packer](https://www.packer.io/) and VirtualBox/Hyper-V/libvirt/QEMU/Proxmox VE/VMware vSphere.
+This builds Windows 11/2022 base Vagrant boxes using [Packer](https://www.packer.io/) and Hyper-V/libvirt/QEMU/Proxmox VE/VMware vSphere.
 
 
 # Usage
 
-Install [VirtualBox](https://www.virtualbox.org/) (or [libvirt](https://libvirt.org/) on Linux based systems), [packer 1.8.4+](https://www.packer.io/) and [vagrant](https://www.vagrantup.com/).
-If you are using Windows and [Chocolatey](https://chocolatey.org/), you can install everything from an administrative PowerShell session with:
+Install a supported hypervisor (e.g. [libvirt](https://libvirt.org/)), [packer 1.10+](https://www.packer.io/) and [vagrant](https://www.vagrantup.com/).
+If you are using Windows and [Chocolatey](https://chocolatey.org/), you can install the tools (you still need to install Hyper-V) from an administrative PowerShell session with:
 
 ```powershell
-choco install -y virtualbox packer vagrant msys2
+choco install -y packer vagrant msys2
 
 # configure the msys2 launcher to let the shell inherith the PATH.
 $msys2BasePath = 'C:\tools\msys64'
@@ -45,16 +45,18 @@ remaining commands inside it.
 To build the base box based on the [Windows Server 2022 Evaluation](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022) ISO run:
 
 ```bash
-make build-windows-2022-libvirt # or make build-windows-2022-virtualbox
+make build-windows-2022-libvirt
 ```
 
 If you want to use your own ISO, you need to manually run the `packer` command, e.g.:
 
 ```bash
-packer build -var iso_url=<ISO_URL> -var iso_checksum=<ISO_SHA256_CHECKSUM> -only=windows-2022-amd64-virtualbox windows-2022.pkr.hcl
+PKR_VAR_iso_url='<ISO_URL>' \
+PKR_VAR_iso_checksum='<ISO_SHA256_CHECKSUM_or_none>' \
+  make build-windows-2022-libvirt
 ```
 
-**NB** if the build fails with something like `Post-processor failed: write /tmp/packer073329394/packer-windows-2022-amd64-virtualbox-1505050546-disk001.vmdk: no space left on device` you need to increase your temporary partition size or change its location [as described in the packer TMPDIR/TMP environment variable documentation](https://www.packer.io/docs/configure#tmpdir).
+**NB** if the build fails with something like `Post-processor failed: write /tmp/packer073329394/packer-windows-2022-amd64-libvirt-1505050546-disk001.vmdk: no space left on device` you need to increase your temporary partition size or change its location [as described in the packer TMPDIR/TMP environment variable documentation](https://www.packer.io/docs/configure#tmpdir).
 
 **NB** if you are having trouble building the base box due to floppy drive removal errors try adding, as a
 workaround, `"post_shutdown_delay": "30s",` to the `windows-2022.pkr.hcl` file.
@@ -64,7 +66,7 @@ workaround, `"post_shutdown_delay": "30s",` to the `windows-2022.pkr.hcl` file.
 You can then add the base box to your local vagrant installation with:
 
 ```bash
-vagrant box add -f windows-2022-amd64 windows-2022-amd64-virtualbox.box
+vagrant box add -f windows-2022-amd64 windows-2022-amd64-libvirt.box
 ```
 
 And test this base box by launching an example Vagrant environment:
@@ -72,7 +74,7 @@ And test this base box by launching an example Vagrant environment:
 ```bash
 cd example
 vagrant plugin install vagrant-windows-sysprep
-vagrant up --no-destroy-on-error --provider=virtualbox # or --provider=libvirt
+vagrant up --no-destroy-on-error --provider=libvirt
 ```
 
 **NB** if you are having trouble running the example with the vagrant libvirt provider check the libvirt logs in the host (e.g. `sudo tail -f /var/log/libvirt/qemu/example_default.log`) and in the guest (inside `C:\Windows\Temp`).
@@ -82,7 +84,7 @@ Then test with a more complete example:
 ```bash
 git clone https://github.com/rgl/customize-windows-vagrant
 cd customize-windows-vagrant
-vagrant up --no-destroy-on-error --provider=virtualbox # or --provider=libvirt
+vagrant up --no-destroy-on-error --provider=libvirt
 ```
 
 

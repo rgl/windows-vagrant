@@ -38,18 +38,6 @@ Add-Type -A System.IO.Compression.FileSystem
 $systemVendor = (Get-CimInstance -ClassName Win32_ComputerSystemProduct -Property Vendor).Vendor
 if ($systemVendor -eq 'QEMU') {
     # do nothing. this was installed in provision-guest-tools-qemu-kvm.ps1.
-} elseif ($systemVendor -eq 'innotek GmbH') {
-    Write-Host 'Importing the Oracle (for VirtualBox) certificate as a Trusted Publisher...'
-    E:\cert\VBoxCertUtil.exe add-trusted-publisher E:\cert\vbox-sha1.cer
-    if ($LASTEXITCODE) {
-        throw "failed to import certificate with exit code $LASTEXITCODE"
-    }
-
-    Write-Host 'Installing the VirtualBox Guest Additions...'
-    E:\VBoxWindowsAdditions-amd64.exe /S | Out-String -Stream
-    if ($LASTEXITCODE) {
-        throw "failed to install with exit code $LASTEXITCODE. Check the logs at C:\Program Files\Oracle\VirtualBox Guest Additions\install.log."
-    }
 } elseif ($systemVendor -eq 'Microsoft Corporation') {
     # do nothing. Hyper-V enlightments are already bundled with Windows.
 } elseif ($systemVendor -eq 'VMware, Inc.') {

@@ -42,13 +42,6 @@ if ($systemVendor -eq 'QEMU') {
         # see https://cloudbase-init.readthedocs.io/en/latest/services.html#nocloud-configuration-drive
         'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'
     )
-} elseif ($systemVendor -eq 'innotek GmbH') {
-    # VirtualBox.
-    $metadataServices = @(
-        # NoCloudConfigDriveService for use in VirtualBox.
-        # see https://cloudbase-init.readthedocs.io/en/latest/services.html#nocloud-configuration-drive
-        'cloudbaseinit.metadata.services.nocloudservice.NoCloudConfigDriveService'
-    )
 } elseif ($systemVendor -eq 'VMware, Inc.') {
     # VMware ESXi.
     $metadataServices = @(

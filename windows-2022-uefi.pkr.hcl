@@ -176,56 +176,10 @@ source "proxmox-iso" "windows-2022-uefi-amd64" {
   http_directory = "."
 }
 
-source "virtualbox-iso" "windows-2022-uefi-amd64" {
-  cpus      = 2
-  memory    = 4096
-  disk_size = var.disk_size
-  cd_files = [
-    "provision-autounattend.ps1",
-    "provision-openssh.ps1",
-    "provision-psremoting.ps1",
-    "provision-pwsh.ps1",
-    "provision-winrm.ps1",
-    "windows-2022-uefi/autounattend.xml",
-  ]
-  guest_additions_interface = "sata"
-  guest_additions_mode      = "attach"
-  guest_os_type             = "Windows2019_64"
-  hard_drive_interface      = "sata"
-  headless                  = true
-  iso_url                   = var.iso_url
-  iso_checksum              = var.iso_checksum
-  iso_interface             = "sata"
-  shutdown_command          = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
-  vboxmanage = [
-    ["storagectl", "{{ .Name }}", "--name", "IDE Controller", "--remove"],
-    ["modifyvm", "{{.Name}}", "--firmware", "efi"],
-    ["modifyvm", "{{ .Name }}", "--vrde", "off"],
-    ["modifyvm", "{{ .Name }}", "--graphicscontroller", "vboxsvga"],
-    ["modifyvm", "{{ .Name }}", "--vram", "128"],
-    ["modifyvm", "{{ .Name }}", "--accelerate3d", "on"],
-    ["modifyvm", "{{ .Name }}", "--usb", "on"],
-    ["modifyvm", "{{ .Name }}", "--mouse", "usbtablet"],
-    ["modifyvm", "{{ .Name }}", "--audio", "none"],
-    ["modifyvm", "{{ .Name }}", "--nictype1", "82540EM"],
-    ["modifyvm", "{{ .Name }}", "--nictype2", "82540EM"],
-    ["modifyvm", "{{ .Name }}", "--nictype3", "82540EM"],
-    ["modifyvm", "{{ .Name }}", "--nictype4", "82540EM"],
-  ]
-  boot_wait                = "1s"
-  boot_command             = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
-  communicator             = "ssh"
-  ssh_username             = "vagrant"
-  ssh_password             = "vagrant"
-  ssh_timeout              = "4h"
-  ssh_file_transfer_method = "sftp"
-}
-
 build {
   sources = [
     "source.qemu.windows-2022-uefi-amd64",
     "source.proxmox-iso.windows-2022-uefi-amd64",
-    "source.virtualbox-iso.windows-2022-uefi-amd64",
   ]
 
   provisioner "powershell" {
@@ -236,12 +190,6 @@ build {
   provisioner "powershell" {
     use_pwsh = true
     script   = "disable-windows-defender.ps1"
-  }
-
-  provisioner "powershell" {
-    use_pwsh = true
-    only     = ["virtualbox-iso.windows-2022-uefi-amd64"]
-    script   = "virtualbox-prevent-vboxsrv-resolution-delay.ps1"
   }
 
   provisioner "powershell" {

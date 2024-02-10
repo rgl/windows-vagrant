@@ -53,12 +53,6 @@ Vagrant.configure(2) do |config|
       '*.box']
   end
 
-  config.vm.provider 'virtualbox' do |vb, config|
-    vb.linked_clone = true
-    vb.memory = VM_MEMORY_MB
-    vb.cpus = VM_CPUS
-  end
-
   config.vm.provider 'hyperv' do |hv, config|
     hv.vmname = "#{File.basename(File.dirname(File.dirname(__FILE__)))}-example"
     hv.linked_clone = true
