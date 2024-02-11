@@ -3,7 +3,7 @@ Vagrant.configure("2") do |config|
   config.vm.communicator = "winrm"
   config.winrm.username = "vagrant"
   config.winrm.password = "vagrant"
-  config.vm.provider "libvirt" do |lv|
+  config.vm.provider "libvirt" do |lv, config|
     lv.machine_type = "q35"
     lv.cpu_mode = "host-passthrough"
     lv.input :type => "tablet", :bus => "virtio"
@@ -11,5 +11,10 @@ Vagrant.configure("2") do |config|
     lv.video_type = "qxl"
     lv.channel :type => "unix", :target_name => "org.qemu.guest_agent.0", :target_type => "virtio"
     lv.channel :type => "spicevmc", :target_name => "com.redhat.spice.0", :target_type => "virtio"
+  end
+  config.vm.provider "hyperv" do |hv, config|
+    hv.vm_integration_services = {
+      guest_service_interface: true,
+    }
   end
 end
