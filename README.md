@@ -9,7 +9,7 @@ If you are using Windows and [Chocolatey](https://chocolatey.org/), you can inst
 ```powershell
 choco install -y packer vagrant msys2
 
-# configure the msys2 launcher to let the shell inherith the PATH.
+# configure the msys2 launcher to let the shell inherit the PATH.
 $msys2BasePath = 'C:\tools\msys64'
 $msys2ConfigPath = "$msys2BasePath\msys2.ini"
 [IO.File]::WriteAllText(
@@ -18,7 +18,7 @@ $msys2ConfigPath = "$msys2BasePath\msys2.ini"
         -replace '#?(MSYS2_PATH_TYPE=).+','$1inherit')
 )
 
-# define a function for easying the execution of bash scripts.
+# define a function for easing the execution of bash scripts.
 $bashPath = "$msys2BasePath\usr\bin\bash.exe"
 function Bash($script) {
     $eap = $ErrorActionPreference
@@ -254,7 +254,7 @@ export GOVC_DATASTORE='Datastore'
 export VSPHERE_ESXI_HOST='esxi.local'
 export VSPHERE_TEMPLATE_FOLDER='test/templates'
 # NB the VSPHERE_TEMPLATE_NAME last segment MUST match the
-#    builders.vm_name property inside the packer tamplate.
+#    builders.vm_name property inside the packer template.
 export VSPHERE_TEMPLATE_NAME="$VSPHERE_TEMPLATE_FOLDER/windows-2022-amd64-vsphere"
 export VSPHERE_TEMPLATE_IPATH="//$GOVC_DATACENTER/vm/$VSPHERE_TEMPLATE_NAME"
 export VSPHERE_VM_FOLDER='test'
