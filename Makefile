@@ -30,7 +30,7 @@ PROXMOX_BUILDS= $(addsuffix -proxmox,$(addprefix build-,$(PROXMOX_IMAGES)))
 HYPERV_BUILDS= $(addsuffix -hyperv,$(addprefix build-,$(HYPERV_IMAGES)))
 VSPHERE_BUILDS= $(addsuffix -vsphere,$(addprefix build-,$(VSPHERE_IMAGES)))
 
-.PHONY: help $(LIBVIRT_BUILDS) $(PROXMOX_BUILDS) $(VSPHERE_BUILDS)
+.PHONY: help always $(LIBVIRT_BUILDS) $(PROXMOX_BUILDS) $(VSPHERE_BUILDS)
 
 help:
 	@echo Type one of the following commands to build a specific windows box.
@@ -53,7 +53,7 @@ $(PROXMOX_BUILDS): build-%-proxmox: %-amd64-proxmox.box
 $(HYPERV_BUILDS): build-%-hyperv: %-amd64-hyperv.box
 $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 
-%-amd64-libvirt.box: %.pkr.hcl %/autounattend.xml Vagrantfile.template *.ps1 drivers
+%-amd64-libvirt.box: %.pkr.hcl tmp/%/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-libvirt-packer-init.log \
 		packer init $*.pkr.hcl
@@ -64,7 +64,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 		>$*-amd64-libvirt-windows-updates.log
 	@./box-metadata.sh libvirt $*-amd64 $@
 
-%-amd64-proxmox.box: %.pkr.hcl %/autounattend.xml Vagrantfile.template *.ps1 drivers
+%-amd64-proxmox.box: %.pkr.hcl tmp/%/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-proxmox-packer-init.log \
 		packer init $*.pkr.hcl
@@ -86,7 +86,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 		>$*-amd64-hyperv-windows-updates.log
 	@./box-metadata.sh hyperv $*-amd64 $@
 
-%-uefi-amd64-libvirt.box: %-uefi.pkr.hcl %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
+%-uefi-amd64-libvirt.box: %-uefi.pkr.hcl tmp/%-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-libvirt-packer-init.log \
 		packer init $*.pkr.hcl
@@ -97,7 +97,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 		>$*-uefi-amd64-libvirt-windows-updates.log
 	@./box-metadata.sh libvirt $*-uefi-amd64 $@
 
-%-uefi-amd64-proxmox.box: %-uefi.pkr.hcl %-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
+%-uefi-amd64-proxmox.box: %-uefi.pkr.hcl tmp/%-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-proxmox-packer-init.log \
 		packer init $*.pkr.hcl
@@ -107,7 +107,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 		$*-uefi-amd64-proxmox-packer.log \
 		>$*-uefi-amd64-proxmox-windows-updates.log
 
-tmp/%-vsphere/autounattend.xml: %/autounattend.xml
+tmp/%-vsphere/autounattend.xml: %/autounattend.xml always
 	mkdir -p "$$(dirname $@)"
 	@# add the vmware tools iso to the drivers search path.
 	@# NB we cannot have this in the main autounattend.xml because windows
@@ -117,6 +117,16 @@ tmp/%-vsphere/autounattend.xml: %/autounattend.xml
 	@#        To install Windows, make sure that the drivers are valid, and
 	@#        restart the installation.
 	sed -E 's,(.+)</DriverPaths>,\1    <PathAndCredentials wcm:action="add" wcm:keyValue="3"><Path>E:\\</Path></PathAndCredentials>\n\0,g' $< >$@
+	if [ -n '${PKR_VAR_windows_product_key}' ]; then \
+		sed -E 's,<!--<Key>.+</Key>-->,<Key>${PKR_VAR_windows_product_key}</Key>,g' -i $@; \
+	fi
+
+tmp/%/autounattend.xml: %/autounattend.xml always
+	mkdir -p "$$(dirname $@)"
+	cp -f $< $@
+	if [ -n '${PKR_VAR_windows_product_key}' ]; then \
+		sed -E 's,<!--<Key>.+</Key>-->,<Key>${PKR_VAR_windows_product_key}</Key>,g' -i $@; \
+	fi
 
 %-amd64-vsphere.box: %-vsphere.pkr.hcl tmp/%-vsphere/autounattend.xml Vagrantfile.template *.ps1
 	rm -f $@

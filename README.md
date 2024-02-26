@@ -51,8 +51,16 @@ make build-windows-2022-libvirt
 If you want to use your own ISO, you need to manually run the `packer` command, e.g.:
 
 ```bash
-PKR_VAR_iso_url='<ISO_URL>' \
-PKR_VAR_iso_checksum='<ISO_SHA256_CHECKSUM_or_none>' \
+# NB when the windows product key does not match the windows version and edition
+#    inside the iso file, the windows setup will fail with the error message:
+#       No images are available.
+#    inside the windows setup, press shit+f10 to open a command prompt, then
+#    verify the available images with:
+#       dism -get-imageinfo -imagefile:d:\sources\install.wim
+# see https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys
+PKR_VAR_iso_url='windows-2022.iso' \
+PKR_VAR_iso_checksum='none' \
+PKR_VAR_windows_product_key='VDYBN-27WPP-V4HQT-9VMD4-VMK7H' \
   make build-windows-2022-libvirt
 ```
 

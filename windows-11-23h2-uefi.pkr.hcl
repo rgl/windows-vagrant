@@ -85,7 +85,7 @@ source "qemu" "windows-11-23h2-uefi-amd64" {
     "provision-psremoting.ps1",
     "provision-pwsh.ps1",
     "provision-winrm.ps1",
-    "windows-11-23h2-uefi/autounattend.xml",
+    "tmp/windows-11-23h2-uefi/autounattend.xml",
   ]
   format                   = "qcow2"
   headless                 = true
@@ -164,7 +164,7 @@ source "proxmox-iso" "windows-11-23h2-uefi-amd64" {
       "provision-psremoting.ps1",
       "provision-pwsh.ps1",
       "provision-winrm.ps1",
-      "windows-11-23h2-uefi/autounattend.xml",
+      "tmp/windows-11-23h2-uefi/autounattend.xml",
     ]
   }
   boot_wait      = "1s"

@@ -97,7 +97,7 @@ source "qemu" "windows-11-23h2-amd64" {
     "provision-psremoting.ps1",
     "provision-pwsh.ps1",
     "provision-winrm.ps1",
-    "windows-11-23h2/autounattend.xml",
+    "tmp/windows-11-23h2/autounattend.xml",
   ]
   format                   = "qcow2"
   headless                 = true
@@ -172,7 +172,7 @@ source "proxmox-iso" "windows-11-23h2-amd64" {
       "provision-psremoting.ps1",
       "provision-pwsh.ps1",
       "provision-winrm.ps1",
-      "windows-11-23h2/autounattend.xml",
+      "tmp/windows-11-23h2/autounattend.xml",
     ]
   }
   os             = "win11"
@@ -196,7 +196,7 @@ source "hyperv-iso" "windows-11-23h2-amd64" {
     "provision-psremoting.ps1",
     "provision-pwsh.ps1",
     "provision-winrm.ps1",
-    "windows-11-23h2-uefi/autounattend.xml",
+    "tmp/windows-11-23h2-uefi/autounattend.xml",
   ]
   disk_size                = var.disk_size
   first_boot_device        = "DVD"
