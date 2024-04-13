@@ -41,10 +41,13 @@ function Install-ZippedApplication($destinationPath, $name, $url, $expectedHash,
     Remove-Item $localZipPath
 }
 function Install-Rsync {
+    # see https://github.com/rgl/rsync-vagrant/releases
+    # renovate: datasource=github-releases depName=rgl/rsync-vagrant
+    $version = '3.2.7-20240113'
     Install-ZippedApplication `
         $rsyncHome `
         rsync `
-        https://github.com/rgl/rsync-vagrant/releases/download/v3.2.7-20240113/rsync-vagrant-3.2.7-20240113.zip `
+        "https://github.com/rgl/rsync-vagrant/releases/download/v$version/rsync-vagrant-$version.zip" `
         98a2dfd065b82c620f405525859bc75c73abd54ad84ce17edbeb32794f5e39b5
     [Environment]::SetEnvironmentVariable(
         'PATH',
@@ -53,10 +56,13 @@ function Install-Rsync {
     &"$rsyncHome\rsync.exe" --version
 }
 function Install-OpenSshBinaries {
+    # see https://github.com/PowerShell/Win32-OpenSSH/releases
+    # renovate: datasource=github-releases depName=PowerShell/Win32-OpenSSH
+    $version = '9.5.0.0p1-Beta'
     Install-ZippedApplication `
         $openSshHome `
         OpenSSH `
-        https://github.com/PowerShell/Win32-OpenSSH/releases/download/v9.5.0.0p1-Beta/OpenSSH-Win64.zip `
+        "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v$version/OpenSSH-Win64.zip" `
         bd48fe985d400402c278c485db20e6a82bc4c7f7d8e0ef5a81128f523096530c
     Push-Location $openSshHome
     Move-Item OpenSSH-Win64\* .

@@ -1,0 +1,61 @@
+// see https://docs.renovatebot.com/templates/
+// see https://docs.renovatebot.com/modules/manager/
+// see https://docs.renovatebot.com/modules/manager/regex/
+// see https://docs.renovatebot.com/configuration-options/
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "regexManagers": [
+    // packer plugins.
+    {
+      fileMatch: [
+        "\\.pkr\\.hcl",
+      ],
+      matchStrings: [
+        "version\\s+=\\s+\"(?<currentValue>.+?)\"\\s+source\\s+=\\s+\"github.com/(?<depName>.+?)\"",
+      ],
+      datasourceTemplate: "github-tags",
+      depNameTemplate: "{{{replace '(.+)/(.+)' '$1/packer-plugin-$2' depName}}}",
+    },
+    // default datasources.
+    {
+      "fileMatch": [
+        "^(roles|.github)/.+\\.yml$",
+        "\\.sh$",
+        "\\.ps1$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[^:]+?) depName=(?<depName>.+?)( versioning=(?<versioning>.+?))?( extractVersion=(?<extractVersion>.+?))?( registryUrl=(?<registryUrl>.+?))?\\s.+?[:=]\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+      "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^v?(?<version>.+)${{/if}}"
+    },
+    // nuget:chocolatey datasource.
+    {
+      "fileMatch": [
+        "^roles/.+\\.yml$",
+        "\\.sh$",
+        "\\.ps1$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>nuget):chocolatey depName=(?<depName>.+?)( versioning=(?<versioning>.+?))?( extractVersion=(?<extractVersion>.+?))?( registryUrl=(?<registryUrl>.+?))?\\s.+?[:=]\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
+      ],
+      "registryUrlTemplate": "{{#if registryUrl}}{{{registryUrl}}}{{else}}https://community.chocolatey.org/api/v2{{/if}}",
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}nuget{{/if}}",
+      "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^v?(?<version>.+)${{/if}}"
+    },
+    // nuget:powershellgallery datasource.
+    {
+      "fileMatch": [
+        "^roles/.+\\.yml$",
+        "\\.sh$",
+        "\\.ps1$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>nuget):powershellgallery depName=(?<depName>.+?)( versioning=(?<versioning>.+?))?( extractVersion=(?<extractVersion>.+?))?( registryUrl=(?<registryUrl>.+?))?\\s.+?[:=]\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
+      ],
+      "registryUrlTemplate": "{{#if registryUrl}}{{{registryUrl}}}{{else}}https://www.powershellgallery.com/api/v2{{/if}}",
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}nuget{{/if}}",
+      "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^v?(?<version>.+)${{/if}}"
+    }
+  ]
+}

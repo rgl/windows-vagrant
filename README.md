@@ -83,6 +83,10 @@ And test this base box by launching an example Vagrant environment:
 cd example
 vagrant plugin install vagrant-windows-sysprep
 vagrant up --no-destroy-on-error --provider=libvirt
+vagrant ssh
+exit
+vagrant destroy -f
+cd ..
 ```
 
 **NB** if you are having trouble running the example with the vagrant libvirt provider check the libvirt logs in the host (e.g. `sudo tail -f /var/log/libvirt/qemu/example_default.log`) and in the guest (inside `C:\Windows\Temp`).
@@ -93,8 +97,18 @@ Then test with a more complete example:
 git clone https://github.com/rgl/customize-windows-vagrant
 cd customize-windows-vagrant
 vagrant up --no-destroy-on-error --provider=libvirt
+vagrant ssh
+exit
+vagrant destroy -f
+cd ..
 ```
 
+List this repository dependencies (and which have newer versions):
+
+```bash
+export GITHUB_COM_TOKEN='YOUR_GITHUB_PERSONAL_TOKEN'
+./renovate.sh
+```
 
 ## libvirt
 
