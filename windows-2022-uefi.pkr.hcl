@@ -162,6 +162,7 @@ source "proxmox-iso" "windows-2022-uefi-amd64" {
       "drivers/viostor/2k22/amd64/*.cat",
       "drivers/viostor/2k22/amd64/*.inf",
       "drivers/viostor/2k22/amd64/*.sys",
+      "drivers/spice-guest-tools.exe",
       "drivers/virtio-win-guest-tools.exe",
       "provision-autounattend.ps1",
       "provision-guest-tools-qemu-kvm.ps1",

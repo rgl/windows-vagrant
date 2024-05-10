@@ -190,6 +190,9 @@ drivers:
 	@# see https://github.com/virtio-win/virtio-win-pkg-scripts
 	wget -P drivers.tmp https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.248-1/virtio-win-0.1.248.iso
 	7z x -odrivers.tmp drivers.tmp/virtio-win-*.iso
+	@# see https://github.com/virtio-win/virtio-win-guest-tools-installer/issues/25
+	@# see https://github.com/virtio-win/virtio-win-pkg-scripts/issues/76#issuecomment-2103185076
+	wget -O drivers.tmp/spice-guest-tools.exe https://www.spice-space.org/download/windows/spice-guest-tools/spice-guest-tools-0.141/spice-guest-tools-0.141.exe
 	mv drivers.tmp drivers
 
 clean:
