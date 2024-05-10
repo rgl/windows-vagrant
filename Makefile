@@ -74,7 +74,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 		$*-amd64-proxmox-packer.log \
 		>$*-amd64-proxmox-windows-updates.log
 
-%-amd64-hyperv.box: %.pkr.hcl Vagrantfile.template *.ps1
+%-amd64-hyperv.box: %.pkr.hcl tmp/%-uefi/autounattend.xml Vagrantfile.template *.ps1
 	rm -f $@
 	mkdir -p tmp
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-hyperv-packer-init.log \
