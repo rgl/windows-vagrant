@@ -15,6 +15,11 @@ packer {
       version = "1.1.3"
       source  = "github.com/hashicorp/hyperv"
     }
+    # see https://github.com/hashicorp/packer-plugin-vagrant
+    vagrant = {
+      version = "1.1.4"
+      source  = "github.com/hashicorp/vagrant"
+    }
     # see https://github.com/rgl/packer-plugin-windows-update
     windows-update = {
       version = "0.15.0"

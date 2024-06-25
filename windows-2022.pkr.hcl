@@ -10,6 +10,11 @@ packer {
       version = "1.1.7"
       source  = "github.com/hashicorp/proxmox"
     }
+    # see https://github.com/hashicorp/packer-plugin-vagrant
+    vagrant = {
+      version = "1.1.4"
+      source  = "github.com/hashicorp/vagrant"
+    }
     # see https://github.com/hashicorp/packer-plugin-hyperv
     hyperv = {
       version = "1.1.3"
