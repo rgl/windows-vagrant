@@ -4,6 +4,11 @@
 MAKEFLAGS+= --no-builtin-rules
 MAKEFLAGS+= --no-builtin-variables
 
+# uncomment the next two lines to use the local development version of the
+# windows-update packer plugin. you probably want to change the path too.
+#export PACKER_CONFIG_DIR:= $(HOME)/Projects/packer-plugin-windows-update/dist/test
+#export PACKER_PLUGIN_PATH:= $(HOME)/Projects/packer-plugin-windows-update/dist/test/plugins
+
 # libvirt images.
 IMAGES+= windows-2022
 IMAGES+= windows-2022-uefi
