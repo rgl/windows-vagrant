@@ -274,10 +274,10 @@ build {
     script   = "enable-remote-desktop.ps1"
   }
 
-  # provisioner "powershell" {
-  #   use_pwsh = true
-  #   script   = "provision-cloudbase-init.ps1"
-  # }
+  provisioner "powershell" {
+    use_pwsh = true
+    script   = "provision-cloudbase-init.ps1"
+  }
 
   provisioner "powershell" {
     use_pwsh = true
