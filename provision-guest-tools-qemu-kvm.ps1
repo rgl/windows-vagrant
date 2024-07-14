@@ -76,10 +76,17 @@ Z7aMX78Vt9/vrAIUR8EJ54YGgQsF/G9Adzs6fsfEw5Nrk8R0pueRMHRTMSroTe0V
 Ae2nvuUU6rVI30q8+UjQCxu/ji1/JnitNkUyOPyC46zL+kfHYSnld8U1
 -----END CERTIFICATE-----
 '@
-Import-Certificate `
-    -FilePath $spiceGuestToolsCodeSignPath `
-    -CertStoreLocation Cert:\LocalMachine\TrustedPublisher `
-    | Out-Null
+# NB we cannot use the following Import-Certificate in windows 11, as,
+#    sometimes, it fails with an access denied error. instead, directly
+#    call into the certificate store.
+#       Import-Certificate `
+#           -FilePath $spiceGuestToolsCodeSignPath `
+#           -CertStoreLocation Cert:\LocalMachine\TrustedPublisher `
+#           | Out-Null
+$certificateStore = Get-Item Cert:\LocalMachine\TrustedPublisher
+$certificateStore.Open([System.Security.Cryptography.X509Certificates.OpenFlags]"ReadWrite")
+$certificateStore.Add($spiceGuestToolsCodeSignPath)
+$certificateStore.Close()
 $spiceGuestTools = Get-GuestTool spice-guest-tools.exe
 Write-Host 'Installing the spice guest tools...'
 &$spiceGuestTools /S | Out-String -Stream
