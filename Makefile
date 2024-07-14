@@ -95,7 +95,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 %-uefi-amd64-libvirt.box: %-uefi.pkr.hcl tmp/%-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-libvirt-packer-init.log \
-		packer init $*.pkr.hcl
+		packer init $*-uefi.pkr.hcl
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-libvirt-packer.log PKR_VAR_vagrant_box=$@ \
 		packer build -only=qemu.$*-uefi-amd64 -on-error=abort $*-uefi.pkr.hcl
 	./get-windows-updates-from-packer-log.sh \
@@ -107,7 +107,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 	rm -f $@
 	sed -E 's,<Path>A:\\</Path>,<Path>D:\\</Path>,g' -i tmp/$*-uefi/autounattend.xml
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-proxmox-packer-init.log \
-		packer init $*.pkr.hcl
+		packer init $*-uefi.pkr.hcl
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-proxmox-packer.log PKR_VAR_vagrant_box=$@ \
 		packer build -only=proxmox-iso.$*-uefi-amd64 -on-error=abort $*-uefi.pkr.hcl
 	./get-windows-updates-from-packer-log.sh \
@@ -165,7 +165,7 @@ tmp/%/autounattend.xml: %/autounattend.xml always
 %-uefi-amd64-vsphere.box: %-uefi-vsphere.pkr.hcl tmp/%-uefi-vsphere/autounattend.xml Vagrantfile-uefi.template *.ps1
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-vsphere-packer-init.log \
-		packer init $*.pkr.hcl
+		packer init $*-uefi-vsphere.pkr.hcl
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-vsphere-packer.log PKR_VAR_vagrant_box=$@ \
 		packer build -only=vsphere-iso.$*-uefi-amd64 -on-error=abort $*-uefi-vsphere.pkr.hcl
 	./get-windows-updates-from-packer-log.sh \
