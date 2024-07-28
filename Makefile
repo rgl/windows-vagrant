@@ -82,7 +82,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 
 %-amd64-hyperv.box: %.pkr.hcl tmp/%-uefi/autounattend.xml Vagrantfile.template *.ps1
 	rm -f $@
-	sed -E 's,<Path>A:\\</Path>,<Path>D:\\</Path>,g' -i tmp/$*/autounattend.xml
+	sed -E 's,<Path>A:\\</Path>,<Path>D:\\</Path>,g' -i tmp/$*-uefi/autounattend.xml
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-hyperv-packer-init.log \
 		packer init $*.pkr.hcl
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-hyperv-packer.log PKR_VAR_vagrant_box=$@ \
