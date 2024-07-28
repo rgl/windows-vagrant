@@ -203,7 +203,7 @@ cat >secrets.sh <<'EOF'
 export HYPERV_SWITCH_NAME='Vagrant'
 
 # set this value when you need to set the VM VLAN ID.
-export HYPERV_VLAN_ID=''
+#export HYPERV_VLAN_ID=''
 
 # set the credentials that the guest will use
 # to connect to this host smb share.
