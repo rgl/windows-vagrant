@@ -246,7 +246,7 @@ vagrant destroy -f
 
 Download the Windows Evaluation ISO (you can find the full iso URL in the [windows-2022-vsphere.pkr.hcl](windows-2022-vsphere.pkr.hcl) file) and place it inside the datastore as defined by the `vsphere_iso_url` user variable that is inside the [packer template](windows-2022-vsphere.pkr.hcl).
 
-Download the [VMware Tools VMware-tools-windows-&lt;SAME_VERSION_AS_IN_PACKER_TEMPLATE&gt;.iso](https://packages.vmware.com/tools/releases/index.html) file into the datastore defined by the `vsphere_tools_iso_url` user variable that is inside the [packer template](windows-2022-vsphere.pkr.hcl).
+Download the [VMware Tools VMware-tools-windows-&lt;SAME_VERSION_AS_IN_PACKER_TEMPLATE&gt;.iso](https://packages.vmware.com/tools/releases/) file into the datastore defined by the `vsphere_tools_iso_url` user variable that is inside the [packer template](windows-2022-vsphere.pkr.hcl).
 
 Download [govc](https://github.com/vmware/govmomi/releases/latest) and place it inside your `/usr/local/bin` directory.
 
