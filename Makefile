@@ -12,22 +12,29 @@ MAKEFLAGS+= --no-builtin-variables
 # libvirt images.
 IMAGES+= windows-2022
 IMAGES+= windows-2022-uefi
+IMAGES+= windows-2025
+IMAGES+= windows-2025-uefi
 IMAGES+= windows-11-23h2
 IMAGES+= windows-11-23h2-uefi
 
 # Proxmox images.
 PROXMOX_IMAGES+= windows-2022
 PROXMOX_IMAGES+= windows-2022-uefi
+PROXMOX_IMAGES+= windows-2025
+PROXMOX_IMAGES+= windows-2025-uefi
 PROXMOX_IMAGES+= windows-11-23h2
 PROXMOX_IMAGES+= windows-11-23h2-uefi
 
 # Hyper-V images.
 HYPERV_IMAGES+= windows-2022
+HYPERV_IMAGES+= windows-2025
 HYPERV_IMAGES+= windows-11-23h2
 
 # vSphere images.
 VSPHERE_IMAGES+= windows-2022
 VSPHERE_IMAGES+= windows-2022-uefi
+VSPHERE_IMAGES+= windows-2025
+VSPHERE_IMAGES+= windows-2025-uefi
 
 # Generate the build-* targets.
 LIBVIRT_BUILDS= $(addsuffix -libvirt,$(addprefix build-,$(IMAGES)))
@@ -82,7 +89,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 
 %-amd64-hyperv.box: %.pkr.hcl tmp/%-uefi/autounattend.xml Vagrantfile.template *.ps1
 	rm -f $@
-	sed -E 's,<Path>A:\\</Path>,<Path>D:\\</Path>,g' -i tmp/$*-uefi/autounattend.xml
+	sed -E '/<DriverPaths>/,/<\/DriverPaths>/d' -i tmp/$*-uefi/autounattend.xml
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-hyperv-packer-init.log \
 		packer init $*.pkr.hcl
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-hyperv-packer.log PKR_VAR_vagrant_box=$@ \
@@ -116,14 +123,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 
 tmp/%-vsphere/autounattend.xml: %/autounattend.xml always
 	mkdir -p "$$(dirname $@)"
-	@# add the vmware tools iso to the drivers search path.
-	@# NB we cannot have this in the main autounattend.xml because windows
-	@#    will fail to install when the guest additions iso is in E:
-	@#    with the error message:
-	@#        Windows Setup could not install one or more boot-critical drivers.
-	@#        To install Windows, make sure that the drivers are valid, and
-	@#        restart the installation.
-	sed -E 's,(.+)</DriverPaths>,\1    <PathAndCredentials wcm:action="add" wcm:keyValue="3"><Path>E:\\</Path></PathAndCredentials>\n\0,g' $< >$@
+	sed -E '/<DriverPaths>/,/<\/DriverPaths>/d' $< >$@
 	if [ -n '${PKR_VAR_windows_product_key}' ]; then \
 		sed -E 's,<!--<Key>.+</Key>-->,<Key>${PKR_VAR_windows_product_key}</Key>,g' -i $@; \
 	fi
@@ -138,7 +138,7 @@ tmp/%/autounattend.xml: %/autounattend.xml always
 %-amd64-vsphere.box: %-vsphere.pkr.hcl tmp/%-vsphere/autounattend.xml Vagrantfile.template *.ps1
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-vsphere-packer-init.log \
-		packer init $*.pkr.hcl
+		packer init $*-vsphere.pkr.hcl
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-vsphere-packer.log PKR_VAR_vagrant_box=$@ \
 		packer build -only=vsphere-iso.$*-amd64 -on-error=abort $*-vsphere.pkr.hcl
 	./get-windows-updates-from-packer-log.sh \
