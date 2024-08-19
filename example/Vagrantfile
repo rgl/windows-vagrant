@@ -88,6 +88,9 @@ Vagrant.configure(2) do |config|
           '-Command',
           <<~COMMAND
             $vmName = '#{machine.provider_config.vmname}'
+            # enable all the integration services.
+            # NB because, for some reason, sometimes "Guest Service Interface" is not enabled.
+            Get-VMIntegrationService $vmName | Enable-VMIntegrationService
             # resize the os disk.
             $osDisk = Get-VMHardDiskDrive $vmName | Select-Object -First 1
             Resize-VHD -Path $osDisk.Path -SizeBytes #{VM_OS_DISK_GB*1024*1024*1024}
