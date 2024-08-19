@@ -74,10 +74,12 @@ source "qemu" "windows-2022-uefi-amd64" {
   disk_cache     = "unsafe"
   disk_discard   = "unmap"
   disk_size      = var.disk_size
-  floppy_files = [
+  cd_label       = "PROVISION"
+  cd_files = [
     "drivers/NetKVM/2k22/amd64/*.cat",
     "drivers/NetKVM/2k22/amd64/*.inf",
     "drivers/NetKVM/2k22/amd64/*.sys",
+    "drivers/NetKVM/2k22/amd64/*.exe",
     "drivers/qxldod/2k22/amd64/*.cat",
     "drivers/qxldod/2k22/amd64/*.inf",
     "drivers/qxldod/2k22/amd64/*.sys",
@@ -90,7 +92,9 @@ source "qemu" "windows-2022-uefi-amd64" {
     "drivers/viostor/2k22/amd64/*.cat",
     "drivers/viostor/2k22/amd64/*.inf",
     "drivers/viostor/2k22/amd64/*.sys",
+    "drivers/virtio-win-guest-tools.exe",
     "provision-autounattend.ps1",
+    "provision-guest-tools-qemu-kvm.ps1",
     "provision-openssh.ps1",
     "provision-psremoting.ps1",
     "provision-pwsh.ps1",
@@ -155,6 +159,7 @@ source "proxmox-iso" "windows-2022-uefi-amd64" {
       "drivers/NetKVM/2k22/amd64/*.cat",
       "drivers/NetKVM/2k22/amd64/*.inf",
       "drivers/NetKVM/2k22/amd64/*.sys",
+      "drivers/NetKVM/2k22/amd64/*.exe",
       "drivers/qxldod/2k22/amd64/*.cat",
       "drivers/qxldod/2k22/amd64/*.inf",
       "drivers/qxldod/2k22/amd64/*.sys",
@@ -167,7 +172,6 @@ source "proxmox-iso" "windows-2022-uefi-amd64" {
       "drivers/viostor/2k22/amd64/*.cat",
       "drivers/viostor/2k22/amd64/*.inf",
       "drivers/viostor/2k22/amd64/*.sys",
-      "drivers/spice-guest-tools.exe",
       "drivers/virtio-win-guest-tools.exe",
       "provision-autounattend.ps1",
       "provision-guest-tools-qemu-kvm.ps1",
@@ -201,12 +205,6 @@ build {
   provisioner "powershell" {
     use_pwsh = true
     script   = "disable-windows-defender.ps1"
-  }
-
-  provisioner "powershell" {
-    use_pwsh = true
-    only     = ["qemu.windows-2022-uefi-amd64"]
-    script   = "provision-guest-tools-qemu-kvm.ps1"
   }
 
   provisioner "windows-restart" {

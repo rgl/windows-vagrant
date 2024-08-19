@@ -68,7 +68,8 @@ source "vsphere-iso" "windows-2022-amd64" {
   CPUs          = 4
   RAM           = 4096
   guest_os_type = "windows2019srvNext_64Guest"
-  floppy_files = [
+  cd_label      = "PROVISION"
+  cd_files = [
     "provision-autounattend.ps1",
     "provision-openssh.ps1",
     "provision-psremoting.ps1",

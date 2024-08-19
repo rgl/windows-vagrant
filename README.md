@@ -461,7 +461,7 @@ Restart-Computer
 
 # Windows Unattended Installation
 
-When Windows boots from the installation media its Setup application loads the `a:\autounattend.xml` file.
+When Windows boots from the installation media its Setup application loads the `e:\autounattend.xml` file.
 It contains all the answers needed to automatically install Windows without any human intervention. For
 more information on how this works see [OEM Windows Deployment and Imaging Walkthrough](https://technet.microsoft.com/en-us/library/dn621895.aspx).
 
@@ -472,7 +472,7 @@ included in the Windows Assessment and Deployment Kit (ADK).
 
 ## Windows ADK
 
-To create, edit and validate the `a:\autounattend.xml` file you need to install the Deployment Tools that
+To create, edit and validate the `e:\autounattend.xml` file you need to install the Deployment Tools that
 are included in the [Windows ADK](https://developer.microsoft.com/en-us/windows/hardware/windows-assessment-deployment-kit).
 
 If you are having trouble installing the ADK (`adksetup`) or running WSIM (`imgmgr`) when your

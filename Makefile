@@ -78,7 +78,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 
 %-amd64-proxmox.box: %.pkr.hcl tmp/%/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
-	sed -E 's,<Path>A:\\</Path>,<Path>D:\\</Path>,g' -i tmp/$*/autounattend.xml
+	sed -E 's,<Path>E:\\</Path>,<Path>D:\\</Path>,g' -i tmp/$*/autounattend.xml
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-proxmox-packer-init.log \
 		packer init $*.pkr.hcl
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-proxmox-packer.log PKR_VAR_vagrant_box=$@ \
@@ -112,7 +112,7 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 
 %-uefi-amd64-proxmox.box: %-uefi.pkr.hcl tmp/%-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
 	rm -f $@
-	sed -E 's,<Path>A:\\</Path>,<Path>D:\\</Path>,g' -i tmp/$*-uefi/autounattend.xml
+	sed -E 's,<Path>E:\\</Path>,<Path>D:\\</Path>,g' -i tmp/$*-uefi/autounattend.xml
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-proxmox-packer-init.log \
 		packer init $*-uefi.pkr.hcl
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-proxmox-packer.log PKR_VAR_vagrant_box=$@ \
@@ -195,11 +195,8 @@ drivers:
 	@# see https://docs.fedoraproject.org/en-US/quick-docs/creating-windows-virtual-machines-using-virtio-drivers/index.html
 	@# see https://github.com/virtio-win/virtio-win-guest-tools-installer
 	@# see https://github.com/virtio-win/virtio-win-pkg-scripts
-	wget -P drivers.tmp https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.248-1/virtio-win-0.1.248.iso
+	wget -P drivers.tmp https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.262-2/virtio-win-0.1.262.iso
 	7z x -odrivers.tmp drivers.tmp/virtio-win-*.iso
-	@# see https://github.com/virtio-win/virtio-win-guest-tools-installer/issues/25
-	@# see https://github.com/virtio-win/virtio-win-pkg-scripts/issues/76#issuecomment-2103185076
-	wget -O drivers.tmp/spice-guest-tools.exe https://www.spice-space.org/download/windows/spice-guest-tools/spice-guest-tools-0.141/spice-guest-tools-0.141.exe
 	mv drivers.tmp drivers
 
 clean:
