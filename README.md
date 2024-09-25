@@ -303,10 +303,19 @@ Try the example guest:
 ```bash
 source secrets.sh
 cd example
-echo $VSPHERE_TEMPLATE_NAME # check if you are using the expected template.
+# check if you are using the expected template.
+echo "$VSPHERE_TEMPLATE_NAME"
+# start the vm.
 vagrant up --no-destroy-on-error --provider=vsphere
+# using ssh, open a remote shell session.
 vagrant ssh
+# exit the remove shell session.
 exit
+# run a command (thru the vmware tools daemon service instead of ssh).
+export GOVC_GUEST_LOGIN='vagrant:vagrant'
+VSPHERE_VM_IPATH="//$GOVC_DATACENTER/vm/$VSPHERE_VM_FOLDER/$VSPHERE_VM_NAME"
+govc guest.run -vm.ipath "$VSPHERE_VM_IPATH" whoami /all
+# destroy the vm.
 vagrant destroy -f
 ```
 
