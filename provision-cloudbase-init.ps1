@@ -19,7 +19,11 @@ trap {
 $cloudbaseInitHome = 'C:\Program Files\Cloudbase Solutions\Cloudbase-Init'
 $cloudbaseInitConfPath = "$cloudbaseInitHome\conf\cloudbase-init.conf"
 
-$artifactUrl = 'https://github.com/cloudbase/cloudbase-init/releases/download/1.1.4/CloudbaseInitSetup_1_1_4_x64.msi'
+# see https://github.com/cloudbase/cloudbase-init/releases
+# renovate: datasource=github-releases depName=cloudbase/cloudbase-init
+$cloudbaseInitVersion = '1.1.6'
+
+$artifactUrl = "https://github.com/cloudbase/cloudbase-init/releases/download/$cloudbaseInitVersion/CloudbaseInitSetup_$($cloudbaseInitVersion -replace '\.','_')_x64.msi"
 $artifactPath = "$env:TEMP\$(Split-Path -Leaf $artifactUrl)"
 $artifactLogPath = "$artifactPath.log"
 
