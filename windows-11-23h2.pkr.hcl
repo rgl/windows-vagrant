@@ -17,7 +17,7 @@ packer {
     }
     # see https://github.com/hashicorp/packer-plugin-vagrant
     vagrant = {
-      version = "1.1.4"
+      version = "1.1.5"
       source  = "github.com/hashicorp/vagrant"
     }
     # see https://github.com/rgl/packer-plugin-windows-update
