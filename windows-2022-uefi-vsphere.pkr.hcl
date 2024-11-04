@@ -7,7 +7,7 @@ packer {
     }
     # see https://github.com/hashicorp/packer-plugin-vsphere
     vsphere = {
-      version = "1.4.0"
+      version = "1.4.2"
       source  = "github.com/hashicorp/vsphere"
     }
   }
