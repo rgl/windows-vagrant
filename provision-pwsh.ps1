@@ -29,7 +29,7 @@ $env:POWERSHELL_UPDATECHECK = 'Off'
 # renovate: datasource=github-releases depName=PowerShell/PowerShell
 $archiveVersion = '7.4.6'
 $archiveUrl = "https://github.com/PowerShell/PowerShell/releases/download/v$archiveVersion/PowerShell-$archiveVersion-win-x64.msi"
-$archiveHash = '4d0286cc70c2e45404ad940ef96394b191da45d7de46340b05c013eef41c1eec'
+$archiveHash = 'ed331a04679b83d4c013705282d1f3f8d8300485eb04c081f36e11eaf1148bd0'
 $archiveName = Split-Path -Leaf $archiveUrl
 $archivePath = "$env:TEMP\$archiveName"
 
@@ -37,7 +37,7 @@ Write-Host "Downloading $archiveName..."
 (New-Object Net.WebClient).DownloadFile($archiveUrl, $archivePath)
 $archiveActualHash = (Get-FileHash $archivePath -Algorithm SHA256).Hash
 if ($archiveHash -ne $archiveActualHash) {
-    throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash witch does not match the expected $archiveHash"
+    throw "$archiveName downloaded from $archiveUrl to $archivePath has $archiveActualHash hash wich does not match the expected $archiveHash"
 }
 
 Write-Host "Installing $archiveName..."
