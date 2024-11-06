@@ -79,7 +79,7 @@ source "vsphere-iso" "windows-2025-amd64" {
     "tmp/windows-2025-vsphere/autounattend.xml",
   ]
   iso_paths = [
-    "[${var.vsphere_datastore}] iso/windows-2025-26100.1.240331-1435.ge_release_SERVER_EVAL_x64FRE_en-us.iso",
+    "[${var.vsphere_datastore}] iso/windows-2025-26100.1742.240906-0331.ge_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
     "[${var.vsphere_datastore}] iso/VMware-tools-windows-12.5.0-24276846.iso",
   ]
   network_adapters {

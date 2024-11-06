@@ -1,4 +1,4 @@
-This builds Windows 11/2022 base Vagrant boxes using [Packer](https://www.packer.io/) and Hyper-V/libvirt/QEMU/Proxmox VE/VMware vSphere.
+This builds Windows 11/2022/2025 base Vagrant boxes using [Packer](https://www.packer.io/) and Hyper-V/libvirt/QEMU/Proxmox VE/VMware vSphere.
 
 
 # Usage
