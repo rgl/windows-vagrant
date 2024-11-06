@@ -10,6 +10,11 @@ packer {
       version = "1.1.8"
       source  = "github.com/hashicorp/proxmox"
     }
+    # see https://github.com/hashicorp/packer-plugin-hyperv
+    hyperv = {
+      version = "1.1.3"
+      source  = "github.com/hashicorp/hyperv"
+    }
     # see https://github.com/hashicorp/packer-plugin-vagrant
     vagrant = {
       version = "1.1.5"
@@ -30,12 +35,12 @@ variable "disk_size" {
 
 variable "iso_url" {
   type    = string
-  default = "https://software-static.download.prss.microsoft.com/dbazure/888969d5-f34g-4e03-ac9d-1f9786c66749/22631.2428.231001-0608.23H2_NI_RELEASE_SVC_REFRESH_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso"
+  default = "https://software-static.download.prss.microsoft.com/dbazure/888969d5-f34g-4e03-ac9d-1f9786c66749/26100.1742.240906-0331.ge_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso"
 }
 
 variable "iso_checksum" {
   type    = string
-  default = "sha256:c8dbc96b61d04c8b01faf6ce0794fdf33965c7b350eaa3eb1e6697019902945c"
+  default = "sha256:67cec5865eaa037a72ddc633a717a10a2bed50778862267223ddb9c60ef5da68"
 }
 
 variable "proxmox_node" {
@@ -43,17 +48,26 @@ variable "proxmox_node" {
   default = env("PROXMOX_NODE")
 }
 
+variable "hyperv_switch_name" {
+  type    = string
+  default = env("HYPERV_SWITCH_NAME")
+}
+
+variable "hyperv_vlan_id" {
+  type    = string
+  default = env("HYPERV_VLAN_ID")
+}
+
 variable "vagrant_box" {
   type = string
 }
 
-source "qemu" "windows-11-23h2-uefi-amd64" {
+source "qemu" "windows-11-24h2-amd64" {
   accelerator  = "kvm"
   machine_type = "q35"
   cpus         = 2
   memory       = 4096
   qemuargs = [
-    ["-bios", "/usr/share/ovmf/OVMF.fd"],
     ["-cpu", "host"],
     ["-device", "qemu-xhci"],
     ["-device", "virtio-tablet"],
@@ -68,23 +82,12 @@ source "qemu" "windows-11-23h2-uefi-amd64" {
     ["-device", "virtserialport,chardev=spicechannel0,name=com.redhat.spice.0"],
     ["-spice", "unix,addr=/tmp/{{ .Name }}-spice.socket,disable-ticketing"],
   ]
-  boot_wait      = "1s"
-  boot_command   = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
   disk_interface = "virtio-scsi"
   disk_cache     = "unsafe"
   disk_discard   = "unmap"
   disk_size      = var.disk_size
   cd_label       = "PROVISION"
   cd_files = [
-    "drivers/vioserial/w11/amd64/*.cat",
-    "drivers/vioserial/w11/amd64/*.inf",
-    "drivers/vioserial/w11/amd64/*.sys",
-    "drivers/viostor/w11/amd64/*.cat",
-    "drivers/viostor/w11/amd64/*.inf",
-    "drivers/viostor/w11/amd64/*.sys",
-    "drivers/vioscsi/w11/amd64/*.cat",
-    "drivers/vioscsi/w11/amd64/*.inf",
-    "drivers/vioscsi/w11/amd64/*.sys",
     "drivers/NetKVM/w11/amd64/*.cat",
     "drivers/NetKVM/w11/amd64/*.inf",
     "drivers/NetKVM/w11/amd64/*.sys",
@@ -92,6 +95,15 @@ source "qemu" "windows-11-23h2-uefi-amd64" {
     "drivers/qxldod/w11/amd64/*.cat",
     "drivers/qxldod/w11/amd64/*.inf",
     "drivers/qxldod/w11/amd64/*.sys",
+    "drivers/vioscsi/w11/amd64/*.cat",
+    "drivers/vioscsi/w11/amd64/*.inf",
+    "drivers/vioscsi/w11/amd64/*.sys",
+    "drivers/vioserial/w11/amd64/*.cat",
+    "drivers/vioserial/w11/amd64/*.inf",
+    "drivers/vioserial/w11/amd64/*.sys",
+    "drivers/viostor/w11/amd64/*.cat",
+    "drivers/viostor/w11/amd64/*.inf",
+    "drivers/viostor/w11/amd64/*.sys",
     "drivers/virtio-win-guest-tools.exe",
     "provision-autounattend.ps1",
     "provision-guest-tools-qemu-kvm.ps1",
@@ -99,7 +111,7 @@ source "qemu" "windows-11-23h2-uefi-amd64" {
     "provision-psremoting.ps1",
     "provision-pwsh.ps1",
     "provision-winrm.ps1",
-    "tmp/windows-11-23h2-uefi/autounattend.xml",
+    "tmp/windows-11-24h2/autounattend.xml",
   ]
   format                   = "qcow2"
   headless                 = true
@@ -115,20 +127,16 @@ source "qemu" "windows-11-23h2-uefi-amd64" {
   ssh_file_transfer_method = "sftp"
 }
 
-source "proxmox-iso" "windows-11-23h2-uefi-amd64" {
-  template_name            = "template-windows-11-23h2-uefi"
+source "proxmox-iso" "windows-11-24h2-amd64" {
+  template_name            = "template-windows-11-24h2"
   template_description     = "See https://github.com/rgl/windows-vagrant"
-  tags                     = "windows-11-23h2-uefi;template"
+  tags                     = "windows-11-24h2;template"
   insecure_skip_tls_verify = true
   node                     = var.proxmox_node
   machine                  = "q35"
-  bios                     = "ovmf"
-  efi_config {
-    efi_storage_pool = "local-lvm"
-  }
-  cpu_type = "host"
-  cores    = 2
-  memory   = 4096
+  cpu_type                 = "host"
+  cores                    = 2
+  memory                   = 4096
   vga {
     type   = "qxl"
     memory = 32
@@ -179,22 +187,54 @@ source "proxmox-iso" "windows-11-23h2-uefi-amd64" {
       "provision-psremoting.ps1",
       "provision-pwsh.ps1",
       "provision-winrm.ps1",
-      "tmp/windows-11-23h2-uefi/autounattend.xml",
+      "tmp/windows-11-24h2/autounattend.xml",
     ]
   }
-  boot_wait      = "1s"
-  boot_command   = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
   os             = "win11"
   ssh_username   = "vagrant"
   ssh_password   = "vagrant"
   ssh_timeout    = "60m"
   http_directory = "."
+  boot_wait      = "30s"
+}
+
+source "hyperv-iso" "windows-11-24h2-amd64" {
+  cpus         = 2
+  memory       = 4096
+  generation   = 2
+  boot_wait    = "1s"
+  boot_command = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
+  boot_order   = ["SCSI:0:0"]
+  cd_label     = "PROVISION"
+  cd_files = [
+    "provision-autounattend.ps1",
+    "provision-openssh.ps1",
+    "provision-psremoting.ps1",
+    "provision-pwsh.ps1",
+    "provision-winrm.ps1",
+    "tmp/windows-11-24h2-uefi/autounattend.xml",
+  ]
+  disk_size                = var.disk_size
+  first_boot_device        = "DVD"
+  headless                 = true
+  iso_url                  = var.iso_url
+  iso_checksum             = var.iso_checksum
+  switch_name              = var.hyperv_switch_name
+  temp_path                = "tmp"
+  vlan_id                  = var.hyperv_vlan_id
+  shutdown_command         = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
+  communicator             = "ssh"
+  ssh_username             = "vagrant"
+  ssh_password             = "vagrant"
+  ssh_timeout              = "4h"
+  ssh_file_transfer_method = "sftp"
 }
 
 build {
   sources = [
-    "source.qemu.windows-11-23h2-uefi-amd64",
-    "source.proxmox-iso.windows-11-23h2-uefi-amd64",
+    "source.qemu.windows-11-24h2-amd64",
+    "source.proxmox-iso.windows-11-24h2-amd64",
+    "source.hyperv-iso.windows-11-24h2-amd64",
   ]
 
   provisioner "powershell" {
@@ -249,8 +289,8 @@ build {
   }
 
   post-processor "vagrant" {
-    except               = ["proxmox-iso.windows-11-23h2-uefi-amd64"]
+    except               = ["proxmox-iso.windows-11-24h2-amd64"]
     output               = var.vagrant_box
-    vagrantfile_template = "Vagrantfile-uefi.template"
+    vagrantfile_template = "Vagrantfile.template"
   }
 }

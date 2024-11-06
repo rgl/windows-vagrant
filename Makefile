@@ -14,21 +14,21 @@ IMAGES+= windows-2022
 IMAGES+= windows-2022-uefi
 IMAGES+= windows-2025
 IMAGES+= windows-2025-uefi
-IMAGES+= windows-11-23h2
-IMAGES+= windows-11-23h2-uefi
+IMAGES+= windows-11-24h2
+IMAGES+= windows-11-24h2-uefi
 
 # Proxmox images.
 PROXMOX_IMAGES+= windows-2022
 PROXMOX_IMAGES+= windows-2022-uefi
 PROXMOX_IMAGES+= windows-2025
 PROXMOX_IMAGES+= windows-2025-uefi
-PROXMOX_IMAGES+= windows-11-23h2
-PROXMOX_IMAGES+= windows-11-23h2-uefi
+PROXMOX_IMAGES+= windows-11-24h2
+PROXMOX_IMAGES+= windows-11-24h2-uefi
 
 # Hyper-V images.
 HYPERV_IMAGES+= windows-2022
 HYPERV_IMAGES+= windows-2025
-HYPERV_IMAGES+= windows-11-23h2
+HYPERV_IMAGES+= windows-11-24h2
 
 # vSphere images.
 VSPHERE_IMAGES+= windows-2022
