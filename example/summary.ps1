@@ -139,6 +139,22 @@ $PSVersionTable.GetEnumerator() `
     | ForEach-Object {$_.TrimEnd()}
 '@
 
+Write-Title 'Windows PowerShell available modules'
+Get-Module -ListAvailable `
+    | Sort-Object Name `
+    | Format-Table -AutoSize Name,Version,ModuleType `
+    | Out-String -Stream -Width ([int]::MaxValue) `
+    | ForEach-Object {$_.TrimEnd()}
+
+Write-Title 'PowerShell (pwsh) available modules'
+pwsh -Command @'
+Get-Module -ListAvailable `
+    | Sort-Object Name `
+    | Format-Table -AutoSize Name,Version,ModuleType `
+    | Out-String -Stream -Width ([int]::MaxValue) `
+    | ForEach-Object {$_.TrimEnd()}
+'@
+
 Write-Title 'Network Interfaces'
 Get-NetAdapter `
     | ForEach-Object {
