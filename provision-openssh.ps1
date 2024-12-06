@@ -58,12 +58,12 @@ function Install-Rsync {
 function Install-OpenSshBinaries {
     # see https://github.com/PowerShell/Win32-OpenSSH/releases
     # renovate: datasource=github-releases depName=PowerShell/Win32-OpenSSH
-    $version = '9.5.0.0p1-Beta'
+    $version = '9.8.1.0p1-Preview'
     Install-ZippedApplication `
         $openSshHome `
         OpenSSH `
         "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v$version/OpenSSH-Win64.zip" `
-        bd48fe985d400402c278c485db20e6a82bc4c7f7d8e0ef5a81128f523096530c
+        c7a1369cd73c8165be00c66e90291c4dd67784de7c3aa3af18c68ebedffa6ea9
     Push-Location $openSshHome
     Move-Item OpenSSH-Win64\* .
     Remove-Item OpenSSH-Win64
