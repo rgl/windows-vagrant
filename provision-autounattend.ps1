@@ -16,10 +16,17 @@ trap {
 }
 
 # disable autologon.
+# see https://learn.microsoft.com/en-us/windows/win32/secauthn/msgina-dll-features
 Write-Host 'Disabling auto logon...'
-$autoLogonKeyPath = 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
+$autoLogonKeyPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
 Set-ItemProperty -Path $autoLogonKeyPath -Name AutoAdminLogon -Value 0
-@('DefaultDomainName', 'DefaultUserName', 'DefaultPassword') | ForEach-Object {
+@(
+    ,'AutoLogonCount'
+    ,'AutoLogonSID'
+    ,'DefaultDomainName'
+    ,'DefaultUserName'
+    ,'DefaultPassword'
+) | ForEach-Object {
     Remove-ItemProperty -Path $autoLogonKeyPath -Name $_ -ErrorAction SilentlyContinue
 }
 
