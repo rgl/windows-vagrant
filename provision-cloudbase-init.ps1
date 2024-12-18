@@ -79,6 +79,44 @@ if ($LASTEXITCODE) {
     throw "Failed with Exit Code $LASTEXITCODE. See the logs at $artifactLogPath."
 }
 
+Write-Host 'Installing the provision sysprep oobe wait plugin...'
+# see https://github.com/rgl/windows-sysprep-playground
+$plugins = @('cloudbaseinit.plugins.windows.provisionsysprep.ProvisionSysprepOobeWaitPlugin')
+$plugins += &"$cloudbaseInitHome\Python\python.exe" -c @"
+import json
+from cloudbaseinit import conf as cloudbaseinit_conf
+
+CONF = cloudbaseinit_conf.CONF
+
+print(json.dumps(CONF.plugins))
+"@ | ConvertFrom-Json
+Set-Content `
+    -Encoding UTF8 `
+    -NoNewline `
+    -Path "$cloudbaseInitHome\Python\Lib\site-packages\cloudbaseinit\plugins\windows\provisionsysprep.py" `
+    -Value @"
+import time
+import os.path
+from oslo_log import log as oslo_logging
+from cloudbaseinit.plugins.common import base
+
+LOG = oslo_logging.getLogger(__name__)
+
+# see https://github.com/rgl/windows-sysprep-playground
+PROVISION_SYSPREP_OOBE_PATH = 'C:/Windows/System32/Sysprep/provision-sysprep-oobe.txt'
+
+class ProvisionSysprepOobeWaitPlugin(base.BasePlugin):
+    execution_stage = base.PLUGIN_STAGE_PRE_NETWORKING
+
+    def execute(self, service, shared_data):
+        LOG.debug("waiting for sysprep oobe to finish (the %s file to disappear)", PROVISION_SYSPREP_OOBE_PATH)
+        if os.path.exists(PROVISION_SYSPREP_OOBE_PATH):
+            while os.path.exists(PROVISION_SYSPREP_OOBE_PATH):
+                time.sleep(5)
+            time.sleep(5)
+        return base.PLUGIN_EXECUTION_DONE, False
+"@
+
 Write-Host 'Replacing the configuration...'
 # The default configuration is:
 #   [DEFAULT]
@@ -113,6 +151,7 @@ log_dir=$cloudbaseInitHome\log\
 log_file=cloudbase-init.log
 bsdtar_path=$cloudbaseInitHome\bin\bsdtar.exe
 mtools_path=$cloudbaseInitHome\bin\
+plugins=$($plugins -join ",`n         ")
 metadata_services=$($metadataServices -join ",`n                  ")
 
 [config_drive]
