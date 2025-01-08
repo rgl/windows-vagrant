@@ -54,7 +54,7 @@ If you want to use your own ISO, you need to manually run the `packer` command, 
 # NB when the windows product key does not match the windows version and edition
 #    inside the iso file, the windows setup will fail with the error message:
 #       No images are available.
-#    inside the windows setup, press shit+f10 to open a command prompt, then
+#    inside the windows setup, press shift+f10 to open a command prompt, then
 #    verify the available images with:
 #       dism -get-imageinfo -imagefile:d:\sources\install.wim
 # see https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys
