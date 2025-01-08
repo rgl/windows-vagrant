@@ -140,6 +140,18 @@ export RENOVATE_REPOSITORIES="$RENOVATE_USERNAME/test"
 export RENOVATE_PR_HOURLY_LIMIT='0'
 export RENOVATE_PR_CONCURRENT_LIMIT='0'
 echo 'Running renovate...'
+# NB to capture the traffic using mitmproxy, start mitmweb in a different
+#    shell, then enable the following if (i.e. true).
+docker_extra_args=()
+if false; then
+    docker_extra_args+=(
+        --env http_proxy=http://127.0.0.1:8080
+        --env https_proxy=http://127.0.0.1:8080
+        --env no_proxy=
+        --env SSL_CERT_FILE=/usr/local/shared/ca-certificates/mitmproxy-ca.crt
+        --volume "$HOME/.mitmproxy/mitmproxy-ca-cert.pem:/usr/local/shared/ca-certificates/mitmproxy-ca.crt:ro"
+    )
+fi
 # NB use --dry-run=lookup for not modifying the repository (e.g. for not
 #    creating pull requests).
 docker run \
@@ -155,6 +167,7 @@ docker run \
   --env RENOVATE_PR_CONCURRENT_LIMIT \
   --env LOG_LEVEL=debug \
   --env LOG_FORMAT=json \
+  "${docker_extra_args[@]}" \
   "renovate/renovate:$renovate_version" \
   --platform=gitea \
   --git-url=endpoint \
