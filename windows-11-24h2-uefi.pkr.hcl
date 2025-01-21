@@ -240,6 +240,11 @@ build {
 
   provisioner "powershell" {
     use_pwsh = true
+    script   = "provision-lock-screen-background.ps1"
+  }
+
+  provisioner "powershell" {
+    use_pwsh = true
     script   = "eject-media.ps1"
   }
 
