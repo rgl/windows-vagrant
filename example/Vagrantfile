@@ -127,7 +127,9 @@ Vagrant.configure(2) do |config|
       '*.box']
   end
 
-  #config.vm.provision "windows-sysprep" # NB the windows-sysprep plugin does not work with hyperv.
+  config.vm.provision "shell", path: "ps.ps1", args: ["assert-service-automatic-start-delayed.ps1", "WinRM", "sshd"]
+  config.vm.provision "windows-sysprep" # NB the windows-sysprep plugin does not work with hyperv.
+  config.vm.provision "shell", path: "ps.ps1", args: ["assert-service-automatic-start-delayed.ps1", "WinRM", "sshd"]
   config.vm.provision "shell", path: "ps.ps1", args: "expand-os-partition.ps1"
   config.vm.provision "shell", path: "ps.ps1", args: "provision-chocolatey.ps1"
   config.vm.provision "shell", path: "ps.ps1", args: "provision-adk.ps1"
