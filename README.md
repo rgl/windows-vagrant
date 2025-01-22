@@ -474,7 +474,7 @@ When Windows boots from the installation media its Setup application loads the `
 It contains all the answers needed to automatically install Windows without any human intervention. For
 more information on how this works see [OEM Windows Deployment and Imaging Walkthrough](https://technet.microsoft.com/en-us/library/dn621895.aspx).
 
-Where there is a problem with the setup, you should look into the [Setup log files (Windows Preinstallation Environment phase)](https://learn.microsoft.com/en-us/troubleshoot/windows-client/setup-upgrade-and-drivers/windows-setup-log-file-locations#windows-preinstallation-environment-phase) by pressing `Ctrl+F10` to open a Command Prompt, and then use `notepad.exe` to open the Setup log files.
+When there is a problem with the setup, you should look into the [Setup log files (Windows Preinstallation Environment phase)](https://learn.microsoft.com/en-us/troubleshoot/windows-client/setup-upgrade-and-drivers/windows-setup-log-file-locations#windows-preinstallation-environment-phase) by pressing `Shift+F10` to open a Command Prompt, and then use `notepad.exe` to open the Setup log files.
 
 `autounattend.xml` was generated with the Windows System Image Manager (WSIM) application that is
 included in the Windows Assessment and Deployment Kit (ADK).
