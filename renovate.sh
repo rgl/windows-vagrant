@@ -36,7 +36,7 @@ docker run \
     --name "$gitea_container_name" \
     -v /etc/timezone:/etc/timezone:ro \
     -v /etc/localtime:/etc/localtime:ro \
-    -e SECRET_KEY=abracadabra \
+    -e SECRET_KEY=opensesame \
     -p 3000 \
     "gitea/gitea:$gitea_version" \
     >/dev/null
