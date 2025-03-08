@@ -79,7 +79,7 @@ source "vsphere-iso" "windows-2022-amd64" {
     "tmp/windows-2022-vsphere/autounattend.xml",
   ]
   iso_paths = [
-    "[${var.vsphere_datastore}] iso/windows-2022-SERVER_EVAL_x64FRE_en-us.iso",
+    "[${var.vsphere_datastore}] iso/windows-2022-${basename(env("WINDOWS_2022_ISO_URL"))}",
     "[${var.vsphere_datastore}] iso/VMware-tools-windows-12.5.0-24276846.iso",
   ]
   network_adapters {

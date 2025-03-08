@@ -30,12 +30,12 @@ variable "disk_size" {
 
 variable "iso_url" {
   type    = string
-  default = "https://software-static.download.prss.microsoft.com/dbazure/888969d5-f34g-4e03-ac9d-1f9786c66749/26100.1742.240906-0331.ge_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso"
+  default = env("WINDOWS_11_ISO_URL")
 }
 
 variable "iso_checksum" {
   type    = string
-  default = "sha256:67cec5865eaa037a72ddc633a717a10a2bed50778862267223ddb9c60ef5da68"
+  default = env("WINDOWS_11_ISO_CHECKSUM")
 }
 
 variable "proxmox_node" {

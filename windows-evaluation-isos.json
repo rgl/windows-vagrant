@@ -1,0 +1,79 @@
+{
+  "windows-11": {
+    "name": "windows-11",
+    "url": "https://software-static.download.prss.microsoft.com/dbazure/888969d5-f34g-4e03-ac9d-1f9786c66749/26100.1742.240906-0331.ge_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso",
+    "checksum": "67cec5865eaa037a72ddc633a717a10a2bed50778862267223ddb9c60ef5da68",
+    "size": 5112850432,
+    "createdAt": "2024-09-07T00:00:00+00:00",
+    "images": [
+      {
+        "index": 1,
+        "name": "Windows 11 Enterprise LTSC Evaluation",
+        "version": "10.0.26100.1742"
+      },
+      {
+        "index": 2,
+        "name": "Windows 11 Enterprise N LTSC Evaluation",
+        "version": "10.0.26100.1742"
+      }
+    ]
+  },
+  "windows-2022": {
+    "name": "windows-2022",
+    "url": "https://software-static.download.prss.microsoft.com/sg/download/888969d5-f34g-4e03-ac9d-1f9786c66749/SERVER_EVAL_x64FRE_en-us.iso",
+    "checksum": "3e4fa6d8507b554856fc9ca6079cc402df11a8b79344871669f0251535255325",
+    "size": 5044094976,
+    "createdAt": "2022-03-04T00:00:00+00:00",
+    "images": [
+      {
+        "index": 1,
+        "name": "Windows Server 2022 Standard Evaluation",
+        "version": "10.0.20348.587"
+      },
+      {
+        "index": 2,
+        "name": "Windows Server 2022 Standard Evaluation (Desktop Experience)",
+        "version": "10.0.20348.587"
+      },
+      {
+        "index": 3,
+        "name": "Windows Server 2022 Datacenter Evaluation",
+        "version": "10.0.20348.587"
+      },
+      {
+        "index": 4,
+        "name": "Windows Server 2022 Datacenter Evaluation (Desktop Experience)",
+        "version": "10.0.20348.587"
+      }
+    ]
+  },
+  "windows-2025": {
+    "name": "windows-2025",
+    "url": "https://software-static.download.prss.microsoft.com/dbazure/888969d5-f34g-4e03-ac9d-1f9786c66749/26100.1742.240906-0331.ge_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
+    "checksum": "d0ef4502e350e3c6c53c15b1b3020d38a5ded011bf04998e950720ac8579b23d",
+    "size": 6014152704,
+    "createdAt": "2024-09-07T00:00:00+00:00",
+    "images": [
+      {
+        "index": 1,
+        "name": "Windows Server 2025 Standard Evaluation",
+        "version": "10.0.26100.1742"
+      },
+      {
+        "index": 2,
+        "name": "Windows Server 2025 Standard Evaluation (Desktop Experience)",
+        "version": "10.0.26100.1742"
+      },
+      {
+        "index": 3,
+        "name": "Windows Server 2025 Datacenter Evaluation",
+        "version": "10.0.26100.1742"
+      },
+      {
+        "index": 4,
+        "name": "Windows Server 2025 Datacenter Evaluation (Desktop Experience)",
+        "version": "10.0.26100.1742"
+      }
+    ]
+  }
+}

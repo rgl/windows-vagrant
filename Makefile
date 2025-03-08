@@ -9,6 +9,14 @@ MAKEFLAGS+= --no-builtin-variables
 #export PACKER_CONFIG_DIR:= $(HOME)/Projects/packer-plugin-windows-update/dist/test
 #export PACKER_PLUGIN_PATH:= $(HOME)/Projects/packer-plugin-windows-update/dist/test/plugins
 
+# NB execute windows-evaluation-isos-update.sh to update windows-evaluation-isos.json.
+export WINDOWS_11_ISO_URL?= $(shell jq -r '.["windows-11"].url' windows-evaluation-isos.json)
+export WINDOWS_11_ISO_CHECKSUM?= sha256:$(shell jq -r '.["windows-11"].checksum' windows-evaluation-isos.json)
+export WINDOWS_2022_ISO_URL?= $(shell jq -r '.["windows-2022"].url' windows-evaluation-isos.json)
+export WINDOWS_2022_ISO_CHECKSUM?= sha256:$(shell jq -r '.["windows-2022"].checksum' windows-evaluation-isos.json)
+export WINDOWS_2025_ISO_URL?= $(shell jq -r '.["windows-2025"].url' windows-evaluation-isos.json)
+export WINDOWS_2025_ISO_CHECKSUM?= sha256:$(shell jq -r '.["windows-2025"].checksum' windows-evaluation-isos.json)
+
 # libvirt images.
 IMAGES+= windows-2022
 IMAGES+= windows-2022-uefi

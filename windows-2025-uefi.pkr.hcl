@@ -30,12 +30,12 @@ variable "disk_size" {
 
 variable "iso_url" {
   type    = string
-  default = "https://software-static.download.prss.microsoft.com/dbazure/888969d5-f34g-4e03-ac9d-1f9786c66749/26100.1742.240906-0331.ge_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso"
+  default = env("WINDOWS_2025_ISO_URL")
 }
 
 variable "iso_checksum" {
   type    = string
-  default = "sha256:d0ef4502e350e3c6c53c15b1b3020d38a5ded011bf04998e950720ac8579b23d"
+  default = env("WINDOWS_2025_ISO_CHECKSUM")
 }
 
 variable "proxmox_node" {
