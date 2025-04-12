@@ -86,7 +86,6 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 
 %-amd64-proxmox.box: %.pkr.hcl tmp/%/autounattend.xml Vagrantfile.template *.ps1 drivers
 	rm -f $@
-	sed -E 's,<Path>E:\\</Path>,<Path>D:\\</Path>,g' -i tmp/$*/autounattend.xml
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-proxmox-packer-init.log \
 		packer init $*.pkr.hcl
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-proxmox-packer.log PKR_VAR_vagrant_box=$@ \
@@ -120,7 +119,6 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 
 %-uefi-amd64-proxmox.box: %-uefi.pkr.hcl tmp/%-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
 	rm -f $@
-	sed -E 's,<Path>E:\\</Path>,<Path>D:\\</Path>,g' -i tmp/$*-uefi/autounattend.xml
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-proxmox-packer-init.log \
 		packer init $*-uefi.pkr.hcl
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-proxmox-packer.log PKR_VAR_vagrant_box=$@ \

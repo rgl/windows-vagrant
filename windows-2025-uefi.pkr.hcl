@@ -7,7 +7,7 @@ packer {
     }
     # see https://github.com/hashicorp/packer-plugin-proxmox
     proxmox = {
-      version = "1.1.8"
+      version = "1.2.0"
       source  = "github.com/hashicorp/proxmox"
     }
     # see https://github.com/hashicorp/packer-plugin-vagrant
@@ -145,13 +145,18 @@ source "proxmox-iso" "windows-2025-uefi-amd64" {
     discard      = true
     disk_size    = "${var.disk_size}M"
     storage_pool = "local-lvm"
+    format       = "raw"
   }
-  iso_storage_pool = "local"
-  iso_url          = var.iso_url
-  iso_checksum     = var.iso_checksum
-  unmount_iso      = true
+  boot_iso {
+    type             = "ide"
+    iso_storage_pool = "local"
+    iso_url          = var.iso_url
+    iso_checksum     = var.iso_checksum
+    iso_download_pve = true
+    unmount          = true
+  }
   additional_iso_files {
-    device           = "ide0"
+    type             = "ide"
     unmount          = true
     iso_storage_pool = "local"
     cd_label         = "PROVISION"
