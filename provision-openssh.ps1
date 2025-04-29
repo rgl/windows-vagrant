@@ -61,12 +61,12 @@ function Install-Rsync {
 function Install-OpenSshBinaries {
     # see https://github.com/PowerShell/Win32-OpenSSH/releases
     # renovate: datasource=github-releases depName=PowerShell/Win32-OpenSSH
-    $version = '9.8.1.0p1-Preview'
+    $version = '9.8.3.0p2-Preview'
     Install-ZippedApplication `
         $openSshHome `
         OpenSSH `
         "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v$version/OpenSSH-Win64.zip" `
-        c7a1369cd73c8165be00c66e90291c4dd67784de7c3aa3af18c68ebedffa6ea9
+        0ca131f3a78f404dc819a6336606caec0db1663a692ccc3af1e90232706ada54
     Push-Location $openSshHome
     Move-Item OpenSSH-Win64\* .
     Remove-Item OpenSSH-Win64
@@ -96,7 +96,7 @@ if (Test-Path $openSshConfigHome) {
 # NB sshd, at startup, if it does not already exists (as its the case of this
 #    initial installation), will copy this file to
 #    $openSshConfigHome\sshd_config.
-# see https://github.com/PowerShell/openssh-portable/blob/v9.8.1.0/contrib/win32/win32compat/wmain_sshd.c#L152-L156
+# see https://github.com/PowerShell/openssh-portable/blob/v9.8.3.0/contrib/win32/win32compat/wmain_sshd.c#L152-L156
 $sshdConfig = Get-Content -Raw "$openSshHome\sshd_config_default"
 # Configure the Administrators group to also use the ~/.ssh/authorized_keys file.
 # see https://github.com/PowerShell/Win32-OpenSSH/issues/1324
