@@ -27,9 +27,9 @@ $env:POWERSHELL_UPDATECHECK = 'Off'
 # install powershell lts.
 # see https://github.com/PowerShell/PowerShell/releases
 # renovate: datasource=github-releases depName=PowerShell/PowerShell extractVersion=^v(?<version>7\.4\..+)
-$archiveVersion = '7.4.7'
+$archiveVersion = '7.4.10'
 $archiveUrl = "https://github.com/PowerShell/PowerShell/releases/download/v$archiveVersion/PowerShell-$archiveVersion-win-x64.msi"
-$archiveHash = '217b5575398d5e4a0ac67aff7b468c696a66c3e209685cf338032fc0a5f032ec'
+$archiveHash = 'd7d89141b5af44d5c205e2dfa32707475a0a98c5672ccb1cc42cd3443b0fba96'
 $archiveName = Split-Path -Leaf $archiveUrl
 $archivePath = "$env:TEMP\$archiveName"
 
