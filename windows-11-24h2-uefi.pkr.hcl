@@ -117,7 +117,13 @@ source "qemu" "windows-11-24h2-uefi-amd64" {
 
 source "proxmox-iso" "windows-11-24h2-uefi-amd64" {
   template_name            = "template-windows-11-24h2-uefi"
-  template_description     = "See https://github.com/rgl/windows-vagrant"
+  template_description     = <<-EOS
+                              See https://github.com/rgl/windows-vagrant
+
+                              ```
+                              Build At: ${timestamp()}
+                              ```
+                              EOS
   tags                     = "windows-11-24h2-uefi;template"
   insecure_skip_tls_verify = true
   node                     = var.proxmox_node
