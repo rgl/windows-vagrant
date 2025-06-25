@@ -41,9 +41,12 @@ if ($archiveHash -ne $archiveActualHash) {
 }
 
 Write-Host "Installing $archiveName..."
+# see https://learn.microsoft.com/en-us/powershell/scripting/install/microsoft-update-faq?view=powershell-7.4#can-i-enable-these-update-options-from-the-command-line-or-in-a-script
 msiexec /i $archivePath `
     /qn `
     /L*v "$archivePath.log" `
+    USE_MU=0 `
+    ENABLE_MU=0 `
     | Out-String -Stream
 if ($LASTEXITCODE) {
     throw "$archiveName installation failed with exit code $LASTEXITCODE. See $archivePath.log."
