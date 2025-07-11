@@ -8,7 +8,7 @@
     // packer plugins.
     {
       fileMatch: [
-        "\\.pkr\\.hcl",
+        "\\.pkr\\.hcl$",
       ],
       matchStrings: [
         "version\\s+=\\s+\"(?<currentValue>.+?)\"\\s+source\\s+=\\s+\"github.com/(?<depName>.+?)\"",
