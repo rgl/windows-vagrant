@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this updates the local windows-evaluation-isos.json file from the data at:
 # https://github.com/rgl/windows-evaluation-isos-scraper/tree/main/data
 set -euo pipefail
