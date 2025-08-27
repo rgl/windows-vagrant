@@ -10,12 +10,19 @@ MAKEFLAGS+= --no-builtin-variables
 #export PACKER_PLUGIN_PATH:= $(HOME)/Projects/packer-plugin-windows-update/dist/test/plugins
 
 # NB execute windows-evaluation-isos-update.sh to update windows-evaluation-isos.json.
-export WINDOWS_11_ISO_URL?= $(shell jq -r '.["windows-11"].url' windows-evaluation-isos.json)
-export WINDOWS_11_ISO_CHECKSUM?= sha256:$(shell jq -r '.["windows-11"].checksum' windows-evaluation-isos.json)
-export WINDOWS_2022_ISO_URL?= $(shell jq -r '.["windows-2022"].url' windows-evaluation-isos.json)
-export WINDOWS_2022_ISO_CHECKSUM?= sha256:$(shell jq -r '.["windows-2022"].checksum' windows-evaluation-isos.json)
-export WINDOWS_2025_ISO_URL?= $(shell jq -r '.["windows-2025"].url' windows-evaluation-isos.json)
-export WINDOWS_2025_ISO_CHECKSUM?= sha256:$(shell jq -r '.["windows-2025"].checksum' windows-evaluation-isos.json)
+WINDOWS_11_ISO_URL?= $(shell jq -r '.["windows-11"].url' windows-evaluation-isos.json)
+WINDOWS_11_ISO_CHECKSUM?= sha256:$(shell jq -r '.["windows-11"].checksum' windows-evaluation-isos.json)
+WINDOWS_2022_ISO_URL?= $(shell jq -r '.["windows-2022"].url' windows-evaluation-isos.json)
+WINDOWS_2022_ISO_CHECKSUM?= sha256:$(shell jq -r '.["windows-2022"].checksum' windows-evaluation-isos.json)
+WINDOWS_2025_ISO_URL?= $(shell jq -r '.["windows-2025"].url' windows-evaluation-isos.json)
+WINDOWS_2025_ISO_CHECKSUM?= sha256:$(shell jq -r '.["windows-2025"].checksum' windows-evaluation-isos.json)
+
+export WINDOWS_11_ISO_URL:= $(WINDOWS_11_ISO_URL)
+export WINDOWS_11_ISO_CHECKSUM:= $(WINDOWS_11_ISO_CHECKSUM)
+export WINDOWS_2022_ISO_URL:= $(WINDOWS_2022_ISO_URL)
+export WINDOWS_2022_ISO_CHECKSUM:= $(WINDOWS_2022_ISO_CHECKSUM)
+export WINDOWS_2025_ISO_URL:= $(WINDOWS_2025_ISO_URL)
+export WINDOWS_2025_ISO_CHECKSUM:= $(WINDOWS_2025_ISO_CHECKSUM)
 
 # libvirt images.
 IMAGES+= windows-2022
