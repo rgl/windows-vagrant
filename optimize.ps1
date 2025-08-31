@@ -142,7 +142,7 @@ Stop-ServiceForReal BITS               # Background Intelligent Transfer Service
 
 # NB even thou the automatic maintenance includes a component cleanup task,
 #    it will not clean everything, as such, dism will clean the rest.
-# NB to analyse the used space use: dism.exe /Online /Cleanup-Image /AnalyzeComponentStore
+# NB to analyze the used space use: dism.exe /Online /Cleanup-Image /AnalyzeComponentStore
 # see https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/clean-up-the-winsxs-folder
 Write-Host 'Cleaning up the WinSxS folder...'
 dism.exe /Online /Quiet /Cleanup-Image /StartComponentCleanup /ResetBase
