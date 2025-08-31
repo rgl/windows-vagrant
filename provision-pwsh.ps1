@@ -33,7 +33,7 @@ $archiveHash = '9579011c463a3ad6abf890736a97e2fbba9a7b4e09ce851576ccf263e15bdc97
 $archiveName = Split-Path -Leaf $archiveUrl
 $archivePath = "$env:TEMP\$archiveName"
 
-Write-Host "Downloading $archiveName..."
+Write-Host "Downloading $archiveUrl..."
 (New-Object Net.WebClient).DownloadFile($archiveUrl, $archivePath)
 $archiveActualHash = (Get-FileHash $archivePath -Algorithm SHA256).Hash
 if ($archiveHash -ne $archiveActualHash) {
