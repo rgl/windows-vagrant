@@ -231,6 +231,11 @@ build {
 
   provisioner "powershell" {
     use_pwsh = true
+    script   = "optimize-cleanup-image.ps1"
+  }
+
+  provisioner "powershell" {
+    use_pwsh = true
     script   = "enable-remote-desktop.ps1"
   }
 
