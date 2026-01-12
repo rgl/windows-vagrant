@@ -10,7 +10,7 @@ f="$(basename "$u")"
 if [ ! -f "drivers/$f" ]; then
 	rm -rf drivers drivers.tmp
 	mkdir -p drivers.tmp
-	wget -P drivers.tmp "$u"
+	wget --progress=dot:giga -P drivers.tmp "$u"
 	7z x -odrivers.tmp drivers.tmp/virtio-win-*.iso
 	mv drivers.tmp drivers
 fi
