@@ -13,12 +13,12 @@ gitea_container_name="$(basename "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")
 
 # see https://hub.docker.com/r/gitea/gitea/tags
 # renovate: datasource=docker depName=gitea/gitea
-gitea_version='1.24.7'
+gitea_version='1.25.3'
 
 # see https://hub.docker.com/r/renovate/renovate/tags
 # see https://github.com/renovatebot/renovate/releases
 # renovate: datasource=docker depName=renovate/renovate
-renovate_version='41.159.3'
+renovate_version='42.76.5'
 
 # clean.
 echo 'Deleting existing Gitea...'
@@ -30,7 +30,7 @@ install -d tmp
 # start gitea in background.
 # see https://docs.gitea.io/en-us/config-cheat-sheet/
 # see https://github.com/go-gitea/gitea/releases
-# see https://github.com/go-gitea/gitea/blob/v1.24.7/docker/root/etc/s6/gitea/setup
+# see https://github.com/go-gitea/gitea/blob/v1.25.3/docker/root/etc/s6/gitea/setup
 echo 'Starting Gitea...'
 docker run \
     --detach \
@@ -172,7 +172,10 @@ docker run \
   "renovate/renovate:$renovate_version" \
   --platform=gitea \
   --git-url=endpoint \
-  >tmp/renovate-log.json
+  >tmp/renovate-log.txt
+ grep -E '^{' \
+    tmp/renovate-log.txt \
+    >tmp/renovate-log.json
 
 echo 'Getting results...'
 # extract the errors.

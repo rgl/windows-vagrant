@@ -3,11 +3,11 @@ This builds Windows 11/2022/2025 base Vagrant boxes using [Packer](https://www.p
 
 # Usage
 
-Install a supported hypervisor (e.g. [libvirt](https://libvirt.org/)), [packer 1.10+](https://www.packer.io/) and [vagrant](https://www.vagrantup.com/).
+Install a supported hypervisor (e.g. [libvirt](https://libvirt.org/)), [packer 1.14+](https://www.packer.io/) and [vagrant](https://www.vagrantup.com/).
 If you are using Windows and [Chocolatey](https://chocolatey.org/), you can install the tools (you still need to install Hyper-V) from an administrative PowerShell session with:
 
 ```powershell
-choco install -y packer vagrant msys2
+choco install -y packer vagrant msys2 jq
 
 # configure the msys2 launcher to let the shell inherit the PATH.
 $msys2BasePath = 'C:\tools\msys64'
