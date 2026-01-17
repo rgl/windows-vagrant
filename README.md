@@ -42,6 +42,13 @@ Bash 'pacman --noconfirm -Sy make zip unzip tar p7zip dos2unix xorriso'
 Open a bash shell by starting `C:\tools\msys64\mingw64.exe` and execute the
 remaining commands inside it.
 
+If your host has multiple IP addresses, you might need to set the
+`PACKER_HTTP_BIND_ADDRESS` environment variable, e.g.:
+
+```bash
+export PACKER_HTTP_BIND_ADDRESS='192.168.8.11'
+```
+
 To build the base box based on the [Windows Server 2022 Evaluation](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022) ISO run:
 
 ```bash
@@ -137,6 +144,7 @@ Set your Proxmox VE details:
 
 ```bash
 cat >secrets-proxmox.sh <<EOF
+#export PACKER_HTTP_BIND_ADDRESS='192.168.8.11'
 export PROXMOX_URL='https://192.168.1.21:8006/api2/json'
 export PROXMOX_USERNAME='root@pam'
 export PROXMOX_PASSWORD='vagrant'
@@ -257,6 +265,7 @@ sudo apt-get install build-essential patch ruby-dev zlib1g-dev liblzma-dev
 vagrant plugin install vagrant-vsphere
 vagrant plugin install vagrant-windows-sysprep
 cat >secrets.sh <<'EOF'
+#export PACKER_HTTP_BIND_ADDRESS='192.168.8.11'
 export GOVC_INSECURE='1'
 export GOVC_HOST='vsphere.local'
 export GOVC_URL="https://$GOVC_HOST/sdk"

@@ -28,6 +28,11 @@ packer {
   }
 }
 
+variable "http_bind_address" {
+  type    = string
+  default = env("PACKER_HTTP_BIND_ADDRESS")
+}
+
 variable "disk_size" {
   type    = string
   default = "61440"
@@ -116,6 +121,7 @@ source "qemu" "windows-2025-amd64" {
   format                   = "qcow2"
   headless                 = true
   net_device               = "virtio-net"
+  http_bind_address        = var.http_bind_address
   http_directory           = "."
   iso_url                  = var.iso_url
   iso_checksum             = var.iso_checksum
@@ -201,12 +207,13 @@ source "proxmox-iso" "windows-2025-amd64" {
       "tmp/windows-2025/autounattend.xml",
     ]
   }
-  os             = "win11"
-  ssh_username   = "vagrant"
-  ssh_password   = "vagrant"
-  ssh_timeout    = "60m"
-  http_directory = "."
-  boot_wait      = "30s"
+  os                = "win11"
+  ssh_username      = "vagrant"
+  ssh_password      = "vagrant"
+  ssh_timeout       = "60m"
+  http_bind_address = var.http_bind_address
+  http_directory    = "."
+  boot_wait         = "30s"
 }
 
 source "hyperv-iso" "windows-2025-amd64" {
