@@ -5,10 +5,10 @@ packer {
       version = "0.17.2"
       source  = "github.com/rgl/windows-update"
     }
-    # see https://github.com/hashicorp/packer-plugin-vsphere
+    # see https://github.com/vmware/packer-plugin-vsphere
     vsphere = {
       version = "2.0.0"
-      source  = "github.com/hashicorp/vsphere"
+      source  = "github.com/vmware/vsphere"
     }
   }
 }
