@@ -50,6 +50,7 @@ VSPHERE_IMAGES+= windows-2022
 VSPHERE_IMAGES+= windows-2022-uefi
 VSPHERE_IMAGES+= windows-2025
 VSPHERE_IMAGES+= windows-2025-uefi
+VSPHERE_IMAGES+= windows-11-24h2-uefi
 
 # Generate the build-* targets.
 LIBVIRT_BUILDS= $(addsuffix -libvirt,$(addprefix build-,$(IMAGES)))
