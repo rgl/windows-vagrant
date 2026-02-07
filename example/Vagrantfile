@@ -44,15 +44,19 @@ Vagrant.configure(2) do |config|
       end
     end
     config.vm.synced_folder '.', '/vagrant',
+      disabled: false,
       type: 'smb',
       smb_username: ENV['VAGRANT_SMB_USERNAME'] || ENV['USER'],
       smb_password: ENV['VAGRANT_SMB_PASSWORD']
     # example rsync synced folder.
     # this is used for testing whether rsync is working correctly.
-    config.vm.synced_folder '.', '/vagrant-rsync', type: 'rsync', rsync__exclude: [
-      '.vagrant/',
-      '.git/',
-      '*.box']
+    config.vm.synced_folder '.', '/vagrant-rsync',
+      disabled: false,
+      type: 'rsync',
+      rsync__exclude: [
+        '.vagrant/',
+        '.git/',
+        '*.box']
   end
 
   config.vm.provider 'hyperv' do |hv, config|
@@ -66,15 +70,19 @@ Vagrant.configure(2) do |config|
     # see https://github.com/hashicorp/vagrant/blob/10faa599e7c10541f8b7acf2f8a23727d4d44b6e/plugins/providers/hyperv/action/configure.rb#L21-L35
     config.vm.network :private_network, bridge: ENV['HYPERV_SWITCH_NAME'] if ENV['HYPERV_SWITCH_NAME']
     config.vm.synced_folder '.', '/vagrant',
+      disabled: false,
       type: 'smb',
       smb_username: ENV['VAGRANT_SMB_USERNAME'] || ENV['USER'],
       smb_password: ENV['VAGRANT_SMB_PASSWORD']
     # example rsync synced folder.
     # this is used for testing whether rsync is working correctly.
-    config.vm.synced_folder '.', '/vagrant-rsync', type: 'rsync', rsync__exclude: [
-      '.vagrant/',
-      '.git/',
-      '*.box']
+    config.vm.synced_folder '.', '/vagrant-rsync',
+      disabled: false,
+      type: 'rsync',
+      rsync__exclude: [
+        '.vagrant/',
+        '.git/',
+        '*.box']
     # configure the hyper-v vm.
     config.trigger.before :'VagrantPlugins::HyperV::Action::StartInstance', type: :action do |trigger|
       trigger.ruby do |env, machine|
@@ -116,15 +124,19 @@ Vagrant.configure(2) do |config|
     vsphere.vm_base_path = ENV['VSPHERE_VM_FOLDER']
     vsphere.vlan = ENV['VSPHERE_VLAN']
     config.vm.synced_folder '.', '/vagrant',
+      disabled: false,
       type: 'smb',
       smb_username: ENV['VAGRANT_SMB_USERNAME'] || ENV['USER'],
       smb_password: ENV['VAGRANT_SMB_PASSWORD']
     # example rsync synced folder.
     # this is used for testing whether rsync is working correctly.
-    config.vm.synced_folder '.', '/vagrant-rsync', type: 'rsync', rsync__exclude: [
-      '.vagrant/',
-      '.git/',
-      '*.box']
+    config.vm.synced_folder '.', '/vagrant-rsync',
+      disabled: false,
+      type: 'rsync',
+      rsync__exclude: [
+        '.vagrant/',
+        '.git/',
+        '*.box']
   end
 
   config.vm.provision "shell", path: "ps.ps1", args: ["assert-service-automatic-start-delayed.ps1", "WinRM", "sshd"]
