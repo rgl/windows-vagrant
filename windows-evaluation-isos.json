@@ -49,30 +49,30 @@
   },
   "windows-2025": {
     "name": "windows-2025",
-    "url": "https://software-static.download.prss.microsoft.com/dbazure/888969d5-f34g-4e03-ac9d-1f9786c66749/26100.1742.240906-0331.ge_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
-    "checksum": "d0ef4502e350e3c6c53c15b1b3020d38a5ded011bf04998e950720ac8579b23d",
-    "size": 6014152704,
-    "createdAt": "2024-09-07T00:00:00+00:00",
+    "url": "https://software-static.download.prss.microsoft.com/dbazure/998969d5-f34g-4e03-ac9d-1f9786c66749/26100.32230.260111-0550.lt_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
+    "checksum": "7b052573ba7894c9924e3e87ba732ccd354d18cb75a883efa9b900ea125bfd51",
+    "size": 8152356864,
+    "createdAt": "2026-01-15T00:00:00+00:00",
     "images": [
       {
         "index": 1,
         "name": "Windows Server 2025 Standard Evaluation",
-        "version": "10.0.26100.1742"
+        "version": "10.0.26100.32230"
       },
       {
         "index": 2,
         "name": "Windows Server 2025 Standard Evaluation (Desktop Experience)",
-        "version": "10.0.26100.1742"
+        "version": "10.0.26100.32230"
       },
       {
         "index": 3,
         "name": "Windows Server 2025 Datacenter Evaluation",
-        "version": "10.0.26100.1742"
+        "version": "10.0.26100.32230"
       },
       {
         "index": 4,
         "name": "Windows Server 2025 Datacenter Evaluation (Desktop Experience)",
-        "version": "10.0.26100.1742"
+        "version": "10.0.26100.32230"
       }
     ]
   }
