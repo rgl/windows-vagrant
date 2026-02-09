@@ -86,7 +86,7 @@ source "vsphere-iso" "windows-2022-uefi-amd64" {
   ]
   iso_paths = [
     "[${var.vsphere_datastore}] iso/windows-2022-${basename(var.iso_url)}",
-    "[${var.vsphere_datastore}] iso/VMware-tools-windows-12.5.0-24276846.iso",
+    "[${var.vsphere_datastore}] iso/VMware-tools-windows-13.0.10-25056151.iso",
   ]
   network_adapters {
     network      = var.vsphere_network
