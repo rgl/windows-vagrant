@@ -46,12 +46,12 @@ function Install-ZippedApplication($destinationPath, $name, $url, $expectedHash,
 function Install-Rsync {
     # see https://github.com/rgl/rsync-vagrant/releases
     # renovate: datasource=github-releases depName=rgl/rsync-vagrant
-    $version = '3.4.1-20260111'
+    $version = '3.4.1-20250411'
     Install-ZippedApplication `
         $rsyncHome `
         rsync `
         "https://github.com/rgl/rsync-vagrant/releases/download/v$version/rsync-vagrant-$version.zip" `
-        bb09eab2e5ea061b9a8d31e16017f910687c2b71af552a5c0a3cb607691e8287
+        8a4492df681a66074b59513f4446ef660fe451187b2c943096fcde46a5c17a21
     [Environment]::SetEnvironmentVariable(
         'PATH',
         "$([Environment]::GetEnvironmentVariable('PATH', 'Machine'));$rsyncHome",
