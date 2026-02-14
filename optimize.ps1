@@ -140,12 +140,14 @@ Stop-ServiceForReal BITS               # Background Intelligent Transfer Service
 #
 # reclaim the free disk space.
 
-Write-Host 'Reclaiming the free disk space...'
+Write-Host 'Reclaiming the free disk space using defrag...'
 $results = defrag.exe C: /H /L
-if ($results -eq 'The operation completed successfully.') {
+if ($results -contains 'The operation completed successfully.') {
     $results
 } else {
-    Write-Host 'Zero filling the free disk space...'
+    Write-Host 'Warning: defrag failed with the following results:'
+    $results
+    Write-Host 'Reclaiming the free disk space using SDelete...'
     (New-Object System.Net.WebClient).DownloadFile('https://download.sysinternals.com/files/SDelete.zip', "$env:TEMP\SDelete.zip")
     Expand-Archive "$env:TEMP\SDelete.zip" $env:TEMP
     Remove-Item "$env:TEMP\SDelete.zip"
