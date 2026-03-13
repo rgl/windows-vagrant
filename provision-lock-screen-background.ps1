@@ -14,8 +14,12 @@ trap {
 
 # get the Windows version information.
 $currentVersionKey = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+$productName = $currentVersionKey.ProductName
+if ($currentVersionKey.CurrentBuildNumber -ge 22000) {
+    $productName = $productName -replace 'Windows 10','Windows 11'
+}
 $text = @"
-$($currentVersionKey.ProductName) (Build $($currentVersionKey.CurrentBuildNumber))
+$productName (Build $($currentVersionKey.CurrentBuildNumber))
 Installed on $((Get-Date).ToString("yyyy-MM-dd"))
 "@
 
