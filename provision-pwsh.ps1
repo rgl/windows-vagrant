@@ -17,7 +17,7 @@ trap {
     -bor [Net.SecurityProtocolType]::Tls12
 
 # disable update notifications.
-# see https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_update_notifications?view=powershell-7.4
+# see https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_update_notifications?view=powershell-7.6
 $env:POWERSHELL_UPDATECHECK = 'Off'
 [Environment]::SetEnvironmentVariable(
     'POWERSHELL_UPDATECHECK',
@@ -26,10 +26,10 @@ $env:POWERSHELL_UPDATECHECK = 'Off'
 
 # install powershell lts.
 # see https://github.com/PowerShell/PowerShell/releases
-# renovate: datasource=github-releases depName=PowerShell/PowerShell extractVersion=^v(?<version>7\.4\..+)
-$archiveVersion = '7.4.14'
+# renovate: datasource=github-releases depName=PowerShell/PowerShell extractVersion=^v(?<version>7\.6\..+)
+$archiveVersion = '7.6.0'
 $archiveUrl = "https://github.com/PowerShell/PowerShell/releases/download/v$archiveVersion/PowerShell-$archiveVersion-win-x64.msi"
-$archiveHash = '5edb1da170906b638f685995fa68c16a4faa4fd2b6fa745e452d4f02e959f87f'
+$archiveHash = 'ce60d76319739b52b281c744144cd8e942aed9cda02483ce9bd732e140f75982'
 $archiveName = Split-Path -Leaf $archiveUrl
 $archivePath = "$env:TEMP\$archiveName"
 
@@ -41,7 +41,7 @@ if ($archiveHash -ne $archiveActualHash) {
 }
 
 Write-Host "Installing $archiveName..."
-# see https://learn.microsoft.com/en-us/powershell/scripting/install/microsoft-update-faq?view=powershell-7.4#can-i-enable-these-update-options-from-the-command-line-or-in-a-script
+# see https://learn.microsoft.com/en-us/powershell/scripting/install/microsoft-update-faq?view=powershell-7.6#can-i-enable-these-update-options-from-the-command-line-or-in-a-script
 msiexec /i $archivePath `
     /qn `
     /L*v "$archivePath.log" `
