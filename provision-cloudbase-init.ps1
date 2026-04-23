@@ -21,7 +21,7 @@ $cloudbaseInitConfPath = "$cloudbaseInitHome\conf\cloudbase-init.conf"
 
 # see https://github.com/cloudbase/cloudbase-init/releases
 # renovate: datasource=github-releases depName=cloudbase/cloudbase-init
-$cloudbaseInitVersion = '1.1.6'
+$cloudbaseInitVersion = '1.1.8'
 
 $artifactUrl = "https://github.com/cloudbase/cloudbase-init/releases/download/$cloudbaseInitVersion/CloudbaseInitSetup_$($cloudbaseInitVersion -replace '\.','_')_x64.msi"
 $artifactPath = "$env:TEMP\$(Split-Path -Leaf $artifactUrl)"
