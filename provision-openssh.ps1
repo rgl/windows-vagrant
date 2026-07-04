@@ -26,7 +26,7 @@ trap {
 # NB Configuration, keys, and logs are in $openSshConfigHome (C:\ProgramData\ssh).
 
 $rsyncHome = 'C:\Program Files\rsync'
-$openSshHome = 'C:\Program Files\OpenSSH'
+$openSshHome = 'C:\Windows\System32\OpenSSH'
 $openSshConfigHome = 'C:\ProgramData\ssh'
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem

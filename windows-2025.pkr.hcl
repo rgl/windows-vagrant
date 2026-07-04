@@ -297,8 +297,15 @@ build {
   }
 
   provisioner "powershell" {
+    except   = ["hyperv-iso.windows-2025-amd64"]
     use_pwsh = true
     script   = "provision-cloudbase-init.ps1"
+  }
+
+  provisioner "powershell" {
+    only     = ["hyperv-iso.windows-2025-amd64"]
+    use_pwsh = true
+    script   = "provision-eryph-guest-services.ps1"
   }
 
   provisioner "powershell" {
