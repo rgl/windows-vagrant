@@ -146,9 +146,24 @@ Set your Proxmox VE details:
 cat >secrets-proxmox.sh <<EOF
 #export PACKER_HTTP_BIND_ADDRESS='192.168.8.11'
 export PROXMOX_URL='https://192.168.1.21:8006/api2/json'
-export PROXMOX_USERNAME='root@pam'
-export PROXMOX_PASSWORD='vagrant'
 export PROXMOX_NODE='pve'
+# username/password authentication.
+# NB this creates an authentication session that expires after 2h. that might
+#    not be enough time to create the image, instead, use the api token
+#    authentication.
+# see https://github.com/hashicorp/packer-plugin-proxmox/issues/247
+#export PROXMOX_USERNAME='root@pam'
+#export PROXMOX_PASSWORD='vagrant'
+#unset PROXMOX_TOKEN
+# api token authentication.
+# NB to create the api token, login into proxmox, at the leftmost pane, select
+#    the datacenter node, at the middle pane, select the permissions node,
+#    select the api tokens node, then click the add button, unset the privilege
+#    separation checkbox, fill the rest of the form, and then create the api
+#    token.
+export PROXMOX_USERNAME='root@pam!vagrant'
+export PROXMOX_TOKEN='00000000-0000-0000-0000-000000000000'
+unset PROXMOX_PASSWORD
 EOF
 source secrets-proxmox.sh
 ```
