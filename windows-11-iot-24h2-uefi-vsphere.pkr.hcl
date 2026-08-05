@@ -141,6 +141,11 @@ build {
     script   = "remove-apps.ps1"
   }
 
+  provisioner "powershell" {
+    use_pwsh = true
+    script   = "remove-recovery-partition.ps1"
+  }
+
   provisioner "windows-restart" {
   }
 

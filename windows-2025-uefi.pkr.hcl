@@ -226,6 +226,11 @@ build {
     script   = "disable-windows-defender.ps1"
   }
 
+  provisioner "powershell" {
+    use_pwsh = true
+    script   = "remove-recovery-partition.ps1"
+  }
+
   provisioner "windows-restart" {
   }
 
