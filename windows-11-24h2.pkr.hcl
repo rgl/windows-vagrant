@@ -7,7 +7,7 @@ packer {
     }
     # see https://github.com/hashicorp/packer-plugin-proxmox
     proxmox = {
-      version = "1.2.3"
+      version = "1.2.4"
       source  = "github.com/hashicorp/proxmox"
     }
     # see https://github.com/hashicorp/packer-plugin-hyperv
