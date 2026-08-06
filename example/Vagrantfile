@@ -46,13 +46,9 @@ def set_libvirt_os_information(machine)
 end
 
 Vagrant.configure(2) do |config|
-  config.vm.box = 'windows-2022-amd64'
-  #config.vm.box = 'windows-2022-uefi-amd64'
-  #config.vm.box = 'windows-2025-amd64'
+  config.vm.box = 'windows-2022-uefi-amd64'
   #config.vm.box = 'windows-2025-uefi-amd64'
-  #config.vm.box = 'windows-11-24h2-amd64'
   #config.vm.box = 'windows-11-24h2-uefi-amd64'
-  #config.vm.box = 'windows-11-iot-24h2-amd64'
   #config.vm.box = 'windows-11-iot-24h2-uefi-amd64'
 
   config.vm.hostname = 'example'

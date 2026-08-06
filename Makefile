@@ -33,23 +33,15 @@ export WINDOWS_2025_ISO_URL:= $(WINDOWS_2025_ISO_URL)
 export WINDOWS_2025_ISO_CHECKSUM:= $(WINDOWS_2025_ISO_CHECKSUM)
 
 # libvirt images.
-IMAGES+= windows-2022
 IMAGES+= windows-2022-uefi
-IMAGES+= windows-2025
 IMAGES+= windows-2025-uefi
-IMAGES+= windows-11-24h2
 IMAGES+= windows-11-24h2-uefi
-IMAGES+= windows-11-iot-24h2
 IMAGES+= windows-11-iot-24h2-uefi
 
 # Proxmox images.
-PROXMOX_IMAGES+= windows-2022
 PROXMOX_IMAGES+= windows-2022-uefi
-PROXMOX_IMAGES+= windows-2025
 PROXMOX_IMAGES+= windows-2025-uefi
-PROXMOX_IMAGES+= windows-11-24h2
 PROXMOX_IMAGES+= windows-11-24h2-uefi
-PROXMOX_IMAGES+= windows-11-iot-24h2
 PROXMOX_IMAGES+= windows-11-iot-24h2-uefi
 
 # Hyper-V images.
@@ -59,9 +51,7 @@ HYPERV_IMAGES+= windows-11-24h2-uefi
 HYPERV_IMAGES+= windows-11-iot-24h2-uefi
 
 # vSphere images.
-VSPHERE_IMAGES+= windows-2022
 VSPHERE_IMAGES+= windows-2022-uefi
-VSPHERE_IMAGES+= windows-2025
 VSPHERE_IMAGES+= windows-2025-uefi
 VSPHERE_IMAGES+= windows-11-24h2-uefi
 VSPHERE_IMAGES+= windows-11-iot-24h2-uefi
@@ -95,28 +85,7 @@ $(PROXMOX_BUILDS): build-%-proxmox: %-amd64-proxmox.box
 $(HYPERV_BUILDS): build-%-hyperv: %-amd64-hyperv.box
 $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 
-%-amd64-libvirt.box: %.pkr.hcl tmp/%/autounattend.xml Vagrantfile.template *.ps1 drivers
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-libvirt-packer-init.log \
-		packer init $*.pkr.hcl
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-libvirt-packer.log PKR_VAR_vagrant_box=$@ \
-		packer build -only=qemu.$*-amd64 -on-error=abort $*.pkr.hcl
-	./get-windows-updates-from-packer-log.sh \
-		$*-amd64-libvirt-packer.log \
-		>$*-amd64-libvirt-windows-updates.log
-	@./box-metadata.sh libvirt $*-amd64 $@
-
-%-amd64-proxmox.box: %.pkr.hcl tmp/%/autounattend.xml Vagrantfile.template *.ps1 drivers
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-proxmox-packer-init.log \
-		packer init $*.pkr.hcl
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-proxmox-packer.log PKR_VAR_vagrant_box=$@ \
-		packer build -only=proxmox-iso.$*-amd64 -on-error=abort $*.pkr.hcl
-	./get-windows-updates-from-packer-log.sh \
-		$*-amd64-proxmox-packer.log \
-		>$*-amd64-proxmox-windows-updates.log
-
-%-uefi-amd64-hyperv.box: %.pkr.hcl tmp/%-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1
+%-uefi-amd64-hyperv.box: %-uefi.pkr.hcl tmp/%-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1
 	rm -f $@
 	sed -E '/<DriverPaths>/,/<\/DriverPaths>/d' -i tmp/$*-uefi/autounattend.xml
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-hyperv-packer-init.log \
@@ -163,33 +132,6 @@ tmp/%/autounattend.xml: %/autounattend.xml always
 		sed -E 's,<!--<Key>.+</Key>-->,<Key>${PKR_VAR_windows_product_key}</Key>,g' -i $@; \
 	fi
 
-%-amd64-vsphere.box: %-vsphere.pkr.hcl tmp/%-vsphere/autounattend.xml Vagrantfile.template *.ps1
-	rm -f $@
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-vsphere-packer-init.log \
-		packer init $*-vsphere.pkr.hcl
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-vsphere-packer.log PKR_VAR_vagrant_box=$@ \
-		packer build -only=vsphere-iso.$*-amd64 -on-error=abort $*-vsphere.pkr.hcl
-	./get-windows-updates-from-packer-log.sh \
-		$*-amd64-vsphere-packer.log \
-		>$*-amd64-vsphere-windows-updates.log
-	@echo 'Removing all cd-roms (except the first)...'
-	govc device.ls "-vm.ipath=$$VSPHERE_TEMPLATE_IPATH" \
-		| grep ^cdrom- \
-		| tail -n+2 \
-		| awk '{print $$1}' \
-		| xargs -L1 govc device.remove "-vm.ipath=$$VSPHERE_TEMPLATE_IPATH"
-	@echo 'Converting to template...'
-	govc vm.markastemplate "$$VSPHERE_TEMPLATE_IPATH"
-	@echo 'Creating the local box file...'
-	rm -rf tmp/$@-contents
-	mkdir -p tmp/$@-contents
-	echo '{"provider":"vsphere"}' >tmp/$@-contents/metadata.json
-	cp Vagrantfile.template tmp/$@-contents/Vagrantfile
-	tar cvf $@ -C tmp/$@-contents .
-	@echo BOX successfully built!
-	@echo to add to local vagrant install do:
-	@echo vagrant box add -f $*-amd64 $@
-
 %-uefi-amd64-vsphere.box: %-uefi-vsphere.pkr.hcl tmp/%-uefi-vsphere/autounattend.xml Vagrantfile-uefi.template *.ps1
 	rm -f $@
 	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-vsphere-packer-init.log \
@@ -211,7 +153,7 @@ tmp/%/autounattend.xml: %/autounattend.xml always
 	rm -rf tmp/$@-contents
 	mkdir -p tmp/$@-contents
 	echo '{"provider":"vsphere"}' >tmp/$@-contents/metadata.json
-	cp Vagrantfile.template tmp/$@-contents/Vagrantfile
+	cp Vagrantfile-uefi.template tmp/$@-contents/Vagrantfile
 	tar cvf $@ -C tmp/$@-contents .
 	@echo BOX successfully built!
 	@echo to add to local vagrant install do:

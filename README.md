@@ -52,7 +52,7 @@ export PACKER_HTTP_BIND_ADDRESS='192.168.8.11'
 To build the base box based on the [Windows Server 2022 Evaluation](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022) ISO run:
 
 ```bash
-make build-windows-2022-libvirt
+make build-windows-2022-uefi-libvirt
 ```
 
 If you want to use your own ISO, you need to manually run the `packer` command, e.g.:
@@ -68,20 +68,20 @@ If you want to use your own ISO, you need to manually run the `packer` command, 
 PKR_VAR_iso_url='windows-2022.iso' \
 PKR_VAR_iso_checksum='none' \
 PKR_VAR_windows_product_key='VDYBN-27WPP-V4HQT-9VMD4-VMK7H' \
-  make build-windows-2022-libvirt
+  make build-windows-2022-uefi-libvirt
 ```
 
-**NB** if the build fails with something like `Post-processor failed: write /tmp/packer073329394/packer-windows-2022-amd64-libvirt-1505050546-disk001.vmdk: no space left on device` you need to increase your temporary partition size or change its location [as described in the packer TMPDIR/TMP environment variable documentation](https://www.packer.io/docs/configure#tmpdir).
+**NB** if the build fails with something like `Post-processor failed: write /tmp/packer073329394/packer-windows-2022-uefi-amd64-libvirt-1505050546-disk001.vmdk: no space left on device` you need to increase your temporary partition size or change its location [as described in the packer TMPDIR/TMP environment variable documentation](https://www.packer.io/docs/configure#tmpdir).
 
 **NB** if you are having trouble building the base box due to floppy drive removal errors try adding, as a
-workaround, `"post_shutdown_delay": "30s",` to the `windows-2022.pkr.hcl` file.
+workaround, `"post_shutdown_delay": "30s",` to the `windows-2022-uefi.pkr.hcl` file.
 
-**NB** the packer logs are saved inside a `*-packer.log` file (e.g. `windows-2022-amd64-libvirt-packer.log`).
+**NB** the packer logs are saved inside a `*-packer.log` file (e.g. `windows-2022-uefi-amd64-libvirt-packer.log`).
 
 You can then add the base box to your local vagrant installation with:
 
 ```bash
-vagrant box add -f windows-2022-amd64 windows-2022-amd64-libvirt.box
+vagrant box add -f windows-2022-uefi-amd64 windows-2022-uefi-amd64-libvirt.box
 ```
 
 And test this base box by launching an example Vagrant environment:
@@ -122,13 +122,13 @@ export GITHUB_COM_TOKEN='YOUR_GITHUB_PERSONAL_TOKEN'
 Build the base box for the [vagrant-libvirt provider](https://github.com/vagrant-libvirt/vagrant-libvirt) with:
 
 ```bash
-make build-windows-2022-libvirt
+make build-windows-2022-uefi-libvirt
 ```
 
 If you want to access the UI run:
 
 ```bash
-spicy --uri 'spice+unix:///tmp/packer-windows-2022-amd64-libvirt-spice.socket'
+spicy --uri 'spice+unix:///tmp/packer-windows-2022-uefi-amd64-libvirt-spice.socket'
 ```
 
 **NB** the packer template file defines `qemuargs` (which overrides the default packer qemu arguments), if you modify it, verify if you also need include the default packer qemu arguments (see [builder/qemu/step_run.go](https://github.com/hashicorp/packer/blob/master/builder/qemu/step_run.go) or start packer without `qemuargs` defined to see how it starts qemu).
@@ -171,7 +171,7 @@ source secrets-proxmox.sh
 Create the template:
 
 ```bash
-make build-windows-2022-proxmox
+make build-windows-2022-uefi-proxmox
 ```
 
 **NB** There is no way to use the created template with vagrant (the [vagrant-proxmox plugin](https://github.com/telcat/vagrant-proxmox) is no longer compatible with recent vagrant versions). Instead, use packer (e.g. like in this repository) or terraform (e.g. see [rgl/terraform-proxmox-windows-example](https://github.com/rgl/terraform-proxmox-windows-example)).
@@ -267,9 +267,9 @@ vagrant destroy -f
 
 ## VMware vSphere
 
-Download the Windows Evaluation ISO (you can find the full iso URL in the [windows-2022-vsphere.pkr.hcl](windows-2022-vsphere.pkr.hcl) file) and place it inside the datastore as defined by the `vsphere_iso_url` user variable that is inside the [packer template](windows-2022-vsphere.pkr.hcl).
+Download the Windows Evaluation ISO (you can find the full iso URL in the [windows-2022-uefi-vsphere.pkr.hcl](windows-2022-uefi-vsphere.pkr.hcl) file) and place it inside the datastore as defined by the `vsphere_iso_url` user variable that is inside the [packer template](windows-2022-uefi-vsphere.pkr.hcl).
 
-Download the [VMware Tools `VMware-tools-windows-13.1.0-25218885.iso`](https://packages.vmware.com/tools/releases/) file into the `iso` directory of the datastore defined in the `vsphere_datastore` user variable that is inside the [packer template](windows-2022-vsphere.pkr.hcl).
+Download the [VMware Tools `VMware-tools-windows-13.1.0-25218885.iso`](https://packages.vmware.com/tools/releases/) file into the `iso` directory of the datastore defined in the `vsphere_datastore` user variable that is inside the [packer template](windows-2022-uefi-vsphere.pkr.hcl).
 
 Download [govc](https://github.com/vmware/govmomi/releases/latest) and place it inside your `/usr/local/bin` directory.
 
@@ -293,10 +293,10 @@ export VSPHERE_ESXI_HOST='esxi.local'
 export VSPHERE_TEMPLATE_FOLDER='test/templates'
 # NB the VSPHERE_TEMPLATE_NAME last segment MUST match the
 #    builders.vm_name property inside the packer template.
-export VSPHERE_TEMPLATE_NAME="$VSPHERE_TEMPLATE_FOLDER/windows-2022-amd64-vsphere"
+export VSPHERE_TEMPLATE_NAME="$VSPHERE_TEMPLATE_FOLDER/windows-2022-uefi-amd64-vsphere"
 export VSPHERE_TEMPLATE_IPATH="//$GOVC_DATACENTER/vm/$VSPHERE_TEMPLATE_NAME"
 export VSPHERE_VM_FOLDER='test'
-export VSPHERE_VM_NAME='windows-2022-vagrant-example'
+export VSPHERE_VM_NAME='windows-2022-uefi-vagrant-example'
 export VSPHERE_VLAN='packer'
 # set the credentials that the guest will use
 # to connect to this host smb share.
@@ -319,7 +319,7 @@ govc find # find all managed objects
 Build the base box with:
 
 ```bash
-make build-windows-2022-vsphere
+make build-windows-2022-uefi-vsphere
 ```
 
 Try the example guest:
