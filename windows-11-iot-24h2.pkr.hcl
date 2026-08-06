@@ -10,11 +10,6 @@ packer {
       version = "1.2.4"
       source  = "github.com/hashicorp/proxmox"
     }
-    # see https://github.com/hashicorp/packer-plugin-hyperv
-    hyperv = {
-      version = "1.1.5"
-      source  = "github.com/hashicorp/hyperv"
-    }
     # see https://github.com/hashicorp/packer-plugin-vagrant
     vagrant = {
       version = "1.1.7"
@@ -51,16 +46,6 @@ variable "iso_checksum" {
 variable "proxmox_node" {
   type    = string
   default = env("PROXMOX_NODE")
-}
-
-variable "hyperv_switch_name" {
-  type    = string
-  default = env("HYPERV_SWITCH_NAME")
-}
-
-variable "hyperv_vlan_id" {
-  type    = string
-  default = env("HYPERV_VLAN_ID")
 }
 
 variable "vagrant_box" {
@@ -217,43 +202,10 @@ source "proxmox-iso" "windows-11-iot-24h2-amd64" {
   boot_wait         = "30s"
 }
 
-source "hyperv-iso" "windows-11-iot-24h2-amd64" {
-  cpus         = 2
-  memory       = 4096
-  generation   = 2
-  boot_wait    = "1s"
-  boot_command = ["<up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait><up><wait>"]
-  boot_order   = ["SCSI:0:0"]
-  cd_label     = "PROVISION"
-  cd_files = [
-    "provision-autounattend.ps1",
-    "provision-openssh.ps1",
-    "provision-psremoting.ps1",
-    "provision-pwsh.ps1",
-    "provision-winrm.ps1",
-    "tmp/windows-11-iot-24h2-uefi/autounattend.xml",
-  ]
-  disk_size                = var.disk_size
-  first_boot_device        = "DVD"
-  headless                 = true
-  iso_url                  = var.iso_url
-  iso_checksum             = var.iso_checksum
-  switch_name              = var.hyperv_switch_name
-  temp_path                = "tmp"
-  vlan_id                  = var.hyperv_vlan_id
-  shutdown_command         = "shutdown /s /t 0 /f /d p:4:1 /c \"Packer Shutdown\""
-  communicator             = "ssh"
-  ssh_username             = "vagrant"
-  ssh_password             = "vagrant"
-  ssh_timeout              = "4h"
-  ssh_file_transfer_method = "sftp"
-}
-
 build {
   sources = [
     "source.qemu.windows-11-iot-24h2-amd64",
     "source.proxmox-iso.windows-11-iot-24h2-amd64",
-    "source.hyperv-iso.windows-11-iot-24h2-amd64",
   ]
 
   provisioner "powershell" {

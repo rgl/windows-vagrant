@@ -53,10 +53,10 @@ PROXMOX_IMAGES+= windows-11-iot-24h2
 PROXMOX_IMAGES+= windows-11-iot-24h2-uefi
 
 # Hyper-V images.
-HYPERV_IMAGES+= windows-2022
-HYPERV_IMAGES+= windows-2025
-HYPERV_IMAGES+= windows-11-24h2
-HYPERV_IMAGES+= windows-11-iot-24h2
+HYPERV_IMAGES+= windows-2022-uefi
+HYPERV_IMAGES+= windows-2025-uefi
+HYPERV_IMAGES+= windows-11-24h2-uefi
+HYPERV_IMAGES+= windows-11-iot-24h2-uefi
 
 # vSphere images.
 VSPHERE_IMAGES+= windows-2022
@@ -116,17 +116,17 @@ $(VSPHERE_BUILDS): build-%-vsphere: %-amd64-vsphere.box
 		$*-amd64-proxmox-packer.log \
 		>$*-amd64-proxmox-windows-updates.log
 
-%-amd64-hyperv.box: %.pkr.hcl tmp/%-uefi/autounattend.xml Vagrantfile.template *.ps1
+%-uefi-amd64-hyperv.box: %.pkr.hcl tmp/%-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1
 	rm -f $@
 	sed -E '/<DriverPaths>/,/<\/DriverPaths>/d' -i tmp/$*-uefi/autounattend.xml
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-hyperv-packer-init.log \
-		packer init $*.pkr.hcl
-	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-amd64-hyperv-packer.log PKR_VAR_vagrant_box=$@ \
-		packer build -only=hyperv-iso.$*-amd64 -on-error=abort $*.pkr.hcl
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-hyperv-packer-init.log \
+		packer init $*-uefi.pkr.hcl
+	CHECKPOINT_DISABLE=1 PACKER_LOG=1 PACKER_LOG_PATH=$*-uefi-amd64-hyperv-packer.log PKR_VAR_vagrant_box=$@ \
+		packer build -only=hyperv-iso.$*-uefi-amd64 -on-error=abort $*-uefi.pkr.hcl
 	./get-windows-updates-from-packer-log.sh \
-		$*-amd64-hyperv-packer.log \
-		>$*-amd64-hyperv-windows-updates.log
-	@./box-metadata.sh hyperv $*-amd64 $@
+		$*-uefi-amd64-hyperv-packer.log \
+		>$*-uefi-amd64-hyperv-windows-updates.log
+	@./box-metadata.sh hyperv $*-uefi-amd64 $@
 
 %-uefi-amd64-libvirt.box: %-uefi.pkr.hcl tmp/%-uefi/autounattend.xml Vagrantfile-uefi.template *.ps1 drivers
 	rm -f $@
