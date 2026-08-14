@@ -182,7 +182,7 @@ Vagrant.configure(2) do |config|
           'vm.disk.change',
           '-vm.uuid', machine.id,
           '-disk.name', 'disk-1000-0',
-          '-size', "#{$vm_disk}GB")
+          '-size', "#{VM_OS_DISK_GB}GB")
         if status.exitstatus != 0
           raise "failed to set the disk size. status=#{status.exitstatus} stdout=#{stdout} stderr=#{stderr}"
         end
