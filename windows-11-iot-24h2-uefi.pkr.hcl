@@ -124,7 +124,6 @@ source "qemu" "windows-11-iot-24h2-uefi-amd64" {
   format                   = "qcow2"
   headless                 = true
   net_device               = "virtio-net"
-  http_bind_address        = var.http_bind_address
   http_directory           = "."
   iso_url                  = var.iso_url
   iso_checksum             = var.iso_checksum
