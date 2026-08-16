@@ -45,6 +45,26 @@ def set_libvirt_os_information(machine)
   end
 end
 
+def set_libvirt_disk_blockio_discard_granularity(machine)
+  require 'nokogiri'
+  xml, stderr, status = Open3.capture3('virsh', 'dumpxml', machine.id)
+  raise "Failed to get domain XML: #{stderr}" unless status.exitstatus == 0
+  doc = Nokogiri::XML(xml)
+  disk_node = doc.at_xpath('//domain/devices/disk[target/@dev="sda"]')
+  raise "Failed to find the sda disk XML node: #{stderr}" unless disk_node
+  disk_node.at_xpath('blockio')&.remove
+  blockio_xml = <<~XML
+    <blockio discard_granularity="8192"/>
+  XML
+  blockio_node = Nokogiri::XML::DocumentFragment.parse(blockio_xml)
+  disk_node << blockio_node
+  Open3.popen3('virsh', 'define', '/dev/stdin') do |stdin, stdout, stderr, wait_thr|
+    stdin.write(doc.to_xml)
+    stdin.close
+    raise "Failed to define domain: #{stderr.read}" if wait_thr.value.exitstatus != 0
+  end
+end
+
 Vagrant.configure(2) do |config|
   config.vm.box = 'windows-2022-uefi-amd64'
   #config.vm.box = 'windows-2025-uefi-amd64'
@@ -78,6 +98,8 @@ Vagrant.configure(2) do |config|
         if status.exitstatus != 0
           raise "failed to run virt-xml to modify the scsi controller model. status=#{status.exitstatus} stdout=#{stdout} stderr=#{stderr}"
         end
+        # set the disk discard_granularity.
+        set_libvirt_disk_blockio_discard_granularity(machine)
       end
     end
     config.vm.synced_folder '.', '/vagrant',

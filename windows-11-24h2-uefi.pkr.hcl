@@ -78,7 +78,7 @@ source "qemu" "windows-11-24h2-uefi-amd64" {
     ["-device", "qemu-xhci"],
     ["-device", "virtio-tablet"],
     ["-device", "virtio-scsi-pci,id=scsi0"],
-    ["-device", "scsi-hd,bus=scsi0.0,drive=drive0"],
+    ["-device", "scsi-hd,bus=scsi0.0,drive=drive0,discard_granularity=8K"],
     ["-device", "virtio-net,netdev=user.0"],
     ["-vga", "qxl"],
     ["-device", "virtio-serial-pci"],

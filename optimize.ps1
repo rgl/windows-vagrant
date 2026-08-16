@@ -139,6 +139,19 @@ Stop-ServiceForReal BITS               # Background Intelligent Transfer Service
 
 #
 # reclaim the free disk space.
+#
+# NB when using a qemu/kvm based hypervisor, ssd trim is only available when
+#    discard_granularity is set to 8K (or higher), otherwise,
+#    defrag.exe C: /H /L fails as: Incorrect function. (0x80070001) error.
+#    NB when using proxmox, there is no explicit way to set discard_granularity.
+#       it could be set using qemu_additional_args argument, but when using
+#       non-root user token, that fails as: only root can set 'args' config, so
+#       we do not do it.
+#    see lsblk -o NAME,PHY-SEC,LOG-SEC,DISC-GRAN,DISC-ALN
+#    see fsutil.exe behavior query DisableDeleteNotify
+#    see /etc/libvirt/qemu/{vm_name}.xml (when using libvirt).
+#    see /etc/pve/qemu-server/{vm_id}.conf (when using proxmox).
+#    see https://github.com/virtio-win/kvm-guest-drivers-windows/issues/1574
 
 Write-Host 'Reclaiming the free disk space using defrag...'
 $results = defrag.exe C: /H /L
