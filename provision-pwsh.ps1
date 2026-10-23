@@ -16,20 +16,12 @@ trap {
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol `
     -bor [Net.SecurityProtocolType]::Tls12
 
-# disable update notifications.
-# see https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_update_notifications?view=powershell-7.6
-$env:POWERSHELL_UPDATECHECK = 'Off'
-[Environment]::SetEnvironmentVariable(
-    'POWERSHELL_UPDATECHECK',
-    $env:POWERSHELL_UPDATECHECK,
-    'Machine')
-
 # install powershell lts.
 # see https://github.com/PowerShell/PowerShell/releases
 # renovate: datasource=github-releases depName=PowerShell/PowerShell extractVersion=^v(?<version>7\.6\..+)
-$archiveVersion = '7.6.7'
+$archiveVersion = '7.6.8'
 $archiveUrl = "https://github.com/PowerShell/PowerShell/releases/download/v$archiveVersion/PowerShell-$archiveVersion-win-x64.msi"
-$archiveHash = 'ec575cef9ec56fcd905de0d5eeac9cb7f81a0a65abb87bb5cd0e87fdfe2b8cc0'
+$archiveHash = '079e7cecedd1e87fa7b4676e5c33ddfbe66859a44a97fbcd1db797245cbb93d2'
 $archiveName = Split-Path -Leaf $archiveUrl
 $archivePath = "$env:TEMP\$archiveName"
 
