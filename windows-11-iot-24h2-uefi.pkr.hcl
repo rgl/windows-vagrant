@@ -33,6 +33,23 @@ variable "http_bind_address" {
   default = env("PACKER_HTTP_BIND_ADDRESS")
 }
 
+variable "qemu_bios" {
+  type        = string
+  default     = ""
+  description = "UEFI firmware path; when empty, the first existing well-known path is used"
+}
+
+locals {
+  # the UEFI firmware location differs between distros (e.g. Debian/Ubuntu
+  # vs Fedora).
+  qemu_bios = (
+    var.qemu_bios != "" ? var.qemu_bios :
+    fileexists("/usr/share/ovmf/OVMF.fd") ? "/usr/share/ovmf/OVMF.fd" :
+    fileexists("/usr/share/edk2/ovmf/OVMF.stateless.fd") ? "/usr/share/edk2/ovmf/OVMF.stateless.fd" :
+    "/usr/share/ovmf/OVMF.fd"
+  )
+}
+
 variable "disk_size" {
   type    = string
   default = "61440"
@@ -71,7 +88,7 @@ source "qemu" "windows-11-iot-24h2-uefi-amd64" {
   cpus   = 2
   memory = 4096
   qemuargs = [
-    ["-bios", "/usr/share/ovmf/OVMF.fd"],
+    ["-bios", local.qemu_bios],
     ["-machine", "type=q35,accel=kvm,hpet=off"],
     ["-cpu", "host,hv-passthrough"],
     ["-rtc", "base=localtime,clock=host"],
