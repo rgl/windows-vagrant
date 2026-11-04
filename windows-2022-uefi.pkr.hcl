@@ -33,6 +33,11 @@ variable "http_bind_address" {
   default = env("PACKER_HTTP_BIND_ADDRESS")
 }
 
+variable "qemu_bios" {
+  type    = string
+  default = "/usr/share/ovmf/OVMF.fd"
+}
+
 variable "disk_size" {
   type    = string
   default = "61440"
@@ -71,7 +76,7 @@ source "qemu" "windows-2022-uefi-amd64" {
   cpus   = 2
   memory = 4096
   qemuargs = [
-    ["-bios", "/usr/share/ovmf/OVMF.fd"],
+    ["-bios", var.qemu_bios],
     ["-machine", "type=q35,accel=kvm,hpet=off"],
     ["-cpu", "host,hv-passthrough"],
     ["-rtc", "base=localtime,clock=host"],
