@@ -22,7 +22,7 @@ packer {
     }
     # see https://github.com/rgl/packer-plugin-windows-update
     windows-update = {
-      version = "0.18.5"
+      version = "0.18.6"
       source  = "github.com/rgl/windows-update"
     }
   }
