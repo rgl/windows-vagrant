@@ -1,6 +1,6 @@
-# Windows 11/2022/2025 Assessment and Deployment Kit (ADK) 10.1.26100.2454 (December 2024).
+# Windows 11/2022/2025 Assessment and Deployment Kit (ADK) 10.1.26100.9457 (September 2026).
 # see https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-install
-$artifactUrl = 'https://download.microsoft.com/download/2/d/9/2d9c8902-3fcd-48a6-a22a-432b08bed61e/ADK/adksetup.exe'
+$artifactUrl = 'https://download.microsoft.com/download/8e0c0f5a-abb5-4358-a51b-168eb40b1590/adk/adksetup.exe'
 $artifactPath = "$env:TEMP\$(Split-Path -Leaf $artifactUrl)"
 
 Write-Host 'Downloading the Windows Assessment and Deployment Kit (ADK) setup...'
