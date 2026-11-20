@@ -8,9 +8,12 @@ u='https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virt
 f="$(basename "$u")"
 
 if [ ! -f "drivers/$f" ]; then
-	rm -rf drivers drivers.tmp
+	rm -rf drivers
 	mkdir -p drivers.tmp
-	wget --progress=dot:giga -P drivers.tmp "$u"
-	7z x -odrivers.tmp drivers.tmp/virtio-win-*.iso
+	# keep the iso from a previous run (e.g. one that failed to extract it),
+	# but remove everything else, like an older iso or a partial extraction.
+	find drivers.tmp -mindepth 1 -maxdepth 1 ! -name "$f" -exec rm -rf {} +
+	wget --progress=dot:giga --continue -P drivers.tmp "$u"
+	7z x -y -odrivers.tmp "drivers.tmp/$f"
 	mv drivers.tmp drivers
 fi
