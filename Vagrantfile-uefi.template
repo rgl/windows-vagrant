@@ -5,7 +5,12 @@ Vagrant.configure("2") do |config|
   config.winrm.password = "vagrant"
   config.vm.provider "libvirt" do |lv, config|
     lv.machine_type = "q35"
-    lv.loader = "/usr/share/ovmf/OVMF.fd"
+    # the UEFI firmware location differs between distros (e.g. Debian/Ubuntu
+    # vs Fedora); allow overriding it with the VAGRANT_LIBVIRT_LOADER env var.
+    lv.loader = ENV["VAGRANT_LIBVIRT_LOADER"] || [
+      "/usr/share/ovmf/OVMF.fd",
+      "/usr/share/edk2/ovmf/OVMF.stateless.fd",
+    ].find { |path| File.exist?(path) } || "/usr/share/ovmf/OVMF.fd"
     lv.cpu_mode = "host-passthrough"
     lv.features = ["acpi", "apic", "hyperv mode='passthrough'", "vmport state='off'"]
     lv.clock_offset = 'localtime'
